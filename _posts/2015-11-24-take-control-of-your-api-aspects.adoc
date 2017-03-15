@@ -1,0 +1,129 @@
+= Take control of your Web API aspects
+:showtitle:
+:page-navtitle: Take control of your Web API aspects
+:page-excerpt: Excerpt goes here.
+:page-root: ../../../
+:experimental:
+
+Action filters  are a way of modifying or decorating the execution of one or more action methods. They provide points of execution before and after the action method itself executes.
+
+[WARNING]
+====
+For more details on action filters see http://www.asp.net/mvc/overview/older-versions-1/controllers-and-routing/understanding-action-filters-cs"[this article]
+====
+
+== Order of Execution: Salami Slice + Russian Doll
+You can have action filters declared at three levels: globally, controller-wide or action-specific. <strong>They will execute in that order...sort of.</strong>
+
+Once ordered, action filters are executed <strong>sequentially</strong>, without connection between them.
+
+But here's the fun bit, the order of execution is reverted when the response is processed. In other words, if when processing the request the order of filters is
+
+menu:View[FilterA > FilterB > FilterC > Action]
+
+then when processing the response the order will be
+
+menu:View[Action > FilterC > FilterB > Filter]
+
+there are some design patterns like: 
+
+* https://en.wikipedia.org/wiki/Chain-of-responsibility_pattern[Chain of Responsibility] 
+* https://en.wikipedia.org/wiki/Command_pattern[Commands] 
+* I prefer to use the more visual http://blogs.msdn.com/b/skaufman/archive/2005/04/25/411809.aspx[Salami Slice] for the sequential execution.
+* http://blogs.msdn.com/b/skaufman/archive/2005/04/21/410486.aspx[Russian Doll]
+
+=== Overriding a global filter from an action method ===
+This default order is convenient in many cases, but not always. I found myself in the following scenario: I needed to execute a default action filter **unless** an action was annotated with an overriding action filter attribute.
+
+Two examples when this could be useful:
+
+* ***Always log http traffic, except sensitive data: ***
+** Log the raw http request and response to all action methods.
+** But: when the request is for PUT /PaymentCardDetails, then use a custom logger that will not log the payment card number and security code.
+* ***Always require authentication tokens, except Login and Forgot Password methods: ***
+** Add a global action filter that will always require authentication token in the request's header.
+** But: annotate the Login and ForgotPassword action methods with an attribute that will bypass the authentication requirement.
+
+== ...so here is the implementation: ==
+
+=== Step 1: Create an interface for overriding attributes ===
+
+Something like this is the simplest thing that can possibly do the job:
+
+[source,csharp]
+----
+//To be implemented by actionfilterattributes that override a global action filter
+public interface IOverridingFilterAttribute
+{
+    //The type of actionfilter to be replaced for this request
+    Type OverriddenType { get; }
+}
+----
+
+=== Step 2: Create your own ActionFilterProvider with the overriding behaviour ===
+IFilterProvider is a component you can customise. It defines what action filters to use in this request, and in which order
+
+[source,csharp]
+----
+public class OverridingFilterProvider : IFilterProvider
+{
+    //called by WebApi on each request, in order 
+    // to get the list of filters to apply
+    public IEnumerable<FilterInfo> GetFilters(HttpConfiguration configuration, HttpActionDescriptor actionDescriptor)
+    {
+        var globalFilters = configuration.Filters;
+        var controllerFilters = actionDescriptor.ControllerDescriptor.GetFilters().Select(x => new FilterInfo(x,FilterScope.Controller));
+        var actionFilters = actionDescriptor.GetFilters().Select(x => new FilterInfo(x,FilterScope.Action));
+
+        //we'll apply global,controller-wide 
+        //and then action attribute filters
+        var all = globalFilters.Concat(controllerFilters).Concat(actionFilters);
+        return RemoveAnyOverriddenFilter(all);
+    }
+
+    //if there are IOverridingFilterAttributes, 
+    //remove the filters they override
+    private IEnumerable<FilterInfo> RemoveAnyOverriddenFilter(IEnumerable<FilterInfo> all)
+    {
+        var overridingFilters =
+            all.Where(x => (x.Instance as IOverridingFilterAttribute) != null)
+                .Select(x => (IOverridingFilterAttribute) x.Instance);
+
+        var filtered =  all.Where(x => !IsOverridden(x, overridingFilters));
+        return filtered;
+    }
+
+    private bool IsOverridden(FilterInfo target, IEnumerable<IOverridingFilterAttribute> overrides)
+    {
+        foreach (var overridingFilter in overrides)
+        {
+            var filterType = target.Instance.GetType();
+            var overriddenType = overridingFilter.OverriddenType;
+
+            if (overriddenType.IsAssignableFrom(filterType))
+                return true;
+        }
+        return false;
+    }
+
+    private IEnumerable<FilterInfo> OrderFilters(IEnumerable<IFilter> filters, FilterScope scope)
+    {
+        return filters.Select(instance => new FilterInfo(instance, scope));
+    }
+}
+----
+
+=== Step 3: Register your Filter Provider ===
+
+[source,csharp]
+----
+public class WebApiApplication : HttpApplication
+{
+    protected void Application_Start()
+    {
+        var services = GlobalConfiguration.Configuration.Services;
+        services.Replace(typeof(IFilterProvider),
+            new OverridingFilterProvider());
+    }
+}
+----
