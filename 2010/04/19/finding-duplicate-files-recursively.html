@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apply an operation to a collection with LinQ</title>
+    <title>Finding duplicated files recursively</title>
     <meta name="description" content="The Jekyll AsciiDoc Quickstart project is a leg-up in starting your own website hosted on GitHub with content based in AsciiDoc.">
     <meta name="author" content="Your name goes here">
     <meta name="copyright" content="Maybe consider a Creative Commons license">
@@ -42,62 +42,53 @@
     <!-- Main Blog Content -->
     <div class="large-9 columns" role="content">
 
-        <h1>Apply an operation to a collection with LinQ</h1>
+        <h1>Finding duplicated files recursively</h1>
 <div class="paragraph">
-<p>These days, it is unusual to write an implementation of the Iterator pattern. Most of the modern languages included a library with a set of aggregate objects that follow this pattern as defined in the <a href="https://www.amazon.com/Design-Patterns-Elements-Reusable-Object-Oriented/dp/0201633612">Gang of Four book</a>.</p>
+<p>I was cleaning up a folder with files duplicated in subdirectories. Here is a simple Powershell code that identifies duplications recursively.</p>
 </div>
 <div class="paragraph">
-<p>In .Net, these objects are in the System.Collections namespace and they include classes such as Lists, Queues, Dictionaries, and also their specialised strongly typed (Generic) version.</p>
-</div>
-<div class="paragraph">
-<p>The Gang Of Four defines two types of iterators: External and Internal. The External requires the client to traverse the items (by looping through the items until the end of the iterator). In contrast to this, the internal iterator delegates this process to a Traverse mix-in class that can be extended and customised.</p>
-</div>
-<div class="paragraph">
-<p>I was looking for something similar to the internal iterator in .Net. That is, a generic way of passing an operation to a collection that would apply it to each of its items. None of the LinQ extension methods for collections seemed to do this, so I wrote one:</p>
+<p>There might be a shorter form, but I think this is as I short I can get without becoming very cryptic.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="csharp">public static class Extensions
+<pre class="CodeRay highlight"><code data-lang="powershell">function FindDuplicates{
+ # Receives a list of ArrayLists
+ # iteratively prints the full path of each ArrayList item
+ # where the ArrayList contains multiple paths (i.e duplicates)
+Process
 {
-    public static void ApplyOperation&lt;T&gt;
-                (this IEnumerable&lt;T&gt; iterator,
-                Action&lt;T&gt; action)
+ if ($_.Count -gt 1)
+       {foreach($d in $_){$d.FullName}} }
+}
+
+function GetFilesInBuckets($dir,$filter = &quot;*.*&quot;)
+{
+ # Creates a hashtable of arraylists (1 entry per unique file name)
+ # Returns the list of arraylists only (not the entire hashtable)
+  $files = @{}
+ foreach ($fl in (gci $dir -filter $filter -r))
+  {
+    if(!$files.ContainsKey($fl.Name))
     {
-        foreach (var item in iterator)
-            action(item);
+    $files[$fl.Name] = New-Object System.Collections.ArrayList
     }
-}</code></pre>
+    [void]$files[$fl.Name].Add($fl)
+  }
+ $files.Values
+}
+
+GetFilesInBuckets &quot;C:\MyRootFolder&quot; -f &quot;*.txt&quot;
+    |FindDuplicates</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Which can be used as follows:</p>
+<p>Additional filtering methods will look similar to as <code>FindDuplicates</code>, and can be piped at the end of the last line of code:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="csharp">IEnumerable&lt;string&gt; cities =
-            new string[] { &quot;Dublin&quot;, &quot;Buenos Aires&quot;, &quot;Madrid&quot; };
-cities.ApplyOperation(x=&gt;Console.WriteLine(&quot;City name: &quot; + x));</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>or simply</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="csharp">new string[] {
-    &quot;Dublin&quot;,
-    &quot;Buenos Aires&quot;,
-    &quot;Madrid&quot; }
-    .ApplyOperation(
-        x =&gt; Console.WriteLine(&quot;City name: &quot; + x));</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>which prints the following output:</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="/images/console.png" alt="console">
+<pre class="CodeRay highlight"><code data-lang="powershell">GetFilesInBuckets &quot;C:\MyRootFolder&quot; -f &quot;*.txt&quot;|
+    FindDuplicates|
+    FilterOutOlder</code></pre>
 </div>
 </div>
 
