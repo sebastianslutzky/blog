@@ -1,0 +1,52 @@
+= Finding duplicated files recursively
+:showtitle:
+:page-navtitle: Finding duplicated files recursively
+:page-root: ../../../
+:experimental:
+:imagesdir: /images 
+
+I was cleaning up a folder with files duplicated in subdirectories. Here is a simple Powershell code that identifies duplications recursively.
+
+There might be a shorter form, but I think this is as I short I can get without becoming very cryptic.
+
+[source,powershell]
+----
+function FindDuplicates{
+ # Receives a list of ArrayLists
+ # iteratively prints the full path of each ArrayList item
+ # where the ArrayList contains multiple paths (i.e duplicates)
+Process
+{
+ if ($_.Count -gt 1)
+       {foreach($d in $_){$d.FullName}} }
+}
+
+function GetFilesInBuckets($dir,$filter = "*.*")
+{
+ # Creates a hashtable of arraylists (1 entry per unique file name)
+ # Returns the list of arraylists only (not the entire hashtable)
+  $files = @{}
+ foreach ($fl in (gci $dir -filter $filter -r))
+  {
+    if(!$files.ContainsKey($fl.Name))
+    {
+    $files[$fl.Name] = New-Object System.Collections.ArrayList
+    }
+    [void]$files[$fl.Name].Add($fl)
+  }
+ $files.Values
+}
+
+GetFilesInBuckets "C:\MyRootFolder" -f "*.txt"
+    |FindDuplicates
+----
+
+Additional filtering methods will look similar to as `FindDuplicates`, and can be piped at the end of the last line of code:
+
+
+[source,powershell]
+----
+GetFilesInBuckets "C:\MyRootFolder" -f "*.txt"|
+    FindDuplicates|
+    FilterOutOlder
+----
