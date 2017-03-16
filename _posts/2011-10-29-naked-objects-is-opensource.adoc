@@ -1,0 +1,11 @@
+= Nake Objects framework is now open sourced
+:showtitle:
+:page-navtitle: Naked Objects is now open sourced.
+:page-root: ../../../
+:experimental:
+
+The Naked Objects framework for .Net is now open sourced under Microsoft Public License.
+
+The projects is now hosted at http://nakedobjects.codeplex.com/[Codeplex] 
+
+You can download the framework from there or in Visual Studio, from NuGet
