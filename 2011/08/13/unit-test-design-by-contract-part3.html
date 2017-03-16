@@ -1,0 +1,303 @@
+<!doctype html>
+<!--[if IE 9]>
+<html class="lt-ie10" lang="en"> <![endif]-->
+<html class="no-js" lang="en" data-useragent="Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit testing with Design By Contract (part 3)</title>
+    <meta name="description" content="The Jekyll AsciiDoc Quickstart project is a leg-up in starting your own website hosted on GitHub with content based in AsciiDoc.">
+    <meta name="author" content="Your name goes here">
+    <meta name="copyright" content="Maybe consider a Creative Commons license">
+    <link rel="stylesheet" href="../../../css/foundation.css">
+    <link rel="stylesheet" href="../../../css/font-awesome.css">
+    <link rel="stylesheet" href="../../../css/coderay.css">
+    <link rel="stylesheet" href="../../../css/asciidoctor.css">
+    <script src="../../../js/vendor/modernizr.js"></script>
+    <script src="../../../js/toc.js"></script>
+</head>
+<body>
+
+
+<!-- Nav Bar -->
+
+<nav class="top-bar" data-topbar>
+    <ul class="title-area">
+        <!-- Title Area -->
+        <li class="name">
+            <h1>
+                <a href="../../../">Jekyll AsciiDoc  Quickstart</a>
+            </h1>
+        </li>
+        <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+    </ul>
+</nav>
+<!-- End Nav -->
+
+
+<!-- Main Page Content and Sidebar -->
+
+<div class="row">
+
+    <!-- Main Blog Content -->
+    <div class="large-9 columns" role="content">
+
+        <h1>Unit testing with Design By Contract (part 3)</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="imageblock">
+<div class="content">
+<img src="/images/dbc.png" alt="dbc" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p><em>This article is the last of three on <a href="http://sebastianslutzky.com/2011/08/08/unit-testing-with-design-by-contract/">Unit Testing and Design By Contract</a></em></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="testing_post_conditions_and_class_invariants">Testing Post Conditions and Class Invariants</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now we can test the two post conditions of the <code>Add</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="csharp">// Count is 0 before adding any items
+// This is a post condition of the constructor
+//and should be tested separately
+[Test]
+public void Add_PostCond_CountHasIncreasedByOne()
+{
+    var stack = new Stack(maximumNumberOfItemsAllowed: 10);
+    stack.Add(new object());
+    Assert.AreEqual(1,stack.Count);
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="csharp">// We use the 'Peek' method to access the item on top of the stack.
+// Pre and Post conditions of this method should be tested separately
+[Test]
+public void Add_PostCond_ItemIsOnTopOfTheStack()
+{
+    var stack = new Stack(maximumNumberOfItemsAllowed: 10);
+    var firstItem = new object();
+    var secondItem = new object();
+    stack.Add(firstItem);
+    stack.Add(secondItem);
+
+    Assert.AreSame(secondItem, stack.Peek());
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>These types of test are probably the most commonly seen. Good Test Driven Development habits include asserting as few times as possible per tests, ideally one assertion only. The point is, as I mentioned earlier, error localization: if you only test one thing at a time, there has to be one test that explicitly exposes a bug.</p>
+</div>
+<div class="paragraph">
+<p>There is still one more post condition to test: that no invariant rule of the class was violated by the <code>Add</code> method.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="checking_class_invariants">Checking Class Invariants</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As mentioned earlier, Class Invariants are the rules that should always remain true after any method is executed on a class. The <code>Add</code> method is no exception, so we will have to test that class invariants were enforced when it executed.
+We don’t want to repeat ourselves, so we will delegate to a reusable method called <code>CheckInvariants</code> that throws an exception if an Invariant rule has been broken.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="csharp">[Test]
+public void Add_PostCond_InvariantsWereEnforced()
+{
+    //Arrange
+    var stack = new MockRepository().PartialMock&lt;Stack&gt;(1);
+    stack.Expect(x=&gt;x.CheckInvariants());
+    stack.Replay();
+
+    //Act
+    stack.Add(new object());
+
+    //Assert
+    stack.VerifyAllExpectations();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This tests ensures that the method <code>CheckInvariants</code> has been invoked by the <code>Add</code> method. This type of tests, which verifies the interaction of methods rather than the resulting state of objects is known as Behavioural Tests.</p>
+</div>
+<div class="paragraph">
+<p>The delegation itself is tested by using the <a href="http://ayende.com/blog/tags/rhino-mocks">Rhino Mocks</a> mocking library for .Net. In this case we create a Partial Mock <code>Stack</code> object. It is partial because we only want to mock one method (<code>CheckInvariants</code>) but we do want to execute a different one (<code>Add</code>) of the same class. We tell the partially mocked <code>Stack</code> that we are expecting the <code>CheckInvariants</code> method to be called later. After we explicitly invoked <code>Add</code>, we tell the stack to verify our expectation.
+This verification will fail if the method was not invoked indirectly by <code>Add</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="how_public_are_the_class_invariants">How public are the Class Invariants?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>So the last thing is to test the Class Invariants. This is just another method called void <code>CheckInvariants()</code> of the class, but its access level deserves a bit of thought.</p>
+</div>
+<div class="paragraph">
+<p>Let’s see what options we have:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>private: This method cannot be private because we need to write tests for it (as we did before)</p>
+</li>
+<li>
+<p>protected: This would at least let us create the class <code>TestStack</code> that inherits the <code>Stack</code> class and create a public method that invokes <code>CheckInvariants</code>. See <a href="http://geekswithblogs.net/MattRobertsBlog/archive/2008/12/16/how-to-make-a-quotprotectedquot-method-available-for-quotpartialquot-mocking-and-again.aspx">this article</a> for more details on how to mock a protected method</p>
+</li>
+<li>
+<p>internal: Internal methods can be invoked from within the assembly or an external assembly explicitly designated. This is the option chosen in this example</p>
+</li>
+<li>
+<p>public: Not a bad option either in my opinion, any object can invoke this method anytime, which should not cause any inconvenient.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>And here are the two test for <code>CheckInvariants</code> itself</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="csharp">[Test,ExpectedException(typeof(InvalidOperationException),
+    ExpectedMessage=&quot;Count cannnot be negative&quot;)]
+public void CheckInvariants_PostCond_CountIsNonNegative()
+{
+    var stack = new MockRepository().PartialMock&lt;Stack&gt;(1);
+    stack.Replay();
+    stack.Count = -1;
+
+    stack.CheckInvariants();
+}
+[Test,
+ExpectedException(typeof(InvalidOperationException),
+    ExpectedMessage = &quot;Count cannot be greater than 7&quot;)]
+public void CheckInvariants_PostCond_CountIsLessThanMaximumAllowed()
+{
+    var stack = new MockRepository().PartialMock&lt;Stack&gt;(7);
+    stack.Replay();
+    stack.Count = 8;
+
+    stack.CheckInvariants();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And finally, here is the code for the <code>Stack</code> class, a class that honors its contract:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="csharp">public class Stack
+{
+    private int _maximumNumberOfItemsAllowed;
+    public Stack(int maximumNumberOfItemsAllowed)
+    {
+        _maximumNumberOfItemsAllowed = maximumNumberOfItemsAllowed;
+    }
+
+    public int Count { get; protected internal set; }
+
+    public void Add(object item)
+    {
+        if (item == null)
+            throw new ArgumentNullException(&quot;item&quot;);
+
+        if (_maximumNumberOfItemsAllowed == Count)
+            throw new InvalidOperationException(
+                &quot;Cannot add items when the stack is full.&quot;);
+        Count++;
+        _array.Add(item);
+
+        CheckInvariants();
+    }
+
+    private IList _array = new ArrayList();
+
+    public object Peek()
+    {
+        return _array[Count - 1];
+    }
+
+    protected internal virtual void CheckInvariants()
+    {
+        if (Count &lt; 0)
+            throw new InvalidOperationException(&quot;Count cannnot be negative&quot;);
+
+       if (Count &gt; _maximumNumberOfItemsAllowed)
+            throw new InvalidOperationException(&quot;Count cannot be greater than &quot; + _maximumNumberOfItemsAllowed);
+        }
+    }</code></pre>
+</div>
+</div>
+</div>
+</div>
+
+    </div>
+
+    <!-- End Main Content -->
+
+    <!-- Sidebar -->
+
+    <aside class="large-3 columns">
+
+        <h4>Posts</h4>
+        <ul id="posts" class="posts nav">
+            
+            <li><a href="/./2015/11/24/take-control-of-your-api-aspects.html">Take control of your Web API aspects</a></li>
+            
+            <li><a href="/./2011/10/29/naked-objects-is-opensource.html">Naked Objects is now open sourced.</a></li>
+            
+            <li><a href="/./2011/08/22/apply-operation-in-collection-with-linq.html">Apply an operation to a collection with LinQ</a></li>
+            
+            <li><a href="/./2011/08/13/unit-test-design-by-contract-part3.html">Unit Test &amp; Design By Contract (III)</a></li>
+            
+            <li><a href="/./2011/08/12/unit-test-design-by-contract-part2.html">Unit Test &amp; Design By Contract (II)</a></li>
+            
+            <li><a href="/./2011/08/08/unit-test-design-by-contract-part2.html">Unit Test &amp; Design By Contract (I)</a></li>
+            
+            <li><a href="/./2011/08/08/unit-test-design-by-contract-part1.html">Unit Test &amp; Design By Contract (I)</a></li>
+            
+        </ul>
+
+        <div class="panel">
+            <h5>Featured</h5>
+
+            <p>Pork drumstick turkey fugiat. Tri-tip elit turducken pork chop in. Swine short ribs meatball irure bacon
+                nulla pork belly cupidatat meatloaf cow.</p>
+        </div>
+
+    </aside>
+
+    <!-- End Sidebar -->
+</div>
+
+<!-- End Main Content and Sidebar -->
+
+
+<!-- Footer -->
+
+<footer class="row">
+    <div class="large-12 columns">
+        <hr>
+        <div class="row">
+            <div class="large-12 columns">
+                <p>Footer</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="../../../js/vendor/jquery.js"></script>
+<script src="../../../js/foundation.min.js"></script>
+<script>
+$(document).foundation();
+var doc = document.documentElement;
+doc.setAttribute('data-useragent', navigator.userAgent);
+</script>
+</body>
+</html>
