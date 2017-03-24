@@ -200,12 +200,12 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="java"><span style="color: #408080; font-style: italic">//To be implemented by actionfilterattributes that override a global action filter</span>
-<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">interface</span> <span style="color: #0000FF; font-weight: bold">IOverridingFilterAttribute</span>
-<span style="color: #666666">{</span>
+<pre class="pygments highlight"><code data-lang="c#"><span style="color: #408080; font-style: italic">//To be implemented by actionfilterattributes that override a global action filter</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">interface</span> IOverridingFilterAttribute
+{
     <span style="color: #408080; font-style: italic">//The type of actionfilter to be replaced for this request</span>
-    Type OverriddenType <span style="color: #666666">{</span> get<span style="color: #666666">;</span> <span style="color: #666666">}</span>
-<span style="color: #666666">}</span></code></pre>
+    Type OverriddenType { <span style="color: #008000; font-weight: bold">get</span>; }
+}</code></pre>
 </div>
 </div>
 </div>

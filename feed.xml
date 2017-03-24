@@ -5,7 +5,7 @@
   
   <link href="http://youarewhatyoucode/blog/feed.xml" rel="self" type="application/atom+xml" />
   <link href="http://youarewhatyoucode/blog/" rel="alternate" type="text/html" hreflang="en" />
-  <updated>2017-03-24T19:41:48+00:00</updated>
+  <updated>2017-03-24T20:00:55+00:00</updated>
   <id>http://youarewhatyoucode/blog//</id>
 
   
@@ -147,12 +147,12 @@
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;java&quot;&gt;&lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;//To be implemented by actionfilterattributes that override a global action filter&lt;/span&gt;
-&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;interface&lt;/span&gt; &lt;span style=&quot;color: #0000FF; font-weight: bold&quot;&gt;IOverridingFilterAttribute&lt;/span&gt;
-&lt;span style=&quot;color: #666666&quot;&gt;{&lt;/span&gt;
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;c#&quot;&gt;&lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;//To be implemented by actionfilterattributes that override a global action filter&lt;/span&gt;
+&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;interface&lt;/span&gt; IOverridingFilterAttribute
+{
     &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;//The type of actionfilter to be replaced for this request&lt;/span&gt;
-    Type OverriddenType &lt;span style=&quot;color: #666666&quot;&gt;{&lt;/span&gt; get&lt;span style=&quot;color: #666666&quot;&gt;;&lt;/span&gt; &lt;span style=&quot;color: #666666&quot;&gt;}&lt;/span&gt;
-&lt;span style=&quot;color: #666666&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+    Type OverriddenType { &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;get&lt;/span&gt;; }
+}&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
