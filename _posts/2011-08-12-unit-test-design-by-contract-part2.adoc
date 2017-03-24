@@ -11,7 +11,7 @@ image::dbc.png[dbc, width=100%]
 
 _This article is the second of three on link:/2011/08/08/unit-test-design-by-contract-part1/[Unit Testing and Design By Contract]_
 
-== Testing Post Conditions and Class Invariants 
+== Testing Pre-Conditions
 
 Our User Story contains two pre conditions, so we should write a test for each of them.
 
