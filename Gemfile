@@ -1,5 +1,7 @@
 source "https://rubygems.org"
 
+gem 'rake-jekyll', '~> 1.1.0' 
+
 group :jekyll_plugins do
   gem 'rake'
   gem 'jekyll-asciidoc', '~> 2.0.1'
@@ -7,5 +9,4 @@ group :jekyll_plugins do
   gem 'jekyll-paginate'
   gem 'jekyll-sitemap'
   gem 'rouge'
-
 end
