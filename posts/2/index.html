@@ -203,37 +203,37 @@ Here is the list of test we will write for this User Story, based on the previou
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="csharp">[Test]
-public void Add_PreCond_ItemIsRequired()
-    { throw new NotImplementedException(); }
+<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #7D9029">[Test]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PreCond_ItemIsRequired</span>()
+    { <span style="color: #008000; font-weight: bold">throw</span> <span style="color: #008000; font-weight: bold">new</span> NotImplementedException(); }
 
-[Test]
-public void Add_PreCond_StackCantBeFull()
-    { throw new NotImplementedException(); }
+<span style="color: #7D9029">[Test]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PreCond_StackCantBeFull</span>()
+    { <span style="color: #008000; font-weight: bold">throw</span> <span style="color: #008000; font-weight: bold">new</span> NotImplementedException(); }
 
-[Test]
-public void Add_PreCond_HappyCase()
-    { throw new NotImplementedException(); }
+<span style="color: #7D9029">[Test]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PreCond_HappyCase</span>()
+    { <span style="color: #008000; font-weight: bold">throw</span> <span style="color: #008000; font-weight: bold">new</span> NotImplementedException(); }
 
-[Test]
-public void Add_PostCond_CountHasIncreasedByOne()
-    { throw new NotImplementedException(); }
+<span style="color: #7D9029">[Test]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PostCond_CountHasIncreasedByOne</span>()
+    { <span style="color: #008000; font-weight: bold">throw</span> <span style="color: #008000; font-weight: bold">new</span> NotImplementedException(); }
 
-[Test]
-public void Add_PostCond_ItemIsOnTopOfTheStack()
-    { throw new NotImplementedException(); }
+<span style="color: #7D9029">[Test]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PostCond_ItemIsOnTopOfTheStack</span>()
+    { <span style="color: #008000; font-weight: bold">throw</span> <span style="color: #008000; font-weight: bold">new</span> NotImplementedException(); }
 
-[Test]
-public void Add_PostCond_InvariantsWereEnforced()
-    { throw new NotImplementedException(); }
+<span style="color: #7D9029">[Test]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PostCond_InvariantsWereEnforced</span>()
+    { <span style="color: #008000; font-weight: bold">throw</span> <span style="color: #008000; font-weight: bold">new</span> NotImplementedException(); }
 
-[Test]
-public void CheckInvariants_PostCond_CountIsNonNegative()
-    { throw new NotImplementedException(); }
+<span style="color: #7D9029">[Test]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">CheckInvariants_PostCond_CountIsNonNegative</span>()
+    { <span style="color: #008000; font-weight: bold">throw</span> <span style="color: #008000; font-weight: bold">new</span> NotImplementedException(); }
 
-[Test]
-public void CheckInvariants_PostCond_CountIsLessThanMaximumAllowed()
-    { throw new NotImplementedException(); }</code></pre>
+<span style="color: #7D9029">[Test]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">CheckInvariants_PostCond_CountIsLessThanMaximumAllowed</span>()
+    { <span style="color: #008000; font-weight: bold">throw</span> <span style="color: #008000; font-weight: bold">new</span> NotImplementedException(); }</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -411,33 +411,33 @@ The exact implementation is outside of the scope of this article, but I will pos
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="powershell">function FindDuplicates{
- # Receives a list of ArrayLists
- # iteratively prints the full path of each ArrayList item
- # where the ArrayList contains multiple paths (i.e duplicates)
-Process
+<pre class="pygments highlight"><code data-lang="powershell"><span style="color: #008000; font-weight: bold">function</span> FindDuplicates{
+ <span style="color: #408080; font-style: italic"># Receives a list of ArrayLists</span>
+ <span style="color: #408080; font-style: italic"># iteratively prints the full path of each ArrayList item</span>
+ <span style="color: #408080; font-style: italic"># where the ArrayList contains multiple paths (i.e duplicates)</span>
+<span style="color: #008000; font-weight: bold">Process</span>
 {
- if ($_.Count -gt 1)
-       {foreach($d in $_){$d.FullName}} }
+ <span style="color: #008000; font-weight: bold">if</span> (<span style="color: #19177C">$_</span>.Count <span style="color: #666666">-gt</span> 1)
+       {<span style="color: #008000; font-weight: bold">foreach</span>(<span style="color: #19177C">$d</span> <span style="color: #008000; font-weight: bold">in</span> <span style="color: #19177C">$_</span>){<span style="color: #19177C">$d</span>.FullName}} }
 }
 
-function GetFilesInBuckets($dir,$filter = "*.*")
+<span style="color: #008000; font-weight: bold">function</span> GetFilesInBuckets(<span style="color: #19177C">$dir</span>,<span style="color: #19177C">$filter</span> = <span style="color: #BA2121">&quot;*.*&quot;</span>)
 {
- # Creates a hashtable of arraylists (1 entry per unique file name)
- # Returns the list of arraylists only (not the entire hashtable)
-  $files = @{}
- foreach ($fl in (gci $dir -filter $filter -r))
+ <span style="color: #408080; font-style: italic"># Creates a hashtable of arraylists (1 entry per unique file name)</span>
+ <span style="color: #408080; font-style: italic"># Returns the list of arraylists only (not the entire hashtable)</span>
+  <span style="color: #19177C">$files</span> = @{}
+ <span style="color: #008000; font-weight: bold">foreach</span> (<span style="color: #19177C">$fl</span> <span style="color: #008000; font-weight: bold">in</span> (gci <span style="color: #19177C">$dir</span> -filter <span style="color: #19177C">$filter</span> -r))
   {
-    if(!$files.ContainsKey($fl.Name))
+    <span style="color: #008000; font-weight: bold">if</span>(!<span style="color: #19177C">$files</span>.ContainsKey(<span style="color: #19177C">$fl</span>.Name))
     {
-    $files[$fl.Name] = New-Object System.Collections.ArrayList
+    <span style="color: #19177C">$files</span>[<span style="color: #19177C">$fl</span>.Name] = <span style="color: #008000">New-Object</span> System.Collections.ArrayList
     }
-    [void]$files[$fl.Name].Add($fl)
+    <span style="color: #880000">[void]</span><span style="color: #19177C">$files</span>[<span style="color: #19177C">$fl</span>.Name].Add(<span style="color: #19177C">$fl</span>)
   }
- $files.Values
+ <span style="color: #19177C">$files</span>.Values
 }
 
-GetFilesInBuckets "C:\MyRootFolder" -f "*.txt"
+GetFilesInBuckets <span style="color: #BA2121">&quot;C:\MyRootFolder&quot;</span> <span style="color: #666666">-f</span> <span style="color: #BA2121">&quot;*.txt&quot;</span>
     |FindDuplicates</code></pre>
 </div>
 </div>
@@ -446,7 +446,7 @@ GetFilesInBuckets "C:\MyRootFolder" -f "*.txt"
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="powershell">GetFilesInBuckets "C:\MyRootFolder" -f "*.txt"|
+<pre class="pygments highlight"><code data-lang="powershell">GetFilesInBuckets <span style="color: #BA2121">&quot;C:\MyRootFolder&quot;</span> <span style="color: #666666">-f</span> <span style="color: #BA2121">&quot;*.txt&quot;</span>|
     FindDuplicates|
     FilterOutOlder</code></pre>
 </div>
@@ -485,9 +485,9 @@ GetFilesInBuckets "C:\MyRootFolder" -f "*.txt"
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml">...
-&lt;property name="SpreadsheetPath" value="${Config} + ${CurrentProject}" /&gt;
-&lt;call target="ProcessSpreadsheet" /&gt;
+<pre class="pygments highlight"><code data-lang="xml">...
+<span style="color: #008000; font-weight: bold">&lt;property</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;SpreadsheetPath&quot;</span> <span style="color: #7D9029">value=</span><span style="color: #BA2121">&quot;${Config} + ${CurrentProject}&quot;</span> <span style="color: #008000; font-weight: bold">/&gt;</span>
+<span style="color: #008000; font-weight: bold">&lt;call</span> <span style="color: #7D9029">target=</span><span style="color: #BA2121">&quot;ProcessSpreadsheet&quot;</span> <span style="color: #008000; font-weight: bold">/&gt;</span>
 ...</code></pre>
 </div>
 </div>
@@ -499,15 +499,15 @@ GetFilesInBuckets "C:\MyRootFolder" -f "*.txt"
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="xml">(Known inputs: SpreadsheetPath and BusinessArea)
-&lt;property name="SpreadsheetPath"
-    value="${Config} + ${CurrentProject}" /&gt;
-&lt;property name="BusinessArea" value='Security' /&gt;
+<pre class="pygments highlight"><code data-lang="xml">(Known inputs: SpreadsheetPath and BusinessArea)
+<span style="color: #008000; font-weight: bold">&lt;property</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;SpreadsheetPath&quot;</span>
+    <span style="color: #7D9029">value=</span><span style="color: #BA2121">&quot;${Config} + ${CurrentProject}&quot;</span> <span style="color: #008000; font-weight: bold">/&gt;</span>
+<span style="color: #008000; font-weight: bold">&lt;property</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;BusinessArea&quot;</span> <span style="color: #7D9029">value=</span><span style="color: #BA2121">&#39;Security&#39;</span> <span style="color: #008000; font-weight: bold">/&gt;</span>
 
-&lt;call target="GenerateCodeFromSpreadsheet" /&gt;
+<span style="color: #008000; font-weight: bold">&lt;call</span> <span style="color: #7D9029">target=</span><span style="color: #BA2121">&quot;GenerateCodeFromSpreadsheet&quot;</span> <span style="color: #008000; font-weight: bold">/&gt;</span>
 
 (Known output: NumberOfGeneratedFiles)
-&lt;property name="TotalCodeFiles" value="${NumberOfGeneratedFiles}" /&gt;</code></pre>
+<span style="color: #008000; font-weight: bold">&lt;property</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;TotalCodeFiles&quot;</span> <span style="color: #7D9029">value=</span><span style="color: #BA2121">&quot;${NumberOfGeneratedFiles}&quot;</span> <span style="color: #008000; font-weight: bold">/&gt;</span></code></pre>
 </div>
 </div>
 </div>

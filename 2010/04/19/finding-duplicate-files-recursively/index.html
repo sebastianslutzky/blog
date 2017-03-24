@@ -10,7 +10,7 @@
   
   
   <title>Finding duplicated files recursively</title>
-  <meta name="description" content="Finding duplicated files recursively I was cleaning up a folder with files duplicated in subdirectories. Here is a simple Powershell code that identifies duplications recursively. There might be a shorter form, but I think this is as I short I can get without becoming very cryptic. function FindDuplicates{ # Receives a list of ArrayLists # iteratively prints the full path of each ArrayList item # where the ArrayList contains multiple paths (i.e duplicates) Process { if ($_.Count -gt 1) {foreach($d in $_){$d.FullName}} } } function GetFilesInBuckets($dir,$filter = &quot;*.*&quot;) { # Creates a hashtable of arraylists (1 entry per unique file name) # Returns the list of arraylists only (not the entire hashtable) $files = @{} foreach ($fl in (gci $dir -filter $filter -r)) { if(!$files.ContainsKey($fl.Name)) { $files[$fl.Name] = New-Object System.Collections.ArrayList } [void]$files[$fl.Name].Add($fl) } $files.Values } GetFilesInBuckets &quot;C:\MyRootFolder&quot; -f &quot;*.txt&quot; |FindDuplicates Additional filtering methods will look similar to as FindDuplicates, and can be piped at the end of the last line of code: GetFilesInBuckets &quot;C:\MyRootFolder&quot; -f &quot;*.txt&quot;| FindDuplicates| FilterOutOlder">
+  <meta name="description" content="Finding duplicated files recursively I was cleaning up a folder with files duplicated in subdirectories. Here is a simple Powershell code that identifies duplications recursively. There might be a shorter form, but I think this is as I short I can get without becoming very cryptic. function FindDuplicates{ # Receives a list of ArrayLists # iteratively prints the full path of each ArrayList item # where the ArrayList contains multiple paths (i.e duplicates) Process { if ($_.Count -gt 1) {foreach($d in $_){$d.FullName}} } } function GetFilesInBuckets($dir,$filter = &amp;quot;*.*&amp;quot;) { # Creates a hashtable of arraylists (1 entry per unique file name) # Returns the list of arraylists only (not the entire hashtable) $files = @{} foreach ($fl in (gci $dir -filter $filter -r)) { if(!$files.ContainsKey($fl.Name)) { $files[$fl.Name] = New-Object System.Collections.ArrayList } [void]$files[$fl.Name].Add($fl) } $files.Values } GetFilesInBuckets &amp;quot;C:\MyRootFolder&amp;quot; -f &amp;quot;*.txt&amp;quot; |FindDuplicates Additional filtering methods will look similar to as FindDuplicates, and can be piped at the end of the last line of code: GetFilesInBuckets &amp;quot;C:\MyRootFolder&amp;quot; -f &amp;quot;*.txt&amp;quot;| FindDuplicates| FilterOutOlder">
   
 
   <link rel="stylesheet" href="/blog/assets/main.css">
@@ -96,33 +96,33 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="powershell">function FindDuplicates{
- # Receives a list of ArrayLists
- # iteratively prints the full path of each ArrayList item
- # where the ArrayList contains multiple paths (i.e duplicates)
-Process
+<pre class="pygments highlight"><code data-lang="powershell"><span style="color: #008000; font-weight: bold">function</span> FindDuplicates{
+ <span style="color: #408080; font-style: italic"># Receives a list of ArrayLists</span>
+ <span style="color: #408080; font-style: italic"># iteratively prints the full path of each ArrayList item</span>
+ <span style="color: #408080; font-style: italic"># where the ArrayList contains multiple paths (i.e duplicates)</span>
+<span style="color: #008000; font-weight: bold">Process</span>
 {
- if ($_.Count -gt 1)
-       {foreach($d in $_){$d.FullName}} }
+ <span style="color: #008000; font-weight: bold">if</span> (<span style="color: #19177C">$_</span>.Count <span style="color: #666666">-gt</span> 1)
+       {<span style="color: #008000; font-weight: bold">foreach</span>(<span style="color: #19177C">$d</span> <span style="color: #008000; font-weight: bold">in</span> <span style="color: #19177C">$_</span>){<span style="color: #19177C">$d</span>.FullName}} }
 }
 
-function GetFilesInBuckets($dir,$filter = "*.*")
+<span style="color: #008000; font-weight: bold">function</span> GetFilesInBuckets(<span style="color: #19177C">$dir</span>,<span style="color: #19177C">$filter</span> = <span style="color: #BA2121">&quot;*.*&quot;</span>)
 {
- # Creates a hashtable of arraylists (1 entry per unique file name)
- # Returns the list of arraylists only (not the entire hashtable)
-  $files = @{}
- foreach ($fl in (gci $dir -filter $filter -r))
+ <span style="color: #408080; font-style: italic"># Creates a hashtable of arraylists (1 entry per unique file name)</span>
+ <span style="color: #408080; font-style: italic"># Returns the list of arraylists only (not the entire hashtable)</span>
+  <span style="color: #19177C">$files</span> = @{}
+ <span style="color: #008000; font-weight: bold">foreach</span> (<span style="color: #19177C">$fl</span> <span style="color: #008000; font-weight: bold">in</span> (gci <span style="color: #19177C">$dir</span> -filter <span style="color: #19177C">$filter</span> -r))
   {
-    if(!$files.ContainsKey($fl.Name))
+    <span style="color: #008000; font-weight: bold">if</span>(!<span style="color: #19177C">$files</span>.ContainsKey(<span style="color: #19177C">$fl</span>.Name))
     {
-    $files[$fl.Name] = New-Object System.Collections.ArrayList
+    <span style="color: #19177C">$files</span>[<span style="color: #19177C">$fl</span>.Name] = <span style="color: #008000">New-Object</span> System.Collections.ArrayList
     }
-    [void]$files[$fl.Name].Add($fl)
+    <span style="color: #880000">[void]</span><span style="color: #19177C">$files</span>[<span style="color: #19177C">$fl</span>.Name].Add(<span style="color: #19177C">$fl</span>)
   }
- $files.Values
+ <span style="color: #19177C">$files</span>.Values
 }
 
-GetFilesInBuckets "C:\MyRootFolder" -f "*.txt"
+GetFilesInBuckets <span style="color: #BA2121">&quot;C:\MyRootFolder&quot;</span> <span style="color: #666666">-f</span> <span style="color: #BA2121">&quot;*.txt&quot;</span>
     |FindDuplicates</code></pre>
 </div>
 </div>
@@ -131,7 +131,7 @@ GetFilesInBuckets "C:\MyRootFolder" -f "*.txt"
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="powershell">GetFilesInBuckets "C:\MyRootFolder" -f "*.txt"|
+<pre class="pygments highlight"><code data-lang="powershell">GetFilesInBuckets <span style="color: #BA2121">&quot;C:\MyRootFolder&quot;</span> <span style="color: #666666">-f</span> <span style="color: #BA2121">&quot;*.txt&quot;</span>|
     FindDuplicates|
     FilterOutOlder</code></pre>
 </div>

@@ -10,7 +10,7 @@
   
   
   <title>Unit testing with Design By Contract (part 3)</title>
-  <meta name="description" content="Unit testing with Design By Contract (part 3) This article is the last of three on Unit Testing and Design By Contract Testing Post Conditions and Class Invariants Now we can test the two post conditions of the Add method: // Count is 0 before adding any items // This is a post condition of the constructor //and should be tested separately [Test] public void Add_PostCond_CountHasIncreasedByOne() { var stack = new Stack(maximumNumberOfItemsAllowed: 10); stack.Add(new object()); Assert.AreEqual(1,stack.Count); } // We use the &#39;Peek&#39; method to access the item on top of the stack. // Pre and Post conditions of this method should be tested separately [Test] public void Add_PostCond_ItemIsOnTopOfTheStack() { var stack = new Stack(maximumNumberOfItemsAllowed: 10); var firstItem = new object(); var secondItem = new object(); stack.Add(firstItem); stack.Add(secondItem); Assert.AreSame(secondItem, stack.Peek()); } These types of test are probably the most commonly seen. Good Test Driven Development habits include asserting as few times as possible per tests, ideally one assertion only. The point is, as I mentioned earlier, error localization: if you only test one thing at a time, there has to be one test that explicitly exposes a bug. There is still one more post condition to test: that no invariant rule of the class was violated by the Add method. Checking Class Invariants As mentioned earlier, Class Invariants are the rules that should always remain true after any method is executed on a class. The Add method is no exception, so we will have to test that class invariants were enforced when it executed. We don’t want to repeat ourselves, so we will delegate to a reusable method called CheckInvariants that throws an exception if an Invariant rule has been broken. [Test] public void Add_PostCond_InvariantsWereEnforced() { //Arrange var stack = new MockRepository().PartialMock&amp;lt;Stack&amp;gt;(1); stack.Expect(x=&amp;gt;x.CheckInvariants()); stack.Replay(); //Act stack.Add(new object()); //Assert stack.VerifyAllExpectations(); } This tests ensures that the method CheckInvariants has been invoked by the Add method. This type of tests, which verifies the interaction of methods rather than the resulting state of objects is known as Behavioural Tests. The delegation itself is tested by using the Rhino Mocks mocking library for .Net. In this case we create a Partial Mock Stack object. It is partial because we only want to mock one method (CheckInvariants) but we do want to execute a different one (Add) of the same class. We tell the partially mocked Stack that we are expecting the CheckInvariants method to be called later. After we explicitly invoked Add, we tell the stack to verify our expectation. This verification will fail if the method was not invoked indirectly by Add. How public are the Class Invariants? So the last thing is to test the Class Invariants. This is just another method called void CheckInvariants() of the class, but its access level deserves a bit of thought. Let’s see what options we have: private: This method cannot be private because we need to write tests for it (as we did before) protected: This would at least let us create the class TestStack that inherits the Stack class and create a public method that invokes CheckInvariants. See this article for more details on how to mock a protected method internal: Internal methods can be invoked from within the assembly or an external assembly explicitly designated. This is the option chosen in this example public: Not a bad option either in my opinion, any object can invoke this method anytime, which should not cause any inconvenient. And here are the two test for CheckInvariants itself [Test,ExpectedException(typeof(InvalidOperationException), ExpectedMessage=&quot;Count cannnot be negative&quot;)] public void CheckInvariants_PostCond_CountIsNonNegative() { var stack = new MockRepository().PartialMock&amp;lt;Stack&amp;gt;(1); stack.Replay(); stack.Count = -1; stack.CheckInvariants(); } [Test, ExpectedException(typeof(InvalidOperationException), ExpectedMessage = &quot;Count cannot be greater than 7&quot;)] public void CheckInvariants_PostCond_CountIsLessThanMaximumAllowed() { var stack = new MockRepository().PartialMock&amp;lt;Stack&amp;gt;(7); stack.Replay(); stack.Count = 8; stack.CheckInvariants(); } And finally, here is the code for the Stack class, a class that honors its contract: public class Stack { private int _maximumNumberOfItemsAllowed; public Stack(int maximumNumberOfItemsAllowed) { _maximumNumberOfItemsAllowed = maximumNumberOfItemsAllowed; } public int Count { get; protected internal set; } public void Add(object item) { if (item == null) throw new ArgumentNullException(&quot;item&quot;); if (_maximumNumberOfItemsAllowed == Count) throw new InvalidOperationException( &quot;Cannot add items when the stack is full.&quot;); Count++; _array.Add(item); CheckInvariants(); } private IList _array = new ArrayList(); public object Peek() { return _array[Count - 1]; } protected internal virtual void CheckInvariants() { if (Count &amp;lt; 0) throw new InvalidOperationException(&quot;Count cannnot be negative&quot;); if (Count &amp;gt; _maximumNumberOfItemsAllowed) throw new InvalidOperationException(&quot;Count cannot be greater than &quot; + _maximumNumberOfItemsAllowed); } }">
+  <meta name="description" content="Unit testing with Design By Contract (part 3) This article is the last of three on Unit Testing and Design By Contract Testing Post Conditions and Class Invariants Now we can test the two post conditions of the Add method: // Count is 0 before adding any items // This is a post condition of the constructor //and should be tested separately [Test] public void Add_PostCond_CountHasIncreasedByOne() { var stack = new Stack(maximumNumberOfItemsAllowed: 10); stack.Add(new object()); Assert.AreEqual(1,stack.Count); } // We use the &amp;#39;Peek&amp;#39; method to access the item on top of the stack. // Pre and Post conditions of this method should be tested separately [Test] public void Add_PostCond_ItemIsOnTopOfTheStack() { var stack = new Stack(maximumNumberOfItemsAllowed: 10); var firstItem = new object(); var secondItem = new object(); stack.Add(firstItem); stack.Add(secondItem); Assert.AreSame(secondItem, stack.Peek()); } These types of test are probably the most commonly seen. Good Test Driven Development habits include asserting as few times as possible per tests, ideally one assertion only. The point is, as I mentioned earlier, error localization: if you only test one thing at a time, there has to be one test that explicitly exposes a bug. There is still one more post condition to test: that no invariant rule of the class was violated by the Add method. Checking Class Invariants As mentioned earlier, Class Invariants are the rules that should always remain true after any method is executed on a class. The Add method is no exception, so we will have to test that class invariants were enforced when it executed. We don’t want to repeat ourselves, so we will delegate to a reusable method called CheckInvariants that throws an exception if an Invariant rule has been broken. [Test] public void Add_PostCond_InvariantsWereEnforced() { //Arrange var stack = new MockRepository().PartialMock&amp;lt;Stack&amp;gt;(1); stack.Expect(x=&amp;gt;x.CheckInvariants()); stack.Replay(); //Act stack.Add(new object()); //Assert stack.VerifyAllExpectations(); } This tests ensures that the method CheckInvariants has been invoked by the Add method. This type of tests, which verifies the interaction of methods rather than the resulting state of objects is known as Behavioural Tests. The delegation itself is tested by using the Rhino Mocks mocking library for .Net. In this case we create a Partial Mock Stack object. It is partial because we only want to mock one method (CheckInvariants) but we do want to execute a different one (Add) of the same class. We tell the partially mocked Stack that we are expecting the CheckInvariants method to be called later. After we explicitly invoked Add, we tell the stack to verify our expectation. This verification will fail if the method was not invoked indirectly by Add. How public are the Class Invariants? So the last thing is to test the Class Invariants. This is just another method called void CheckInvariants() of the class, but its access level deserves a bit of thought. Let’s see what options we have: private: This method cannot be private because we need to write tests for it (as we did before) protected: This would at least let us create the class TestStack that inherits the Stack class and create a public method that invokes CheckInvariants. See this article for more details on how to mock a protected method internal: Internal methods can be invoked from within the assembly or an external assembly explicitly designated. This is the option chosen in this example public: Not a bad option either in my opinion, any object can invoke this method anytime, which should not cause any inconvenient. And here are the two test for CheckInvariants itself [Test,ExpectedException(typeof(InvalidOperationException), ExpectedMessage=&amp;quot;Count cannnot be negative&amp;quot;)] public void CheckInvariants_PostCond_CountIsNonNegative() { var stack = new MockRepository().PartialMock&amp;lt;Stack&amp;gt;(1); stack.Replay(); stack.Count = -1; stack.CheckInvariants(); } [Test, ExpectedException(typeof(InvalidOperationException), ExpectedMessage = &amp;quot;Count cannot be greater than 7&amp;quot;)] public void CheckInvariants_PostCond_CountIsLessThanMaximumAllowed() { var stack = new MockRepository().PartialMock&amp;lt;Stack&amp;gt;(7); stack.Replay(); stack.Count = 8; stack.CheckInvariants(); } And finally, here is the code for the Stack class, a class that honors its contract: public class Stack { private int _maximumNumberOfItemsAllowed; public Stack(int maximumNumberOfItemsAllowed) { _maximumNumberOfItemsAllowed = maximumNumberOfItemsAllowed; } public int Count { get; protected internal set; } public void Add(object item) { if (item == null) throw new ArgumentNullException(&amp;quot;item&amp;quot;); if (_maximumNumberOfItemsAllowed == Count) throw new InvalidOperationException( &amp;quot;Cannot add items when the stack is full.&amp;quot;); Count++; _array.Add(item); CheckInvariants(); } private IList _array = new ArrayList(); public object Peek() { return _array[Count - 1]; } protected internal virtual void CheckInvariants() { if (Count &amp;lt; 0) throw new InvalidOperationException(&amp;quot;Count cannnot be negative&amp;quot;); if (Count &amp;gt; _maximumNumberOfItemsAllowed) throw new InvalidOperationException(&amp;quot;Count cannot be greater than &amp;quot; + _maximumNumberOfItemsAllowed); } }">
   
 
   <link rel="stylesheet" href="/blog/assets/main.css">
@@ -108,28 +108,28 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="csharp">// Count is 0 before adding any items
-// This is a post condition of the constructor
-//and should be tested separately
-[Test]
-public void Add_PostCond_CountHasIncreasedByOne()
+<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #408080; font-style: italic">// Count is 0 before adding any items</span>
+<span style="color: #408080; font-style: italic">// This is a post condition of the constructor</span>
+<span style="color: #408080; font-style: italic">//and should be tested separately</span>
+<span style="color: #7D9029">[Test]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PostCond_CountHasIncreasedByOne</span>()
 {
-    var stack = new Stack(maximumNumberOfItemsAllowed: 10);
-    stack.Add(new object());
-    Assert.AreEqual(1,stack.Count);
+    <span style="color: #B00040">var</span> stack = <span style="color: #008000; font-weight: bold">new</span> Stack(maximumNumberOfItemsAllowed: <span style="color: #666666">10</span>);
+    stack.Add(<span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">object</span>());
+    Assert.AreEqual(<span style="color: #666666">1</span>,stack.Count);
 }</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="csharp">// We use the 'Peek' method to access the item on top of the stack.
-// Pre and Post conditions of this method should be tested separately
-[Test]
-public void Add_PostCond_ItemIsOnTopOfTheStack()
+<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #408080; font-style: italic">// We use the &#39;Peek&#39; method to access the item on top of the stack.</span>
+<span style="color: #408080; font-style: italic">// Pre and Post conditions of this method should be tested separately</span>
+<span style="color: #7D9029">[Test]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PostCond_ItemIsOnTopOfTheStack</span>()
 {
-    var stack = new Stack(maximumNumberOfItemsAllowed: 10);
-    var firstItem = new object();
-    var secondItem = new object();
+    <span style="color: #B00040">var</span> stack = <span style="color: #008000; font-weight: bold">new</span> Stack(maximumNumberOfItemsAllowed: <span style="color: #666666">10</span>);
+    <span style="color: #B00040">var</span> firstItem = <span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">object</span>();
+    <span style="color: #B00040">var</span> secondItem = <span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">object</span>();
     stack.Add(firstItem);
     stack.Add(secondItem);
 
@@ -151,18 +151,18 @@ We don’t want to repeat ourselves, so we will delegate to a reusable method ca
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="csharp">[Test]
-public void Add_PostCond_InvariantsWereEnforced()
+<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #7D9029">[Test]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PostCond_InvariantsWereEnforced</span>()
 {
-    //Arrange
-    var stack = new MockRepository().PartialMock&lt;Stack&gt;(1);
+    <span style="color: #408080; font-style: italic">//Arrange</span>
+    <span style="color: #B00040">var</span> stack = <span style="color: #008000; font-weight: bold">new</span> MockRepository().PartialMock&lt;Stack&gt;(<span style="color: #666666">1</span>);
     stack.Expect(x=&gt;x.CheckInvariants());
     stack.Replay();
 
-    //Act
-    stack.Add(new object());
+    <span style="color: #408080; font-style: italic">//Act</span>
+    stack.Add(<span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">object</span>());
 
-    //Assert
+    <span style="color: #408080; font-style: italic">//Assert</span>
     stack.VerifyAllExpectations();
 }</code></pre>
 </div>
@@ -204,24 +204,24 @@ This verification will fail if the method was not invoked indirectly by <code>Ad
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="csharp">[Test,ExpectedException(typeof(InvalidOperationException),
-    ExpectedMessage="Count cannnot be negative")]
-public void CheckInvariants_PostCond_CountIsNonNegative()
+<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #7D9029">[Test,ExpectedException(typeof(InvalidOperationException),</span>
+<span style="color: #7D9029">    ExpectedMessage=&quot;Count cannnot be negative&quot;)]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">CheckInvariants_PostCond_CountIsNonNegative</span>()
 {
-    var stack = new MockRepository().PartialMock&lt;Stack&gt;(1);
+    <span style="color: #B00040">var</span> stack = <span style="color: #008000; font-weight: bold">new</span> MockRepository().PartialMock&lt;Stack&gt;(<span style="color: #666666">1</span>);
     stack.Replay();
-    stack.Count = -1;
+    stack.Count = -<span style="color: #666666">1</span>;
 
     stack.CheckInvariants();
 }
-[Test,
-ExpectedException(typeof(InvalidOperationException),
-    ExpectedMessage = "Count cannot be greater than 7")]
-public void CheckInvariants_PostCond_CountIsLessThanMaximumAllowed()
+<span style="color: #7D9029">[Test,</span>
+<span style="color: #7D9029">ExpectedException(typeof(InvalidOperationException),</span>
+<span style="color: #7D9029">    ExpectedMessage = &quot;Count cannot be greater than 7&quot;)]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">CheckInvariants_PostCond_CountIsLessThanMaximumAllowed</span>()
 {
-    var stack = new MockRepository().PartialMock&lt;Stack&gt;(7);
+    <span style="color: #B00040">var</span> stack = <span style="color: #008000; font-weight: bold">new</span> MockRepository().PartialMock&lt;Stack&gt;(<span style="color: #666666">7</span>);
     stack.Replay();
-    stack.Count = 8;
+    stack.Count = <span style="color: #666666">8</span>;
 
     stack.CheckInvariants();
 }</code></pre>
@@ -232,44 +232,44 @@ public void CheckInvariants_PostCond_CountIsLessThanMaximumAllowed()
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="csharp">public class Stack
+<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">Stack</span>
 {
-    private int _maximumNumberOfItemsAllowed;
-    public Stack(int maximumNumberOfItemsAllowed)
+    <span style="color: #008000; font-weight: bold">private</span> <span style="color: #B00040">int</span> _maximumNumberOfItemsAllowed;
+    <span style="color: #008000; font-weight: bold">public</span> <span style="color: #0000FF">Stack</span>(<span style="color: #B00040">int</span> maximumNumberOfItemsAllowed)
     {
         _maximumNumberOfItemsAllowed = maximumNumberOfItemsAllowed;
     }
 
-    public int Count { get; protected internal set; }
+    <span style="color: #008000; font-weight: bold">public</span> <span style="color: #B00040">int</span> Count { <span style="color: #008000; font-weight: bold">get</span>; <span style="color: #008000; font-weight: bold">protected</span> <span style="color: #008000; font-weight: bold">internal</span> <span style="color: #008000; font-weight: bold">set</span>; }
 
-    public void Add(object item)
+    <span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add</span>(<span style="color: #B00040">object</span> item)
     {
-        if (item == null)
-            throw new ArgumentNullException("item");
+        <span style="color: #008000; font-weight: bold">if</span> (item == <span style="color: #008000; font-weight: bold">null</span>)
+            <span style="color: #008000; font-weight: bold">throw</span> <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">ArgumentNullException</span>(<span style="color: #BA2121">&quot;item&quot;</span>);
 
-        if (_maximumNumberOfItemsAllowed == Count)
-            throw new InvalidOperationException(
-                "Cannot add items when the stack is full.");
+        <span style="color: #008000; font-weight: bold">if</span> (_maximumNumberOfItemsAllowed == Count)
+            <span style="color: #008000; font-weight: bold">throw</span> <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">InvalidOperationException</span>(
+                <span style="color: #BA2121">&quot;Cannot add items when the stack is full.&quot;</span>);
         Count++;
         _array.Add(item);
 
         CheckInvariants();
     }
 
-    private IList _array = new ArrayList();
+    <span style="color: #008000; font-weight: bold">private</span> IList _array = <span style="color: #008000; font-weight: bold">new</span> ArrayList();
 
-    public object Peek()
+    <span style="color: #008000; font-weight: bold">public</span> <span style="color: #B00040">object</span> <span style="color: #0000FF">Peek</span>()
     {
-        return _array[Count - 1];
+        <span style="color: #008000; font-weight: bold">return</span> _array[Count - <span style="color: #666666">1</span>];
     }
 
-    protected internal virtual void CheckInvariants()
+    <span style="color: #008000; font-weight: bold">protected</span> <span style="color: #008000; font-weight: bold">internal</span> <span style="color: #008000; font-weight: bold">virtual</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">CheckInvariants</span>()
     {
-        if (Count &lt; 0)
-            throw new InvalidOperationException("Count cannnot be negative");
+        <span style="color: #008000; font-weight: bold">if</span> (Count &lt; <span style="color: #666666">0</span>)
+            <span style="color: #008000; font-weight: bold">throw</span> <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">InvalidOperationException</span>(<span style="color: #BA2121">&quot;Count cannnot be negative&quot;</span>);
 
-       if (Count &gt; _maximumNumberOfItemsAllowed)
-            throw new InvalidOperationException("Count cannot be greater than " + _maximumNumberOfItemsAllowed);
+       <span style="color: #008000; font-weight: bold">if</span> (Count &gt; _maximumNumberOfItemsAllowed)
+            <span style="color: #008000; font-weight: bold">throw</span> <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">InvalidOperationException</span>(<span style="color: #BA2121">&quot;Count cannot be greater than &quot;</span> + _maximumNumberOfItemsAllowed);
         }
     }</code></pre>
 </div>

@@ -5,7 +5,7 @@
   
   <link href="http://youarewhatyoucode/blog/feed.xml" rel="self" type="application/atom+xml" />
   <link href="http://youarewhatyoucode/blog/" rel="alternate" type="text/html" hreflang="en" />
-  <updated>2017-03-24T18:43:29+00:00</updated>
+  <updated>2017-03-24T19:41:48+00:00</updated>
   <id>http://youarewhatyoucode/blog//</id>
 
   
@@ -147,12 +147,12 @@
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;java&quot;&gt;//To be implemented by actionfilterattributes that override a global action filter
-public interface IOverridingFilterAttribute
-{
-    //The type of actionfilter to be replaced for this request
-    Type OverriddenType { get; }
-}&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;java&quot;&gt;&lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;//To be implemented by actionfilterattributes that override a global action filter&lt;/span&gt;
+&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;interface&lt;/span&gt; &lt;span style=&quot;color: #0000FF; font-weight: bold&quot;&gt;IOverridingFilterAttribute&lt;/span&gt;
+&lt;span style=&quot;color: #666666&quot;&gt;{&lt;/span&gt;
+    &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;//The type of actionfilter to be replaced for this request&lt;/span&gt;
+    Type OverriddenType &lt;span style=&quot;color: #666666&quot;&gt;{&lt;/span&gt; get&lt;span style=&quot;color: #666666&quot;&gt;;&lt;/span&gt; &lt;span style=&quot;color: #666666&quot;&gt;}&lt;/span&gt;
+&lt;span style=&quot;color: #666666&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -163,50 +163,50 @@ public interface IOverridingFilterAttribute
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;c#&quot;&gt;public class OverridingFilterProvider : IFilterProvider
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;c#&quot;&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;class&lt;/span&gt; &lt;span style=&quot;color: #0000FF; font-weight: bold&quot;&gt;OverridingFilterProvider&lt;/span&gt; : IFilterProvider
 {
-    //called by WebApi on each request, in order
-    // to get the list of filters to apply
-    public IEnumerable&amp;lt;FilterInfo&amp;gt; GetFilters(HttpConfiguration configuration, HttpActionDescriptor actionDescriptor)
+    &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;//called by WebApi on each request, in order&lt;/span&gt;
+    &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;// to get the list of filters to apply&lt;/span&gt;
+    &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; IEnumerable&amp;lt;FilterInfo&amp;gt; GetFilters(HttpConfiguration configuration, HttpActionDescriptor actionDescriptor)
     {
-        var globalFilters = configuration.Filters;
-        var controllerFilters = actionDescriptor.ControllerDescriptor.GetFilters().Select(x =&amp;gt; new FilterInfo(x,FilterScope.Controller));
-        var actionFilters = actionDescriptor.GetFilters().Select(x =&amp;gt; new FilterInfo(x,FilterScope.Action));
+        &lt;span style=&quot;color: #B00040&quot;&gt;var&lt;/span&gt; globalFilters = configuration.Filters;
+        &lt;span style=&quot;color: #B00040&quot;&gt;var&lt;/span&gt; controllerFilters = actionDescriptor.ControllerDescriptor.GetFilters().Select(x =&amp;gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; FilterInfo(x,FilterScope.Controller));
+        &lt;span style=&quot;color: #B00040&quot;&gt;var&lt;/span&gt; actionFilters = actionDescriptor.GetFilters().Select(x =&amp;gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; FilterInfo(x,FilterScope.Action));
 
-        //we'll apply global,controller-wide
-        //and then action attribute filters
-        var all = globalFilters.Concat(controllerFilters).Concat(actionFilters);
-        return RemoveAnyOverriddenFilter(all);
+        &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;//we&amp;#39;ll apply global,controller-wide&lt;/span&gt;
+        &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;//and then action attribute filters&lt;/span&gt;
+        &lt;span style=&quot;color: #B00040&quot;&gt;var&lt;/span&gt; all = globalFilters.Concat(controllerFilters).Concat(actionFilters);
+        &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;return&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;RemoveAnyOverriddenFilter&lt;/span&gt;(all);
     }
 
-    //if there are IOverridingFilterAttributes,
-    //remove the filters they override
-    private IEnumerable&amp;lt;FilterInfo&amp;gt; RemoveAnyOverriddenFilter(IEnumerable&amp;lt;FilterInfo&amp;gt; all)
+    &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;//if there are IOverridingFilterAttributes,&lt;/span&gt;
+    &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;//remove the filters they override&lt;/span&gt;
+    &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;private&lt;/span&gt; IEnumerable&amp;lt;FilterInfo&amp;gt; RemoveAnyOverriddenFilter(IEnumerable&amp;lt;FilterInfo&amp;gt; all)
     {
-        var overridingFilters =
-            all.Where(x =&amp;gt; (x.Instance as IOverridingFilterAttribute) != null)
+        &lt;span style=&quot;color: #B00040&quot;&gt;var&lt;/span&gt; overridingFilters =
+            all.Where(x =&amp;gt; (x.Instance &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;as&lt;/span&gt; IOverridingFilterAttribute) != &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;null&lt;/span&gt;)
                 .Select(x =&amp;gt; (IOverridingFilterAttribute) x.Instance);
 
-        var filtered =  all.Where(x =&amp;gt; !IsOverridden(x, overridingFilters));
-        return filtered;
+        &lt;span style=&quot;color: #B00040&quot;&gt;var&lt;/span&gt; filtered =  all.Where(x =&amp;gt; !IsOverridden(x, overridingFilters));
+        &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;return&lt;/span&gt; filtered;
     }
 
-    private bool IsOverridden(FilterInfo target, IEnumerable&amp;lt;IOverridingFilterAttribute&amp;gt; overrides)
+    &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;private&lt;/span&gt; &lt;span style=&quot;color: #B00040&quot;&gt;bool&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;IsOverridden&lt;/span&gt;(FilterInfo target, IEnumerable&amp;lt;IOverridingFilterAttribute&amp;gt; overrides)
     {
-        foreach (var overridingFilter in overrides)
+        &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;foreach&lt;/span&gt; (&lt;span style=&quot;color: #B00040&quot;&gt;var&lt;/span&gt; overridingFilter &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;in&lt;/span&gt; overrides)
         {
-            var filterType = target.Instance.GetType();
-            var overriddenType = overridingFilter.OverriddenType;
+            &lt;span style=&quot;color: #B00040&quot;&gt;var&lt;/span&gt; filterType = target.Instance.GetType();
+            &lt;span style=&quot;color: #B00040&quot;&gt;var&lt;/span&gt; overriddenType = overridingFilter.OverriddenType;
 
-            if (overriddenType.IsAssignableFrom(filterType))
-                return true;
+            &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;if&lt;/span&gt; (overriddenType.IsAssignableFrom(filterType))
+                &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;return&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;true&lt;/span&gt;;
         }
-        return false;
+        &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;return&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;false&lt;/span&gt;;
     }
 
-    private IEnumerable&amp;lt;FilterInfo&amp;gt; OrderFilters(IEnumerable&amp;lt;IFilter&amp;gt; filters, FilterScope scope)
+    &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;private&lt;/span&gt; IEnumerable&amp;lt;FilterInfo&amp;gt; OrderFilters(IEnumerable&amp;lt;IFilter&amp;gt; filters, FilterScope scope)
     {
-        return filters.Select(instance =&amp;gt; new FilterInfo(instance, scope));
+        &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;return&lt;/span&gt; filters.Select(instance =&amp;gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; FilterInfo(instance, scope));
     }
 }&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
@@ -216,13 +216,13 @@ public interface IOverridingFilterAttribute
 &lt;h3 id=&quot;step_3_register_your_filter_provider&quot;&gt;Step 3: Register your Filter Provider&lt;/h3&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;c#&quot;&gt;public class WebApiApplication : HttpApplication
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;c#&quot;&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;class&lt;/span&gt; &lt;span style=&quot;color: #0000FF; font-weight: bold&quot;&gt;WebApiApplication&lt;/span&gt; : HttpApplication
 {
-    protected void Application_Start()
+    &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Application_Start&lt;/span&gt;()
     {
-        var services = GlobalConfiguration.Configuration.Services;
-        services.Replace(typeof(IFilterProvider),
-            new OverridingFilterProvider());
+        &lt;span style=&quot;color: #B00040&quot;&gt;var&lt;/span&gt; services = GlobalConfiguration.Configuration.Services;
+        services.Replace(&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;typeof&lt;/span&gt;(IFilterProvider),
+            &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;OverridingFilterProvider&lt;/span&gt;());
     }
 }&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
@@ -360,13 +360,13 @@ sfd
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;public static class Extensions
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;class&lt;/span&gt; &lt;span style=&quot;color: #0000FF; font-weight: bold&quot;&gt;Extensions&lt;/span&gt;
 {
-    public static void ApplyOperation&amp;lt;T&amp;gt;
-                (this IEnumerable&amp;lt;T&amp;gt; iterator,
+    &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; ApplyOperation&amp;lt;T&amp;gt;
+                (&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;this&lt;/span&gt; IEnumerable&amp;lt;T&amp;gt; iterator,
                 Action&amp;lt;T&amp;gt; action)
     {
-        foreach (var item in iterator)
+        &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;foreach&lt;/span&gt; (&lt;span style=&quot;color: #B00040&quot;&gt;var&lt;/span&gt; item &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;in&lt;/span&gt; iterator)
             action(item);
     }
 }&lt;/code&gt;&lt;/pre&gt;
@@ -377,9 +377,9 @@ sfd
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;IEnumerable&amp;lt;string&amp;gt; cities =
-            new string[] { &quot;Dublin&quot;, &quot;Buenos Aires&quot;, &quot;Madrid&quot; };
-cities.ApplyOperation(x=&amp;gt;Console.WriteLine(&quot;City name: &quot; + x));&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;IEnumerable&amp;lt;&lt;span style=&quot;color: #B00040&quot;&gt;string&lt;/span&gt;&amp;gt; cities =
+            &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color: #B00040&quot;&gt;string&lt;/span&gt;[] { &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;Dublin&amp;quot;&lt;/span&gt;, &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;Buenos Aires&amp;quot;&lt;/span&gt;, &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;Madrid&amp;quot;&lt;/span&gt; };
+cities.ApplyOperation(x=&amp;gt;Console.WriteLine(&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;City name: &amp;quot;&lt;/span&gt; + x));&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
@@ -387,12 +387,12 @@ cities.ApplyOperation(x=&amp;gt;Console.WriteLine(&quot;City name: &quot; + x));
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;new string[] {
-    &quot;Dublin&quot;,
-    &quot;Buenos Aires&quot;,
-    &quot;Madrid&quot; }
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color: #B00040&quot;&gt;string&lt;/span&gt;[] {
+    &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;Dublin&amp;quot;&lt;/span&gt;,
+    &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;Buenos Aires&amp;quot;&lt;/span&gt;,
+    &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;Madrid&amp;quot;&lt;/span&gt; }
     .ApplyOperation(
-        x =&amp;gt; Console.WriteLine(&quot;City name: &quot; + x));&lt;/code&gt;&lt;/pre&gt;
+        x =&amp;gt; Console.WriteLine(&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;City name: &amp;quot;&lt;/span&gt; + x));&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
@@ -423,7 +423,7 @@ cities.ApplyOperation(x=&amp;gt;Console.WriteLine(&quot;City name: &quot; + x));
       
 
       
-        <summary type="html">Apply an operation to a collection with LinQ These days, it is unusual to write an implementation of the Iterator pattern. Most of the modern languages included a library with a set of aggregate objects that follow this pattern as defined in the Gang of Four book. In .Net, these objects are in the System.Collections namespace and they include classes such as Lists, Queues, Dictionaries, and also their specialised strongly typed (Generic) version. The Gang Of Four defines two types of iterators: External and Internal. The External requires the client to traverse the items (by looping through the items until the end of the iterator). In contrast to this, the internal iterator delegates this process to a Traverse mix-in class that can be extended and customised. I was looking for something similar to the internal iterator in .Net. That is, a generic way of passing an operation to a collection that would apply it to each of its items. None of the LinQ extension methods for collections seemed to do this, so I wrote one: public static class Extensions { public static void ApplyOperation&amp;lt;T&amp;gt; (this IEnumerable&amp;lt;T&amp;gt; iterator, Action&amp;lt;T&amp;gt; action) { foreach (var item in iterator) action(item); } } Which can be used as follows: IEnumerable&amp;lt;string&amp;gt; cities = new string[] { &quot;Dublin&quot;, &quot;Buenos Aires&quot;, &quot;Madrid&quot; }; cities.ApplyOperation(x=&amp;gt;Console.WriteLine(&quot;City name: &quot; + x)); or simply new string[] { &quot;Dublin&quot;, &quot;Buenos Aires&quot;, &quot;Madrid&quot; } .ApplyOperation( x =&amp;gt; Console.WriteLine(&quot;City name: &quot; + x)); which prints the following output:</summary>
+        <summary type="html">Apply an operation to a collection with LinQ These days, it is unusual to write an implementation of the Iterator pattern. Most of the modern languages included a library with a set of aggregate objects that follow this pattern as defined in the Gang of Four book. In .Net, these objects are in the System.Collections namespace and they include classes such as Lists, Queues, Dictionaries, and also their specialised strongly typed (Generic) version. The Gang Of Four defines two types of iterators: External and Internal. The External requires the client to traverse the items (by looping through the items until the end of the iterator). In contrast to this, the internal iterator delegates this process to a Traverse mix-in class that can be extended and customised. I was looking for something similar to the internal iterator in .Net. That is, a generic way of passing an operation to a collection that would apply it to each of its items. None of the LinQ extension methods for collections seemed to do this, so I wrote one: public static class Extensions { public static void ApplyOperation&amp;lt;T&amp;gt; (this IEnumerable&amp;lt;T&amp;gt; iterator, Action&amp;lt;T&amp;gt; action) { foreach (var item in iterator) action(item); } } Which can be used as follows: IEnumerable&amp;lt;string&amp;gt; cities = new string[] { &amp;quot;Dublin&amp;quot;, &amp;quot;Buenos Aires&amp;quot;, &amp;quot;Madrid&amp;quot; }; cities.ApplyOperation(x=&amp;gt;Console.WriteLine(&amp;quot;City name: &amp;quot; + x)); or simply new string[] { &amp;quot;Dublin&amp;quot;, &amp;quot;Buenos Aires&amp;quot;, &amp;quot;Madrid&amp;quot; } .ApplyOperation( x =&amp;gt; Console.WriteLine(&amp;quot;City name: &amp;quot; + x)); which prints the following output:</summary>
       
 
       
@@ -461,28 +461,28 @@ cities.ApplyOperation(x=&amp;gt;Console.WriteLine(&quot;City name: &quot; + x));
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;// Count is 0 before adding any items
-// This is a post condition of the constructor
-//and should be tested separately
-[Test]
-public void Add_PostCond_CountHasIncreasedByOne()
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;// Count is 0 before adding any items&lt;/span&gt;
+&lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;// This is a post condition of the constructor&lt;/span&gt;
+&lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;//and should be tested separately&lt;/span&gt;
+&lt;span style=&quot;color: #7D9029&quot;&gt;[Test]&lt;/span&gt;
+&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Add_PostCond_CountHasIncreasedByOne&lt;/span&gt;()
 {
-    var stack = new Stack(maximumNumberOfItemsAllowed: 10);
-    stack.Add(new object());
-    Assert.AreEqual(1,stack.Count);
+    &lt;span style=&quot;color: #B00040&quot;&gt;var&lt;/span&gt; stack = &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; Stack(maximumNumberOfItemsAllowed: &lt;span style=&quot;color: #666666&quot;&gt;10&lt;/span&gt;);
+    stack.Add(&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color: #B00040&quot;&gt;object&lt;/span&gt;());
+    Assert.AreEqual(&lt;span style=&quot;color: #666666&quot;&gt;1&lt;/span&gt;,stack.Count);
 }&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;// We use the 'Peek' method to access the item on top of the stack.
-// Pre and Post conditions of this method should be tested separately
-[Test]
-public void Add_PostCond_ItemIsOnTopOfTheStack()
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;// We use the &amp;#39;Peek&amp;#39; method to access the item on top of the stack.&lt;/span&gt;
+&lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;// Pre and Post conditions of this method should be tested separately&lt;/span&gt;
+&lt;span style=&quot;color: #7D9029&quot;&gt;[Test]&lt;/span&gt;
+&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Add_PostCond_ItemIsOnTopOfTheStack&lt;/span&gt;()
 {
-    var stack = new Stack(maximumNumberOfItemsAllowed: 10);
-    var firstItem = new object();
-    var secondItem = new object();
+    &lt;span style=&quot;color: #B00040&quot;&gt;var&lt;/span&gt; stack = &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; Stack(maximumNumberOfItemsAllowed: &lt;span style=&quot;color: #666666&quot;&gt;10&lt;/span&gt;);
+    &lt;span style=&quot;color: #B00040&quot;&gt;var&lt;/span&gt; firstItem = &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color: #B00040&quot;&gt;object&lt;/span&gt;();
+    &lt;span style=&quot;color: #B00040&quot;&gt;var&lt;/span&gt; secondItem = &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color: #B00040&quot;&gt;object&lt;/span&gt;();
     stack.Add(firstItem);
     stack.Add(secondItem);
 
@@ -504,18 +504,18 @@ We don’t want to repeat ourselves, so we will delegate to a reusable method ca
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;[Test]
-public void Add_PostCond_InvariantsWereEnforced()
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;[Test]&lt;/span&gt;
+&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Add_PostCond_InvariantsWereEnforced&lt;/span&gt;()
 {
-    //Arrange
-    var stack = new MockRepository().PartialMock&amp;lt;Stack&amp;gt;(1);
+    &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;//Arrange&lt;/span&gt;
+    &lt;span style=&quot;color: #B00040&quot;&gt;var&lt;/span&gt; stack = &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; MockRepository().PartialMock&amp;lt;Stack&amp;gt;(&lt;span style=&quot;color: #666666&quot;&gt;1&lt;/span&gt;);
     stack.Expect(x=&amp;gt;x.CheckInvariants());
     stack.Replay();
 
-    //Act
-    stack.Add(new object());
+    &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;//Act&lt;/span&gt;
+    stack.Add(&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color: #B00040&quot;&gt;object&lt;/span&gt;());
 
-    //Assert
+    &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;//Assert&lt;/span&gt;
     stack.VerifyAllExpectations();
 }&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
@@ -557,24 +557,24 @@ This verification will fail if the method was not invoked indirectly by &lt;code
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;[Test,ExpectedException(typeof(InvalidOperationException),
-    ExpectedMessage=&quot;Count cannnot be negative&quot;)]
-public void CheckInvariants_PostCond_CountIsNonNegative()
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;[Test,ExpectedException(typeof(InvalidOperationException),&lt;/span&gt;
+&lt;span style=&quot;color: #7D9029&quot;&gt;    ExpectedMessage=&amp;quot;Count cannnot be negative&amp;quot;)]&lt;/span&gt;
+&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;CheckInvariants_PostCond_CountIsNonNegative&lt;/span&gt;()
 {
-    var stack = new MockRepository().PartialMock&amp;lt;Stack&amp;gt;(1);
+    &lt;span style=&quot;color: #B00040&quot;&gt;var&lt;/span&gt; stack = &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; MockRepository().PartialMock&amp;lt;Stack&amp;gt;(&lt;span style=&quot;color: #666666&quot;&gt;1&lt;/span&gt;);
     stack.Replay();
-    stack.Count = -1;
+    stack.Count = -&lt;span style=&quot;color: #666666&quot;&gt;1&lt;/span&gt;;
 
     stack.CheckInvariants();
 }
-[Test,
-ExpectedException(typeof(InvalidOperationException),
-    ExpectedMessage = &quot;Count cannot be greater than 7&quot;)]
-public void CheckInvariants_PostCond_CountIsLessThanMaximumAllowed()
+&lt;span style=&quot;color: #7D9029&quot;&gt;[Test,&lt;/span&gt;
+&lt;span style=&quot;color: #7D9029&quot;&gt;ExpectedException(typeof(InvalidOperationException),&lt;/span&gt;
+&lt;span style=&quot;color: #7D9029&quot;&gt;    ExpectedMessage = &amp;quot;Count cannot be greater than 7&amp;quot;)]&lt;/span&gt;
+&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;CheckInvariants_PostCond_CountIsLessThanMaximumAllowed&lt;/span&gt;()
 {
-    var stack = new MockRepository().PartialMock&amp;lt;Stack&amp;gt;(7);
+    &lt;span style=&quot;color: #B00040&quot;&gt;var&lt;/span&gt; stack = &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; MockRepository().PartialMock&amp;lt;Stack&amp;gt;(&lt;span style=&quot;color: #666666&quot;&gt;7&lt;/span&gt;);
     stack.Replay();
-    stack.Count = 8;
+    stack.Count = &lt;span style=&quot;color: #666666&quot;&gt;8&lt;/span&gt;;
 
     stack.CheckInvariants();
 }&lt;/code&gt;&lt;/pre&gt;
@@ -585,44 +585,44 @@ public void CheckInvariants_PostCond_CountIsLessThanMaximumAllowed()
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;public class Stack
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;class&lt;/span&gt; &lt;span style=&quot;color: #0000FF; font-weight: bold&quot;&gt;Stack&lt;/span&gt;
 {
-    private int _maximumNumberOfItemsAllowed;
-    public Stack(int maximumNumberOfItemsAllowed)
+    &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;private&lt;/span&gt; &lt;span style=&quot;color: #B00040&quot;&gt;int&lt;/span&gt; _maximumNumberOfItemsAllowed;
+    &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Stack&lt;/span&gt;(&lt;span style=&quot;color: #B00040&quot;&gt;int&lt;/span&gt; maximumNumberOfItemsAllowed)
     {
         _maximumNumberOfItemsAllowed = maximumNumberOfItemsAllowed;
     }
 
-    public int Count { get; protected internal set; }
+    &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #B00040&quot;&gt;int&lt;/span&gt; Count { &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;get&lt;/span&gt;; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;internal&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;set&lt;/span&gt;; }
 
-    public void Add(object item)
+    &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Add&lt;/span&gt;(&lt;span style=&quot;color: #B00040&quot;&gt;object&lt;/span&gt; item)
     {
-        if (item == null)
-            throw new ArgumentNullException(&quot;item&quot;);
+        &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;if&lt;/span&gt; (item == &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;null&lt;/span&gt;)
+            &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;throw&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;ArgumentNullException&lt;/span&gt;(&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;item&amp;quot;&lt;/span&gt;);
 
-        if (_maximumNumberOfItemsAllowed == Count)
-            throw new InvalidOperationException(
-                &quot;Cannot add items when the stack is full.&quot;);
+        &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;if&lt;/span&gt; (_maximumNumberOfItemsAllowed == Count)
+            &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;throw&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;InvalidOperationException&lt;/span&gt;(
+                &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;Cannot add items when the stack is full.&amp;quot;&lt;/span&gt;);
         Count++;
         _array.Add(item);
 
         CheckInvariants();
     }
 
-    private IList _array = new ArrayList();
+    &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;private&lt;/span&gt; IList _array = &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; ArrayList();
 
-    public object Peek()
+    &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #B00040&quot;&gt;object&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Peek&lt;/span&gt;()
     {
-        return _array[Count - 1];
+        &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;return&lt;/span&gt; _array[Count - &lt;span style=&quot;color: #666666&quot;&gt;1&lt;/span&gt;];
     }
 
-    protected internal virtual void CheckInvariants()
+    &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;internal&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;virtual&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;CheckInvariants&lt;/span&gt;()
     {
-        if (Count &amp;lt; 0)
-            throw new InvalidOperationException(&quot;Count cannnot be negative&quot;);
+        &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;if&lt;/span&gt; (Count &amp;lt; &lt;span style=&quot;color: #666666&quot;&gt;0&lt;/span&gt;)
+            &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;throw&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;InvalidOperationException&lt;/span&gt;(&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;Count cannnot be negative&amp;quot;&lt;/span&gt;);
 
-       if (Count &amp;gt; _maximumNumberOfItemsAllowed)
-            throw new InvalidOperationException(&quot;Count cannot be greater than &quot; + _maximumNumberOfItemsAllowed);
+       &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;if&lt;/span&gt; (Count &amp;gt; _maximumNumberOfItemsAllowed)
+            &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;throw&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;InvalidOperationException&lt;/span&gt;(&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;Count cannot be greater than &amp;quot;&lt;/span&gt; + _maximumNumberOfItemsAllowed);
         }
     }&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
@@ -650,7 +650,7 @@ public void CheckInvariants_PostCond_CountIsLessThanMaximumAllowed()
       
 
       
-        <summary type="html">Unit testing with Design By Contract (part 3) This article is the last of three on Unit Testing and Design By Contract Testing Post Conditions and Class Invariants Now we can test the two post conditions of the Add method: // Count is 0 before adding any items // This is a post condition of the constructor //and should be tested separately [Test] public void Add_PostCond_CountHasIncreasedByOne() { var stack = new Stack(maximumNumberOfItemsAllowed: 10); stack.Add(new object()); Assert.AreEqual(1,stack.Count); } // We use the 'Peek' method to access the item on top of the stack. // Pre and Post conditions of this method should be tested separately [Test] public void Add_PostCond_ItemIsOnTopOfTheStack() { var stack = new Stack(maximumNumberOfItemsAllowed: 10); var firstItem = new object(); var secondItem = new object(); stack.Add(firstItem); stack.Add(secondItem); Assert.AreSame(secondItem, stack.Peek()); } These types of test are probably the most commonly seen. Good Test Driven Development habits include asserting as few times as possible per tests, ideally one assertion only. The point is, as I mentioned earlier, error localization: if you only test one thing at a time, there has to be one test that explicitly exposes a bug. There is still one more post condition to test: that no invariant rule of the class was violated by the Add method. Checking Class Invariants As mentioned earlier, Class Invariants are the rules that should always remain true after any method is executed on a class. The Add method is no exception, so we will have to test that class invariants were enforced when it executed. We don’t want to repeat ourselves, so we will delegate to a reusable method called CheckInvariants that throws an exception if an Invariant rule has been broken. [Test] public void Add_PostCond_InvariantsWereEnforced() { //Arrange var stack = new MockRepository().PartialMock&amp;lt;Stack&amp;gt;(1); stack.Expect(x=&amp;gt;x.CheckInvariants()); stack.Replay(); //Act stack.Add(new object()); //Assert stack.VerifyAllExpectations(); } This tests ensures that the method CheckInvariants has been invoked by the Add method. This type of tests, which verifies the interaction of methods rather than the resulting state of objects is known as Behavioural Tests. The delegation itself is tested by using the Rhino Mocks mocking library for .Net. In this case we create a Partial Mock Stack object. It is partial because we only want to mock one method (CheckInvariants) but we do want to execute a different one (Add) of the same class. We tell the partially mocked Stack that we are expecting the CheckInvariants method to be called later. After we explicitly invoked Add, we tell the stack to verify our expectation. This verification will fail if the method was not invoked indirectly by Add. How public are the Class Invariants? So the last thing is to test the Class Invariants. This is just another method called void CheckInvariants() of the class, but its access level deserves a bit of thought. Let’s see what options we have: private: This method cannot be private because we need to write tests for it (as we did before) protected: This would at least let us create the class TestStack that inherits the Stack class and create a public method that invokes CheckInvariants. See this article for more details on how to mock a protected method internal: Internal methods can be invoked from within the assembly or an external assembly explicitly designated. This is the option chosen in this example public: Not a bad option either in my opinion, any object can invoke this method anytime, which should not cause any inconvenient. And here are the two test for CheckInvariants itself [Test,ExpectedException(typeof(InvalidOperationException), ExpectedMessage=&quot;Count cannnot be negative&quot;)] public void CheckInvariants_PostCond_CountIsNonNegative() { var stack = new MockRepository().PartialMock&amp;lt;Stack&amp;gt;(1); stack.Replay(); stack.Count = -1; stack.CheckInvariants(); } [Test, ExpectedException(typeof(InvalidOperationException), ExpectedMessage = &quot;Count cannot be greater than 7&quot;)] public void CheckInvariants_PostCond_CountIsLessThanMaximumAllowed() { var stack = new MockRepository().PartialMock&amp;lt;Stack&amp;gt;(7); stack.Replay(); stack.Count = 8; stack.CheckInvariants(); } And finally, here is the code for the Stack class, a class that honors its contract: public class Stack { private int _maximumNumberOfItemsAllowed; public Stack(int maximumNumberOfItemsAllowed) { _maximumNumberOfItemsAllowed = maximumNumberOfItemsAllowed; } public int Count { get; protected internal set; } public void Add(object item) { if (item == null) throw new ArgumentNullException(&quot;item&quot;); if (_maximumNumberOfItemsAllowed == Count) throw new InvalidOperationException( &quot;Cannot add items when the stack is full.&quot;); Count++; _array.Add(item); CheckInvariants(); } private IList _array = new ArrayList(); public object Peek() { return _array[Count - 1]; } protected internal virtual void CheckInvariants() { if (Count &amp;lt; 0) throw new InvalidOperationException(&quot;Count cannnot be negative&quot;); if (Count &amp;gt; _maximumNumberOfItemsAllowed) throw new InvalidOperationException(&quot;Count cannot be greater than &quot; + _maximumNumberOfItemsAllowed); } }</summary>
+        <summary type="html">Unit testing with Design By Contract (part 3) This article is the last of three on Unit Testing and Design By Contract Testing Post Conditions and Class Invariants Now we can test the two post conditions of the Add method: // Count is 0 before adding any items // This is a post condition of the constructor //and should be tested separately [Test] public void Add_PostCond_CountHasIncreasedByOne() { var stack = new Stack(maximumNumberOfItemsAllowed: 10); stack.Add(new object()); Assert.AreEqual(1,stack.Count); } // We use the &amp;#39;Peek&amp;#39; method to access the item on top of the stack. // Pre and Post conditions of this method should be tested separately [Test] public void Add_PostCond_ItemIsOnTopOfTheStack() { var stack = new Stack(maximumNumberOfItemsAllowed: 10); var firstItem = new object(); var secondItem = new object(); stack.Add(firstItem); stack.Add(secondItem); Assert.AreSame(secondItem, stack.Peek()); } These types of test are probably the most commonly seen. Good Test Driven Development habits include asserting as few times as possible per tests, ideally one assertion only. The point is, as I mentioned earlier, error localization: if you only test one thing at a time, there has to be one test that explicitly exposes a bug. There is still one more post condition to test: that no invariant rule of the class was violated by the Add method. Checking Class Invariants As mentioned earlier, Class Invariants are the rules that should always remain true after any method is executed on a class. The Add method is no exception, so we will have to test that class invariants were enforced when it executed. We don’t want to repeat ourselves, so we will delegate to a reusable method called CheckInvariants that throws an exception if an Invariant rule has been broken. [Test] public void Add_PostCond_InvariantsWereEnforced() { //Arrange var stack = new MockRepository().PartialMock&amp;lt;Stack&amp;gt;(1); stack.Expect(x=&amp;gt;x.CheckInvariants()); stack.Replay(); //Act stack.Add(new object()); //Assert stack.VerifyAllExpectations(); } This tests ensures that the method CheckInvariants has been invoked by the Add method. This type of tests, which verifies the interaction of methods rather than the resulting state of objects is known as Behavioural Tests. The delegation itself is tested by using the Rhino Mocks mocking library for .Net. In this case we create a Partial Mock Stack object. It is partial because we only want to mock one method (CheckInvariants) but we do want to execute a different one (Add) of the same class. We tell the partially mocked Stack that we are expecting the CheckInvariants method to be called later. After we explicitly invoked Add, we tell the stack to verify our expectation. This verification will fail if the method was not invoked indirectly by Add. How public are the Class Invariants? So the last thing is to test the Class Invariants. This is just another method called void CheckInvariants() of the class, but its access level deserves a bit of thought. Let’s see what options we have: private: This method cannot be private because we need to write tests for it (as we did before) protected: This would at least let us create the class TestStack that inherits the Stack class and create a public method that invokes CheckInvariants. See this article for more details on how to mock a protected method internal: Internal methods can be invoked from within the assembly or an external assembly explicitly designated. This is the option chosen in this example public: Not a bad option either in my opinion, any object can invoke this method anytime, which should not cause any inconvenient. And here are the two test for CheckInvariants itself [Test,ExpectedException(typeof(InvalidOperationException), ExpectedMessage=&amp;quot;Count cannnot be negative&amp;quot;)] public void CheckInvariants_PostCond_CountIsNonNegative() { var stack = new MockRepository().PartialMock&amp;lt;Stack&amp;gt;(1); stack.Replay(); stack.Count = -1; stack.CheckInvariants(); } [Test, ExpectedException(typeof(InvalidOperationException), ExpectedMessage = &amp;quot;Count cannot be greater than 7&amp;quot;)] public void CheckInvariants_PostCond_CountIsLessThanMaximumAllowed() { var stack = new MockRepository().PartialMock&amp;lt;Stack&amp;gt;(7); stack.Replay(); stack.Count = 8; stack.CheckInvariants(); } And finally, here is the code for the Stack class, a class that honors its contract: public class Stack { private int _maximumNumberOfItemsAllowed; public Stack(int maximumNumberOfItemsAllowed) { _maximumNumberOfItemsAllowed = maximumNumberOfItemsAllowed; } public int Count { get; protected internal set; } public void Add(object item) { if (item == null) throw new ArgumentNullException(&amp;quot;item&amp;quot;); if (_maximumNumberOfItemsAllowed == Count) throw new InvalidOperationException( &amp;quot;Cannot add items when the stack is full.&amp;quot;); Count++; _array.Add(item); CheckInvariants(); } private IList _array = new ArrayList(); public object Peek() { return _array[Count - 1]; } protected internal virtual void CheckInvariants() { if (Count &amp;lt; 0) throw new InvalidOperationException(&amp;quot;Count cannnot be negative&amp;quot;); if (Count &amp;gt; _maximumNumberOfItemsAllowed) throw new InvalidOperationException(&amp;quot;Count cannot be greater than &amp;quot; + _maximumNumberOfItemsAllowed); } }</summary>
       
 
       
@@ -688,20 +688,20 @@ public void CheckInvariants_PostCond_CountIsLessThanMaximumAllowed()
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;[Test, ExpectedException( typeof(ArgumentNullException))]
-public void Add_PreCond_ItemIsRequired()
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;[Test, ExpectedException( typeof(ArgumentNullException))]&lt;/span&gt;
+&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Add_PreCond_ItemIsRequired&lt;/span&gt;()
 {
-    new Stack(maximumNumberOfItemsAllowed: 1)
-        .Add(null);
+    &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Stack&lt;/span&gt;(maximumNumberOfItemsAllowed: &lt;span style=&quot;color: #666666&quot;&gt;1&lt;/span&gt;)
+        .Add(&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;null&lt;/span&gt;);
 }
 
-[Test,
-ExpectedException(typeof(InvalidOperationException),
-    ExpectedMessage=&quot;Cannot add items when the stack is full.&quot;)]
-public void Add_PreCond_StackCantBeFull()
+&lt;span style=&quot;color: #7D9029&quot;&gt;[Test,&lt;/span&gt;
+&lt;span style=&quot;color: #7D9029&quot;&gt;ExpectedException(typeof(InvalidOperationException),&lt;/span&gt;
+&lt;span style=&quot;color: #7D9029&quot;&gt;    ExpectedMessage=&amp;quot;Cannot add items when the stack is full.&amp;quot;)]&lt;/span&gt;
+&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Add_PreCond_StackCantBeFull&lt;/span&gt;()
 {
-    new Stack(maximumNumberOfItemsAllowed: 0)
-        .Add(new object());
+    &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Stack&lt;/span&gt;(maximumNumberOfItemsAllowed: &lt;span style=&quot;color: #666666&quot;&gt;0&lt;/span&gt;)
+        .Add(&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color: #B00040&quot;&gt;object&lt;/span&gt;());
 }&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -725,11 +725,11 @@ of an unhappy case, that is, a happy case for pre conditions.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;[Test]
-public void Add_PreCond_HappyCase()
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;[Test]&lt;/span&gt;
+&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Add_PreCond_HappyCase&lt;/span&gt;()
 {
-    new Stack(maximumNumberOfItemsAllowed: 1)
-        .Add(new object());
+    &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Stack&lt;/span&gt;(maximumNumberOfItemsAllowed: &lt;span style=&quot;color: #666666&quot;&gt;1&lt;/span&gt;)
+        .Add(&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color: #B00040&quot;&gt;object&lt;/span&gt;());
 }&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -767,7 +767,7 @@ public void Add_PreCond_HappyCase()
       
 
       
-        <summary type="html">Unit testing with Design By Contract (part 2) This article is the second of three on Unit Testing and Design By Contract Testing Post Conditions and Class Invariants Our User Story contains two pre conditions, so we should write a test for each of them. [Test, ExpectedException( typeof(ArgumentNullException))] public void Add_PreCond_ItemIsRequired() { new Stack(maximumNumberOfItemsAllowed: 1) .Add(null); } [Test, ExpectedException(typeof(InvalidOperationException), ExpectedMessage=&quot;Cannot add items when the stack is full.&quot;)] public void Add_PreCond_StackCantBeFull() { new Stack(maximumNumberOfItemsAllowed: 0) .Add(new object()); } These unit tests ensure that if any of the two pre conditions are not satisfied, the Supplier will not execute the method. To do so, it throws an error to the Client. When we unit tests this behaviour, we assert that the Unit Tests will result in an exception being thrown, and we can additionally specify the type of the exception. These types of tests are also known as Unhappy Tests. Happy Case: The N + 1 Pre Condition How do you test that all pre conditions are met? Well, you could argue that is not needed, when testing post conditions we can assume that the method is executed, what means that we passed all pre condition checks. Let’s suppose a new pre condition is added to the class, and that the developer forgets to write the Unit Test for it. Yes, all post-condition tests should now fail: there is a new pre condition in town. But this may not happen, what if the new pre condition was coincidentally met by all tests? For example, a new requirement that only allows us to add non empty strings to the stack may not be detected by any existing test if they already use non empty strings only. There is another problem, related to error localization. In his brilliant book “Working Effectively with Legacy Code” Michael Feathers emphasizes that one of the benefits of good tests is that it helps us to easily localize problems. With a happy case, we do not want to test the outcome of a method. We want to check that if all pre requisites are satisfied, the method throws no error. This is the opposite scenario of an unhappy case, that is, a happy case for pre conditions. [Test] public void Add_PreCond_HappyCase() { new Stack(maximumNumberOfItemsAllowed: 1) .Add(new object()); } Notice that we are not doing any checking on this test. We simply want to pass all the validations for pre conditions. We are also not interested in testing the state of the stack after adding the item. In other words, we are not testing pre conditions either. We will do that in the nexdt part Coming Next: Testing Post Conditions and Class Invariants</summary>
+        <summary type="html">Unit testing with Design By Contract (part 2) This article is the second of three on Unit Testing and Design By Contract Testing Post Conditions and Class Invariants Our User Story contains two pre conditions, so we should write a test for each of them. [Test, ExpectedException( typeof(ArgumentNullException))] public void Add_PreCond_ItemIsRequired() { new Stack(maximumNumberOfItemsAllowed: 1) .Add(null); } [Test, ExpectedException(typeof(InvalidOperationException), ExpectedMessage=&amp;quot;Cannot add items when the stack is full.&amp;quot;)] public void Add_PreCond_StackCantBeFull() { new Stack(maximumNumberOfItemsAllowed: 0) .Add(new object()); } These unit tests ensure that if any of the two pre conditions are not satisfied, the Supplier will not execute the method. To do so, it throws an error to the Client. When we unit tests this behaviour, we assert that the Unit Tests will result in an exception being thrown, and we can additionally specify the type of the exception. These types of tests are also known as Unhappy Tests. Happy Case: The N + 1 Pre Condition How do you test that all pre conditions are met? Well, you could argue that is not needed, when testing post conditions we can assume that the method is executed, what means that we passed all pre condition checks. Let’s suppose a new pre condition is added to the class, and that the developer forgets to write the Unit Test for it. Yes, all post-condition tests should now fail: there is a new pre condition in town. But this may not happen, what if the new pre condition was coincidentally met by all tests? For example, a new requirement that only allows us to add non empty strings to the stack may not be detected by any existing test if they already use non empty strings only. There is another problem, related to error localization. In his brilliant book “Working Effectively with Legacy Code” Michael Feathers emphasizes that one of the benefits of good tests is that it helps us to easily localize problems. With a happy case, we do not want to test the outcome of a method. We want to check that if all pre requisites are satisfied, the method throws no error. This is the opposite scenario of an unhappy case, that is, a happy case for pre conditions. [Test] public void Add_PreCond_HappyCase() { new Stack(maximumNumberOfItemsAllowed: 1) .Add(new object()); } Notice that we are not doing any checking on this test. We simply want to pass all the validations for pre conditions. We are also not interested in testing the state of the stack after adding the item. In other words, we are not testing pre conditions either. We will do that in the nexdt part Coming Next: Testing Post Conditions and Class Invariants</summary>
       
 
       
@@ -889,37 +889,37 @@ Here is the list of test we will write for this User Story, based on the previou
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;[Test]
-public void Add_PreCond_ItemIsRequired()
-    { throw new NotImplementedException(); }
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;[Test]&lt;/span&gt;
+&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Add_PreCond_ItemIsRequired&lt;/span&gt;()
+    { &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;throw&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; NotImplementedException(); }
 
-[Test]
-public void Add_PreCond_StackCantBeFull()
-    { throw new NotImplementedException(); }
+&lt;span style=&quot;color: #7D9029&quot;&gt;[Test]&lt;/span&gt;
+&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Add_PreCond_StackCantBeFull&lt;/span&gt;()
+    { &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;throw&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; NotImplementedException(); }
 
-[Test]
-public void Add_PreCond_HappyCase()
-    { throw new NotImplementedException(); }
+&lt;span style=&quot;color: #7D9029&quot;&gt;[Test]&lt;/span&gt;
+&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Add_PreCond_HappyCase&lt;/span&gt;()
+    { &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;throw&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; NotImplementedException(); }
 
-[Test]
-public void Add_PostCond_CountHasIncreasedByOne()
-    { throw new NotImplementedException(); }
+&lt;span style=&quot;color: #7D9029&quot;&gt;[Test]&lt;/span&gt;
+&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Add_PostCond_CountHasIncreasedByOne&lt;/span&gt;()
+    { &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;throw&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; NotImplementedException(); }
 
-[Test]
-public void Add_PostCond_ItemIsOnTopOfTheStack()
-    { throw new NotImplementedException(); }
+&lt;span style=&quot;color: #7D9029&quot;&gt;[Test]&lt;/span&gt;
+&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Add_PostCond_ItemIsOnTopOfTheStack&lt;/span&gt;()
+    { &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;throw&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; NotImplementedException(); }
 
-[Test]
-public void Add_PostCond_InvariantsWereEnforced()
-    { throw new NotImplementedException(); }
+&lt;span style=&quot;color: #7D9029&quot;&gt;[Test]&lt;/span&gt;
+&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Add_PostCond_InvariantsWereEnforced&lt;/span&gt;()
+    { &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;throw&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; NotImplementedException(); }
 
-[Test]
-public void CheckInvariants_PostCond_CountIsNonNegative()
-    { throw new NotImplementedException(); }
+&lt;span style=&quot;color: #7D9029&quot;&gt;[Test]&lt;/span&gt;
+&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;CheckInvariants_PostCond_CountIsNonNegative&lt;/span&gt;()
+    { &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;throw&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; NotImplementedException(); }
 
-[Test]
-public void CheckInvariants_PostCond_CountIsLessThanMaximumAllowed()
-    { throw new NotImplementedException(); }&lt;/code&gt;&lt;/pre&gt;
+&lt;span style=&quot;color: #7D9029&quot;&gt;[Test]&lt;/span&gt;
+&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;CheckInvariants_PostCond_CountIsLessThanMaximumAllowed&lt;/span&gt;()
+    { &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;throw&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; NotImplementedException(); }&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
@@ -1137,33 +1137,33 @@ The exact implementation is outside of the scope of this article, but I will pos
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;powershell&quot;&gt;function FindDuplicates{
- # Receives a list of ArrayLists
- # iteratively prints the full path of each ArrayList item
- # where the ArrayList contains multiple paths (i.e duplicates)
-Process
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;powershell&quot;&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;function&lt;/span&gt; FindDuplicates{
+ &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;# Receives a list of ArrayLists&lt;/span&gt;
+ &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;# iteratively prints the full path of each ArrayList item&lt;/span&gt;
+ &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;# where the ArrayList contains multiple paths (i.e duplicates)&lt;/span&gt;
+&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;Process&lt;/span&gt;
 {
- if ($_.Count -gt 1)
-       {foreach($d in $_){$d.FullName}} }
+ &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;if&lt;/span&gt; (&lt;span style=&quot;color: #19177C&quot;&gt;$_&lt;/span&gt;.Count &lt;span style=&quot;color: #666666&quot;&gt;-gt&lt;/span&gt; 1)
+       {&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;foreach&lt;/span&gt;(&lt;span style=&quot;color: #19177C&quot;&gt;$d&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;in&lt;/span&gt; &lt;span style=&quot;color: #19177C&quot;&gt;$_&lt;/span&gt;){&lt;span style=&quot;color: #19177C&quot;&gt;$d&lt;/span&gt;.FullName}} }
 }
 
-function GetFilesInBuckets($dir,$filter = &quot;*.*&quot;)
+&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;function&lt;/span&gt; GetFilesInBuckets(&lt;span style=&quot;color: #19177C&quot;&gt;$dir&lt;/span&gt;,&lt;span style=&quot;color: #19177C&quot;&gt;$filter&lt;/span&gt; = &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;*.*&amp;quot;&lt;/span&gt;)
 {
- # Creates a hashtable of arraylists (1 entry per unique file name)
- # Returns the list of arraylists only (not the entire hashtable)
-  $files = @{}
- foreach ($fl in (gci $dir -filter $filter -r))
+ &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;# Creates a hashtable of arraylists (1 entry per unique file name)&lt;/span&gt;
+ &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;# Returns the list of arraylists only (not the entire hashtable)&lt;/span&gt;
+  &lt;span style=&quot;color: #19177C&quot;&gt;$files&lt;/span&gt; = @{}
+ &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;foreach&lt;/span&gt; (&lt;span style=&quot;color: #19177C&quot;&gt;$fl&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;in&lt;/span&gt; (gci &lt;span style=&quot;color: #19177C&quot;&gt;$dir&lt;/span&gt; -filter &lt;span style=&quot;color: #19177C&quot;&gt;$filter&lt;/span&gt; -r))
   {
-    if(!$files.ContainsKey($fl.Name))
+    &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;if&lt;/span&gt;(!&lt;span style=&quot;color: #19177C&quot;&gt;$files&lt;/span&gt;.ContainsKey(&lt;span style=&quot;color: #19177C&quot;&gt;$fl&lt;/span&gt;.Name))
     {
-    $files[$fl.Name] = New-Object System.Collections.ArrayList
+    &lt;span style=&quot;color: #19177C&quot;&gt;$files&lt;/span&gt;[&lt;span style=&quot;color: #19177C&quot;&gt;$fl&lt;/span&gt;.Name] = &lt;span style=&quot;color: #008000&quot;&gt;New-Object&lt;/span&gt; System.Collections.ArrayList
     }
-    [void]$files[$fl.Name].Add($fl)
+    &lt;span style=&quot;color: #880000&quot;&gt;[void]&lt;/span&gt;&lt;span style=&quot;color: #19177C&quot;&gt;$files&lt;/span&gt;[&lt;span style=&quot;color: #19177C&quot;&gt;$fl&lt;/span&gt;.Name].Add(&lt;span style=&quot;color: #19177C&quot;&gt;$fl&lt;/span&gt;)
   }
- $files.Values
+ &lt;span style=&quot;color: #19177C&quot;&gt;$files&lt;/span&gt;.Values
 }
 
-GetFilesInBuckets &quot;C:\MyRootFolder&quot; -f &quot;*.txt&quot;
+GetFilesInBuckets &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;C:\MyRootFolder&amp;quot;&lt;/span&gt; &lt;span style=&quot;color: #666666&quot;&gt;-f&lt;/span&gt; &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;*.txt&amp;quot;&lt;/span&gt;
     |FindDuplicates&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -1172,7 +1172,7 @@ GetFilesInBuckets &quot;C:\MyRootFolder&quot; -f &quot;*.txt&quot;
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;powershell&quot;&gt;GetFilesInBuckets &quot;C:\MyRootFolder&quot; -f &quot;*.txt&quot;|
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;powershell&quot;&gt;GetFilesInBuckets &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;C:\MyRootFolder&amp;quot;&lt;/span&gt; &lt;span style=&quot;color: #666666&quot;&gt;-f&lt;/span&gt; &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;*.txt&amp;quot;&lt;/span&gt;|
     FindDuplicates|
     FilterOutOlder&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
@@ -1197,7 +1197,7 @@ GetFilesInBuckets &quot;C:\MyRootFolder&quot; -f &quot;*.txt&quot;
       
 
       
-        <summary type="html">Finding duplicated files recursively I was cleaning up a folder with files duplicated in subdirectories. Here is a simple Powershell code that identifies duplications recursively. There might be a shorter form, but I think this is as I short I can get without becoming very cryptic. function FindDuplicates{ # Receives a list of ArrayLists # iteratively prints the full path of each ArrayList item # where the ArrayList contains multiple paths (i.e duplicates) Process { if ($_.Count -gt 1) {foreach($d in $_){$d.FullName}} } } function GetFilesInBuckets($dir,$filter = &quot;*.*&quot;) { # Creates a hashtable of arraylists (1 entry per unique file name) # Returns the list of arraylists only (not the entire hashtable) $files = @{} foreach ($fl in (gci $dir -filter $filter -r)) { if(!$files.ContainsKey($fl.Name)) { $files[$fl.Name] = New-Object System.Collections.ArrayList } [void]$files[$fl.Name].Add($fl) } $files.Values } GetFilesInBuckets &quot;C:\MyRootFolder&quot; -f &quot;*.txt&quot; |FindDuplicates Additional filtering methods will look similar to as FindDuplicates, and can be piped at the end of the last line of code: GetFilesInBuckets &quot;C:\MyRootFolder&quot; -f &quot;*.txt&quot;| FindDuplicates| FilterOutOlder</summary>
+        <summary type="html">Finding duplicated files recursively I was cleaning up a folder with files duplicated in subdirectories. Here is a simple Powershell code that identifies duplications recursively. There might be a shorter form, but I think this is as I short I can get without becoming very cryptic. function FindDuplicates{ # Receives a list of ArrayLists # iteratively prints the full path of each ArrayList item # where the ArrayList contains multiple paths (i.e duplicates) Process { if ($_.Count -gt 1) {foreach($d in $_){$d.FullName}} } } function GetFilesInBuckets($dir,$filter = &amp;quot;*.*&amp;quot;) { # Creates a hashtable of arraylists (1 entry per unique file name) # Returns the list of arraylists only (not the entire hashtable) $files = @{} foreach ($fl in (gci $dir -filter $filter -r)) { if(!$files.ContainsKey($fl.Name)) { $files[$fl.Name] = New-Object System.Collections.ArrayList } [void]$files[$fl.Name].Add($fl) } $files.Values } GetFilesInBuckets &amp;quot;C:\MyRootFolder&amp;quot; -f &amp;quot;*.txt&amp;quot; |FindDuplicates Additional filtering methods will look similar to as FindDuplicates, and can be piped at the end of the last line of code: GetFilesInBuckets &amp;quot;C:\MyRootFolder&amp;quot; -f &amp;quot;*.txt&amp;quot;| FindDuplicates| FilterOutOlder</summary>
       
 
       
@@ -1231,9 +1231,9 @@ GetFilesInBuckets &quot;C:\MyRootFolder&quot; -f &quot;*.txt&quot;
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;xml&quot;&gt;...
-&amp;lt;property name=&quot;SpreadsheetPath&quot; value=&quot;${Config} + ${CurrentProject}&quot; /&amp;gt;
-&amp;lt;call target=&quot;ProcessSpreadsheet&quot; /&amp;gt;
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;xml&quot;&gt;...
+&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;&amp;lt;property&lt;/span&gt; &lt;span style=&quot;color: #7D9029&quot;&gt;name=&lt;/span&gt;&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;SpreadsheetPath&amp;quot;&lt;/span&gt; &lt;span style=&quot;color: #7D9029&quot;&gt;value=&lt;/span&gt;&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;${Config} + ${CurrentProject}&amp;quot;&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;/&amp;gt;&lt;/span&gt;
+&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;&amp;lt;call&lt;/span&gt; &lt;span style=&quot;color: #7D9029&quot;&gt;target=&lt;/span&gt;&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;ProcessSpreadsheet&amp;quot;&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;/&amp;gt;&lt;/span&gt;
 ...&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -1245,15 +1245,15 @@ GetFilesInBuckets &quot;C:\MyRootFolder&quot; -f &quot;*.txt&quot;
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;CodeRay highlight&quot;&gt;&lt;code data-lang=&quot;xml&quot;&gt;(Known inputs: SpreadsheetPath and BusinessArea)
-&amp;lt;property name=&quot;SpreadsheetPath&quot;
-    value=&quot;${Config} + ${CurrentProject}&quot; /&amp;gt;
-&amp;lt;property name=&quot;BusinessArea&quot; value='Security' /&amp;gt;
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;xml&quot;&gt;(Known inputs: SpreadsheetPath and BusinessArea)
+&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;&amp;lt;property&lt;/span&gt; &lt;span style=&quot;color: #7D9029&quot;&gt;name=&lt;/span&gt;&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;SpreadsheetPath&amp;quot;&lt;/span&gt;
+    &lt;span style=&quot;color: #7D9029&quot;&gt;value=&lt;/span&gt;&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;${Config} + ${CurrentProject}&amp;quot;&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;/&amp;gt;&lt;/span&gt;
+&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;&amp;lt;property&lt;/span&gt; &lt;span style=&quot;color: #7D9029&quot;&gt;name=&lt;/span&gt;&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;BusinessArea&amp;quot;&lt;/span&gt; &lt;span style=&quot;color: #7D9029&quot;&gt;value=&lt;/span&gt;&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;#39;Security&amp;#39;&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;/&amp;gt;&lt;/span&gt;
 
-&amp;lt;call target=&quot;GenerateCodeFromSpreadsheet&quot; /&amp;gt;
+&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;&amp;lt;call&lt;/span&gt; &lt;span style=&quot;color: #7D9029&quot;&gt;target=&lt;/span&gt;&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;GenerateCodeFromSpreadsheet&amp;quot;&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;/&amp;gt;&lt;/span&gt;
 
 (Known output: NumberOfGeneratedFiles)
-&amp;lt;property name=&quot;TotalCodeFiles&quot; value=&quot;${NumberOfGeneratedFiles}&quot; /&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;&amp;lt;property&lt;/span&gt; &lt;span style=&quot;color: #7D9029&quot;&gt;name=&lt;/span&gt;&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;TotalCodeFiles&amp;quot;&lt;/span&gt; &lt;span style=&quot;color: #7D9029&quot;&gt;value=&lt;/span&gt;&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;${NumberOfGeneratedFiles}&amp;quot;&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;/&amp;gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -1299,7 +1299,7 @@ GetFilesInBuckets &quot;C:\MyRootFolder&quot; -f &quot;*.txt&quot;
       
 
       
-        <summary type="html">NAnt and the limitation of xml programming I have used NAnt (the .Net port of the Java build tool Ant) in most of the .Net/VB6 projects I have worked on. The decision for using this tool was not always mine, but I guess I did not find (nor look for) a better alternative. As these projects grew, so did their build process and the complexity the build scripts. NAnt was flexible enough to cope with this. If a suitable task does not exist, you can download NAntContrib tasks, other tasks from the web, or you can create yours. If a task is too simple a language construct for the job, you can call an executable and pass the right parameter, create a .Net in-line function, or call a Powershell script. One of the systems I worked on was particularly complex but very well designed. So was its build script. Common functionality was not duplicated, but kept as targets or tasks in separate NAnt files, that where included in the main NAnt script. When reusing these blocks of code, you usually have to pass context-specific parameters to it. You do this by setting properties before invoking the NAnt target. For example: ... &amp;lt;property name=&quot;SpreadsheetPath&quot; value=&quot;${Config} + ${CurrentProject}&quot; /&amp;gt; &amp;lt;call target=&quot;ProcessSpreadsheet&quot; /&amp;gt; ... This syntax becomes more awkward when more properties need to be passed to the target. Worse, the lack of explicit input and outputs to a NAnt target make this syntax a bad practice: code calling a target needs to know the name of the properties the target needs set, and the name of the property containing the expected output of the target. Let me picture this with an example: (Known inputs: SpreadsheetPath and BusinessArea) &amp;lt;property name=&quot;SpreadsheetPath&quot; value=&quot;${Config} + ${CurrentProject}&quot; /&amp;gt; &amp;lt;property name=&quot;BusinessArea&quot; value='Security' /&amp;gt; &amp;lt;call target=&quot;GenerateCodeFromSpreadsheet&quot; /&amp;gt; (Known output: NumberOfGeneratedFiles) &amp;lt;property name=&quot;TotalCodeFiles&quot; value=&quot;${NumberOfGeneratedFiles}&quot; /&amp;gt; The problem: When XML is not enough I don’t have the intention (nor the knowledge!) to enter the XML vs DSL discussion but I see a real disadvantage in using Ant/NAnt for big and complex systems. Generally speaking is not a good idea to program in an XML based DSL (like NAnt). It makes sense to declare targets that know what to do and how to do it, but as the code base grows and scripts are modularised for better reusability, then is only a matter of time until you find yourself programming on XML. The XML/DSL discussion is a very interesting one, and so is the classification of programming paradigms ( what is NAnt programming. Goal-Oriented? Declarative? Or simply a markup language?), but I’m not interested on them now. I think I’m done with Ant/NAnt…I’ll stop trying to extract oil from stones, as Spaniards say. There’s only so much you can ask xml-based languages, but soon you’ll need a proper programming language, or you’ll become an xmlholic. If you know Maven for Java solutions (NMaven is only an idea at the time of writing), you know this is an XML based tool too so it will suffer the same problems I just mentioned. Maven is, however, more flexible thanks to the life cycle structure and the ability of recursively build projects (as specified in their Project Object Model xml files) in a folder structure. This benefit is not enough to marry xml programming for life&amp;#8230;&amp;#8203;one size doesn’t fit all, in fact in terms of build process; standardisation is the exception rather than the rule. I still need to look into Gradle, but it may be good answer to Ant/Maven approaches. The solution: I don’t know really. Sorry if you’ve read this far, but I just wanted to brain dump my discontent with XML programming. Maybe is a useful question for us developers using or building frameworks on a daily basis. Where should we allow for a more multi-purpose, less templated approach? Extensibility is not always the answer. Some frameworks like NAnt are very extensible, but offer very little at their core. The extended functionality is more useful than the basic framework itself. So no, I don’t know the solution for avoiding XML programming (NAnt or Maven) for the time being I’m moving towards a build script fully written in PowerShell, with a flavour of Maven’s life cycles. I will write in detail about this later, it is not rocket science and is not a full solution, but is a start, just like this blog entry.</summary>
+        <summary type="html">NAnt and the limitation of xml programming I have used NAnt (the .Net port of the Java build tool Ant) in most of the .Net/VB6 projects I have worked on. The decision for using this tool was not always mine, but I guess I did not find (nor look for) a better alternative. As these projects grew, so did their build process and the complexity the build scripts. NAnt was flexible enough to cope with this. If a suitable task does not exist, you can download NAntContrib tasks, other tasks from the web, or you can create yours. If a task is too simple a language construct for the job, you can call an executable and pass the right parameter, create a .Net in-line function, or call a Powershell script. One of the systems I worked on was particularly complex but very well designed. So was its build script. Common functionality was not duplicated, but kept as targets or tasks in separate NAnt files, that where included in the main NAnt script. When reusing these blocks of code, you usually have to pass context-specific parameters to it. You do this by setting properties before invoking the NAnt target. For example: ... &amp;lt;property name=&amp;quot;SpreadsheetPath&amp;quot; value=&amp;quot;${Config} + ${CurrentProject}&amp;quot; /&amp;gt; &amp;lt;call target=&amp;quot;ProcessSpreadsheet&amp;quot; /&amp;gt; ... This syntax becomes more awkward when more properties need to be passed to the target. Worse, the lack of explicit input and outputs to a NAnt target make this syntax a bad practice: code calling a target needs to know the name of the properties the target needs set, and the name of the property containing the expected output of the target. Let me picture this with an example: (Known inputs: SpreadsheetPath and BusinessArea) &amp;lt;property name=&amp;quot;SpreadsheetPath&amp;quot; value=&amp;quot;${Config} + ${CurrentProject}&amp;quot; /&amp;gt; &amp;lt;property name=&amp;quot;BusinessArea&amp;quot; value=&amp;#39;Security&amp;#39; /&amp;gt; &amp;lt;call target=&amp;quot;GenerateCodeFromSpreadsheet&amp;quot; /&amp;gt; (Known output: NumberOfGeneratedFiles) &amp;lt;property name=&amp;quot;TotalCodeFiles&amp;quot; value=&amp;quot;${NumberOfGeneratedFiles}&amp;quot; /&amp;gt; The problem: When XML is not enough I don’t have the intention (nor the knowledge!) to enter the XML vs DSL discussion but I see a real disadvantage in using Ant/NAnt for big and complex systems. Generally speaking is not a good idea to program in an XML based DSL (like NAnt). It makes sense to declare targets that know what to do and how to do it, but as the code base grows and scripts are modularised for better reusability, then is only a matter of time until you find yourself programming on XML. The XML/DSL discussion is a very interesting one, and so is the classification of programming paradigms ( what is NAnt programming. Goal-Oriented? Declarative? Or simply a markup language?), but I’m not interested on them now. I think I’m done with Ant/NAnt…I’ll stop trying to extract oil from stones, as Spaniards say. There’s only so much you can ask xml-based languages, but soon you’ll need a proper programming language, or you’ll become an xmlholic. If you know Maven for Java solutions (NMaven is only an idea at the time of writing), you know this is an XML based tool too so it will suffer the same problems I just mentioned. Maven is, however, more flexible thanks to the life cycle structure and the ability of recursively build projects (as specified in their Project Object Model xml files) in a folder structure. This benefit is not enough to marry xml programming for life&amp;#8230;&amp;#8203;one size doesn’t fit all, in fact in terms of build process; standardisation is the exception rather than the rule. I still need to look into Gradle, but it may be good answer to Ant/Maven approaches. The solution: I don’t know really. Sorry if you’ve read this far, but I just wanted to brain dump my discontent with XML programming. Maybe is a useful question for us developers using or building frameworks on a daily basis. Where should we allow for a more multi-purpose, less templated approach? Extensibility is not always the answer. Some frameworks like NAnt are very extensible, but offer very little at their core. The extended functionality is more useful than the basic framework itself. So no, I don’t know the solution for avoiding XML programming (NAnt or Maven) for the time being I’m moving towards a build script fully written in PowerShell, with a flavour of Maven’s life cycles. I will write in detail about this later, it is not rocket science and is not a full solution, but is a start, just like this blog entry.</summary>
       
 
       

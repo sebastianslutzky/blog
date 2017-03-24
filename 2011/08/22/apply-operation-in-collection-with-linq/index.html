@@ -10,7 +10,7 @@
   
   
   <title>Apply an operation to a collection with LinQ</title>
-  <meta name="description" content="Apply an operation to a collection with LinQ These days, it is unusual to write an implementation of the Iterator pattern. Most of the modern languages included a library with a set of aggregate objects that follow this pattern as defined in the Gang of Four book. In .Net, these objects are in the System.Collections namespace and they include classes such as Lists, Queues, Dictionaries, and also their specialised strongly typed (Generic) version. The Gang Of Four defines two types of iterators: External and Internal. The External requires the client to traverse the items (by looping through the items until the end of the iterator). In contrast to this, the internal iterator delegates this process to a Traverse mix-in class that can be extended and customised. I was looking for something similar to the internal iterator in .Net. That is, a generic way of passing an operation to a collection that would apply it to each of its items. None of the LinQ extension methods for collections seemed to do this, so I wrote one: public static class Extensions { public static void ApplyOperation&amp;lt;T&amp;gt; (this IEnumerable&amp;lt;T&amp;gt; iterator, Action&amp;lt;T&amp;gt; action) { foreach (var item in iterator) action(item); } } Which can be used as follows: IEnumerable&amp;lt;string&amp;gt; cities = new string[] { &quot;Dublin&quot;, &quot;Buenos Aires&quot;, &quot;Madrid&quot; }; cities.ApplyOperation(x=&amp;gt;Console.WriteLine(&quot;City name: &quot; + x)); or simply new string[] { &quot;Dublin&quot;, &quot;Buenos Aires&quot;, &quot;Madrid&quot; } .ApplyOperation( x =&amp;gt; Console.WriteLine(&quot;City name: &quot; + x)); which prints the following output:">
+  <meta name="description" content="Apply an operation to a collection with LinQ These days, it is unusual to write an implementation of the Iterator pattern. Most of the modern languages included a library with a set of aggregate objects that follow this pattern as defined in the Gang of Four book. In .Net, these objects are in the System.Collections namespace and they include classes such as Lists, Queues, Dictionaries, and also their specialised strongly typed (Generic) version. The Gang Of Four defines two types of iterators: External and Internal. The External requires the client to traverse the items (by looping through the items until the end of the iterator). In contrast to this, the internal iterator delegates this process to a Traverse mix-in class that can be extended and customised. I was looking for something similar to the internal iterator in .Net. That is, a generic way of passing an operation to a collection that would apply it to each of its items. None of the LinQ extension methods for collections seemed to do this, so I wrote one: public static class Extensions { public static void ApplyOperation&amp;lt;T&amp;gt; (this IEnumerable&amp;lt;T&amp;gt; iterator, Action&amp;lt;T&amp;gt; action) { foreach (var item in iterator) action(item); } } Which can be used as follows: IEnumerable&amp;lt;string&amp;gt; cities = new string[] { &amp;quot;Dublin&amp;quot;, &amp;quot;Buenos Aires&amp;quot;, &amp;quot;Madrid&amp;quot; }; cities.ApplyOperation(x=&amp;gt;Console.WriteLine(&amp;quot;City name: &amp;quot; + x)); or simply new string[] { &amp;quot;Dublin&amp;quot;, &amp;quot;Buenos Aires&amp;quot;, &amp;quot;Madrid&amp;quot; } .ApplyOperation( x =&amp;gt; Console.WriteLine(&amp;quot;City name: &amp;quot; + x)); which prints the following output:">
   
 
   <link rel="stylesheet" href="/blog/assets/main.css">
@@ -102,13 +102,13 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="csharp">public static class Extensions
+<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">static</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">Extensions</span>
 {
-    public static void ApplyOperation&lt;T&gt;
-                (this IEnumerable&lt;T&gt; iterator,
+    <span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">static</span> <span style="color: #008000; font-weight: bold">void</span> ApplyOperation&lt;T&gt;
+                (<span style="color: #008000; font-weight: bold">this</span> IEnumerable&lt;T&gt; iterator,
                 Action&lt;T&gt; action)
     {
-        foreach (var item in iterator)
+        <span style="color: #008000; font-weight: bold">foreach</span> (<span style="color: #B00040">var</span> item <span style="color: #008000; font-weight: bold">in</span> iterator)
             action(item);
     }
 }</code></pre>
@@ -119,9 +119,9 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="csharp">IEnumerable&lt;string&gt; cities =
-            new string[] { "Dublin", "Buenos Aires", "Madrid" };
-cities.ApplyOperation(x=&gt;Console.WriteLine("City name: " + x));</code></pre>
+<pre class="pygments highlight"><code data-lang="csharp">IEnumerable&lt;<span style="color: #B00040">string</span>&gt; cities =
+            <span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">string</span>[] { <span style="color: #BA2121">&quot;Dublin&quot;</span>, <span style="color: #BA2121">&quot;Buenos Aires&quot;</span>, <span style="color: #BA2121">&quot;Madrid&quot;</span> };
+cities.ApplyOperation(x=&gt;Console.WriteLine(<span style="color: #BA2121">&quot;City name: &quot;</span> + x));</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -129,12 +129,12 @@ cities.ApplyOperation(x=&gt;Console.WriteLine("City name: " + x));</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="csharp">new string[] {
-    "Dublin",
-    "Buenos Aires",
-    "Madrid" }
+<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">string</span>[] {
+    <span style="color: #BA2121">&quot;Dublin&quot;</span>,
+    <span style="color: #BA2121">&quot;Buenos Aires&quot;</span>,
+    <span style="color: #BA2121">&quot;Madrid&quot;</span> }
     .ApplyOperation(
-        x =&gt; Console.WriteLine("City name: " + x));</code></pre>
+        x =&gt; Console.WriteLine(<span style="color: #BA2121">&quot;City name: &quot;</span> + x));</code></pre>
 </div>
 </div>
 <div class="paragraph">

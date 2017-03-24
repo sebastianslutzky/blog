@@ -189,13 +189,13 @@ sfd
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="csharp">public static class Extensions
+<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">static</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">Extensions</span>
 {
-    public static void ApplyOperation&lt;T&gt;
-                (this IEnumerable&lt;T&gt; iterator,
+    <span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">static</span> <span style="color: #008000; font-weight: bold">void</span> ApplyOperation&lt;T&gt;
+                (<span style="color: #008000; font-weight: bold">this</span> IEnumerable&lt;T&gt; iterator,
                 Action&lt;T&gt; action)
     {
-        foreach (var item in iterator)
+        <span style="color: #008000; font-weight: bold">foreach</span> (<span style="color: #B00040">var</span> item <span style="color: #008000; font-weight: bold">in</span> iterator)
             action(item);
     }
 }</code></pre>
@@ -206,9 +206,9 @@ sfd
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="csharp">IEnumerable&lt;string&gt; cities =
-            new string[] { "Dublin", "Buenos Aires", "Madrid" };
-cities.ApplyOperation(x=&gt;Console.WriteLine("City name: " + x));</code></pre>
+<pre class="pygments highlight"><code data-lang="csharp">IEnumerable&lt;<span style="color: #B00040">string</span>&gt; cities =
+            <span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">string</span>[] { <span style="color: #BA2121">&quot;Dublin&quot;</span>, <span style="color: #BA2121">&quot;Buenos Aires&quot;</span>, <span style="color: #BA2121">&quot;Madrid&quot;</span> };
+cities.ApplyOperation(x=&gt;Console.WriteLine(<span style="color: #BA2121">&quot;City name: &quot;</span> + x));</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -216,12 +216,12 @@ cities.ApplyOperation(x=&gt;Console.WriteLine("City name: " + x));</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="csharp">new string[] {
-    "Dublin",
-    "Buenos Aires",
-    "Madrid" }
+<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">string</span>[] {
+    <span style="color: #BA2121">&quot;Dublin&quot;</span>,
+    <span style="color: #BA2121">&quot;Buenos Aires&quot;</span>,
+    <span style="color: #BA2121">&quot;Madrid&quot;</span> }
     .ApplyOperation(
-        x =&gt; Console.WriteLine("City name: " + x));</code></pre>
+        x =&gt; Console.WriteLine(<span style="color: #BA2121">&quot;City name: &quot;</span> + x));</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -270,28 +270,28 @@ cities.ApplyOperation(x=&gt;Console.WriteLine("City name: " + x));</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="csharp">// Count is 0 before adding any items
-// This is a post condition of the constructor
-//and should be tested separately
-[Test]
-public void Add_PostCond_CountHasIncreasedByOne()
+<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #408080; font-style: italic">// Count is 0 before adding any items</span>
+<span style="color: #408080; font-style: italic">// This is a post condition of the constructor</span>
+<span style="color: #408080; font-style: italic">//and should be tested separately</span>
+<span style="color: #7D9029">[Test]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PostCond_CountHasIncreasedByOne</span>()
 {
-    var stack = new Stack(maximumNumberOfItemsAllowed: 10);
-    stack.Add(new object());
-    Assert.AreEqual(1,stack.Count);
+    <span style="color: #B00040">var</span> stack = <span style="color: #008000; font-weight: bold">new</span> Stack(maximumNumberOfItemsAllowed: <span style="color: #666666">10</span>);
+    stack.Add(<span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">object</span>());
+    Assert.AreEqual(<span style="color: #666666">1</span>,stack.Count);
 }</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="csharp">// We use the 'Peek' method to access the item on top of the stack.
-// Pre and Post conditions of this method should be tested separately
-[Test]
-public void Add_PostCond_ItemIsOnTopOfTheStack()
+<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #408080; font-style: italic">// We use the &#39;Peek&#39; method to access the item on top of the stack.</span>
+<span style="color: #408080; font-style: italic">// Pre and Post conditions of this method should be tested separately</span>
+<span style="color: #7D9029">[Test]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PostCond_ItemIsOnTopOfTheStack</span>()
 {
-    var stack = new Stack(maximumNumberOfItemsAllowed: 10);
-    var firstItem = new object();
-    var secondItem = new object();
+    <span style="color: #B00040">var</span> stack = <span style="color: #008000; font-weight: bold">new</span> Stack(maximumNumberOfItemsAllowed: <span style="color: #666666">10</span>);
+    <span style="color: #B00040">var</span> firstItem = <span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">object</span>();
+    <span style="color: #B00040">var</span> secondItem = <span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">object</span>();
     stack.Add(firstItem);
     stack.Add(secondItem);
 
@@ -313,18 +313,18 @@ We don’t want to repeat ourselves, so we will delegate to a reusable method ca
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="csharp">[Test]
-public void Add_PostCond_InvariantsWereEnforced()
+<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #7D9029">[Test]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PostCond_InvariantsWereEnforced</span>()
 {
-    //Arrange
-    var stack = new MockRepository().PartialMock&lt;Stack&gt;(1);
+    <span style="color: #408080; font-style: italic">//Arrange</span>
+    <span style="color: #B00040">var</span> stack = <span style="color: #008000; font-weight: bold">new</span> MockRepository().PartialMock&lt;Stack&gt;(<span style="color: #666666">1</span>);
     stack.Expect(x=&gt;x.CheckInvariants());
     stack.Replay();
 
-    //Act
-    stack.Add(new object());
+    <span style="color: #408080; font-style: italic">//Act</span>
+    stack.Add(<span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">object</span>());
 
-    //Assert
+    <span style="color: #408080; font-style: italic">//Assert</span>
     stack.VerifyAllExpectations();
 }</code></pre>
 </div>
@@ -366,24 +366,24 @@ This verification will fail if the method was not invoked indirectly by <code>Ad
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="csharp">[Test,ExpectedException(typeof(InvalidOperationException),
-    ExpectedMessage="Count cannnot be negative")]
-public void CheckInvariants_PostCond_CountIsNonNegative()
+<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #7D9029">[Test,ExpectedException(typeof(InvalidOperationException),</span>
+<span style="color: #7D9029">    ExpectedMessage=&quot;Count cannnot be negative&quot;)]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">CheckInvariants_PostCond_CountIsNonNegative</span>()
 {
-    var stack = new MockRepository().PartialMock&lt;Stack&gt;(1);
+    <span style="color: #B00040">var</span> stack = <span style="color: #008000; font-weight: bold">new</span> MockRepository().PartialMock&lt;Stack&gt;(<span style="color: #666666">1</span>);
     stack.Replay();
-    stack.Count = -1;
+    stack.Count = -<span style="color: #666666">1</span>;
 
     stack.CheckInvariants();
 }
-[Test,
-ExpectedException(typeof(InvalidOperationException),
-    ExpectedMessage = "Count cannot be greater than 7")]
-public void CheckInvariants_PostCond_CountIsLessThanMaximumAllowed()
+<span style="color: #7D9029">[Test,</span>
+<span style="color: #7D9029">ExpectedException(typeof(InvalidOperationException),</span>
+<span style="color: #7D9029">    ExpectedMessage = &quot;Count cannot be greater than 7&quot;)]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">CheckInvariants_PostCond_CountIsLessThanMaximumAllowed</span>()
 {
-    var stack = new MockRepository().PartialMock&lt;Stack&gt;(7);
+    <span style="color: #B00040">var</span> stack = <span style="color: #008000; font-weight: bold">new</span> MockRepository().PartialMock&lt;Stack&gt;(<span style="color: #666666">7</span>);
     stack.Replay();
-    stack.Count = 8;
+    stack.Count = <span style="color: #666666">8</span>;
 
     stack.CheckInvariants();
 }</code></pre>
@@ -394,44 +394,44 @@ public void CheckInvariants_PostCond_CountIsLessThanMaximumAllowed()
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="csharp">public class Stack
+<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">Stack</span>
 {
-    private int _maximumNumberOfItemsAllowed;
-    public Stack(int maximumNumberOfItemsAllowed)
+    <span style="color: #008000; font-weight: bold">private</span> <span style="color: #B00040">int</span> _maximumNumberOfItemsAllowed;
+    <span style="color: #008000; font-weight: bold">public</span> <span style="color: #0000FF">Stack</span>(<span style="color: #B00040">int</span> maximumNumberOfItemsAllowed)
     {
         _maximumNumberOfItemsAllowed = maximumNumberOfItemsAllowed;
     }
 
-    public int Count { get; protected internal set; }
+    <span style="color: #008000; font-weight: bold">public</span> <span style="color: #B00040">int</span> Count { <span style="color: #008000; font-weight: bold">get</span>; <span style="color: #008000; font-weight: bold">protected</span> <span style="color: #008000; font-weight: bold">internal</span> <span style="color: #008000; font-weight: bold">set</span>; }
 
-    public void Add(object item)
+    <span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add</span>(<span style="color: #B00040">object</span> item)
     {
-        if (item == null)
-            throw new ArgumentNullException("item");
+        <span style="color: #008000; font-weight: bold">if</span> (item == <span style="color: #008000; font-weight: bold">null</span>)
+            <span style="color: #008000; font-weight: bold">throw</span> <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">ArgumentNullException</span>(<span style="color: #BA2121">&quot;item&quot;</span>);
 
-        if (_maximumNumberOfItemsAllowed == Count)
-            throw new InvalidOperationException(
-                "Cannot add items when the stack is full.");
+        <span style="color: #008000; font-weight: bold">if</span> (_maximumNumberOfItemsAllowed == Count)
+            <span style="color: #008000; font-weight: bold">throw</span> <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">InvalidOperationException</span>(
+                <span style="color: #BA2121">&quot;Cannot add items when the stack is full.&quot;</span>);
         Count++;
         _array.Add(item);
 
         CheckInvariants();
     }
 
-    private IList _array = new ArrayList();
+    <span style="color: #008000; font-weight: bold">private</span> IList _array = <span style="color: #008000; font-weight: bold">new</span> ArrayList();
 
-    public object Peek()
+    <span style="color: #008000; font-weight: bold">public</span> <span style="color: #B00040">object</span> <span style="color: #0000FF">Peek</span>()
     {
-        return _array[Count - 1];
+        <span style="color: #008000; font-weight: bold">return</span> _array[Count - <span style="color: #666666">1</span>];
     }
 
-    protected internal virtual void CheckInvariants()
+    <span style="color: #008000; font-weight: bold">protected</span> <span style="color: #008000; font-weight: bold">internal</span> <span style="color: #008000; font-weight: bold">virtual</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">CheckInvariants</span>()
     {
-        if (Count &lt; 0)
-            throw new InvalidOperationException("Count cannnot be negative");
+        <span style="color: #008000; font-weight: bold">if</span> (Count &lt; <span style="color: #666666">0</span>)
+            <span style="color: #008000; font-weight: bold">throw</span> <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">InvalidOperationException</span>(<span style="color: #BA2121">&quot;Count cannnot be negative&quot;</span>);
 
-       if (Count &gt; _maximumNumberOfItemsAllowed)
-            throw new InvalidOperationException("Count cannot be greater than " + _maximumNumberOfItemsAllowed);
+       <span style="color: #008000; font-weight: bold">if</span> (Count &gt; _maximumNumberOfItemsAllowed)
+            <span style="color: #008000; font-weight: bold">throw</span> <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">InvalidOperationException</span>(<span style="color: #BA2121">&quot;Count cannot be greater than &quot;</span> + _maximumNumberOfItemsAllowed);
         }
     }</code></pre>
 </div>
@@ -477,20 +477,20 @@ public void CheckInvariants_PostCond_CountIsLessThanMaximumAllowed()
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="csharp">[Test, ExpectedException( typeof(ArgumentNullException))]
-public void Add_PreCond_ItemIsRequired()
+<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #7D9029">[Test, ExpectedException( typeof(ArgumentNullException))]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PreCond_ItemIsRequired</span>()
 {
-    new Stack(maximumNumberOfItemsAllowed: 1)
-        .Add(null);
+    <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">Stack</span>(maximumNumberOfItemsAllowed: <span style="color: #666666">1</span>)
+        .Add(<span style="color: #008000; font-weight: bold">null</span>);
 }
 
-[Test,
-ExpectedException(typeof(InvalidOperationException),
-    ExpectedMessage="Cannot add items when the stack is full.")]
-public void Add_PreCond_StackCantBeFull()
+<span style="color: #7D9029">[Test,</span>
+<span style="color: #7D9029">ExpectedException(typeof(InvalidOperationException),</span>
+<span style="color: #7D9029">    ExpectedMessage=&quot;Cannot add items when the stack is full.&quot;)]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PreCond_StackCantBeFull</span>()
 {
-    new Stack(maximumNumberOfItemsAllowed: 0)
-        .Add(new object());
+    <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">Stack</span>(maximumNumberOfItemsAllowed: <span style="color: #666666">0</span>)
+        .Add(<span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">object</span>());
 }</code></pre>
 </div>
 </div>
@@ -514,11 +514,11 @@ of an unhappy case, that is, a happy case for pre conditions.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="csharp">[Test]
-public void Add_PreCond_HappyCase()
+<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #7D9029">[Test]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PreCond_HappyCase</span>()
 {
-    new Stack(maximumNumberOfItemsAllowed: 1)
-        .Add(new object());
+    <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">Stack</span>(maximumNumberOfItemsAllowed: <span style="color: #666666">1</span>)
+        .Add(<span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">object</span>());
 }</code></pre>
 </div>
 </div>

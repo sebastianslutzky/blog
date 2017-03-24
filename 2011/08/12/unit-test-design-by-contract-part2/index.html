@@ -10,7 +10,7 @@
   
   
   <title>Unit testing with Design By Contract (part 2)</title>
-  <meta name="description" content="Unit testing with Design By Contract (part 2) This article is the second of three on Unit Testing and Design By Contract Testing Post Conditions and Class Invariants Our User Story contains two pre conditions, so we should write a test for each of them. [Test, ExpectedException( typeof(ArgumentNullException))] public void Add_PreCond_ItemIsRequired() { new Stack(maximumNumberOfItemsAllowed: 1) .Add(null); } [Test, ExpectedException(typeof(InvalidOperationException), ExpectedMessage=&quot;Cannot add items when the stack is full.&quot;)] public void Add_PreCond_StackCantBeFull() { new Stack(maximumNumberOfItemsAllowed: 0) .Add(new object()); } These unit tests ensure that if any of the two pre conditions are not satisfied, the Supplier will not execute the method. To do so, it throws an error to the Client. When we unit tests this behaviour, we assert that the Unit Tests will result in an exception being thrown, and we can additionally specify the type of the exception. These types of tests are also known as Unhappy Tests. Happy Case: The N + 1 Pre Condition How do you test that all pre conditions are met? Well, you could argue that is not needed, when testing post conditions we can assume that the method is executed, what means that we passed all pre condition checks. Let’s suppose a new pre condition is added to the class, and that the developer forgets to write the Unit Test for it. Yes, all post-condition tests should now fail: there is a new pre condition in town. But this may not happen, what if the new pre condition was coincidentally met by all tests? For example, a new requirement that only allows us to add non empty strings to the stack may not be detected by any existing test if they already use non empty strings only. There is another problem, related to error localization. In his brilliant book “Working Effectively with Legacy Code” Michael Feathers emphasizes that one of the benefits of good tests is that it helps us to easily localize problems. With a happy case, we do not want to test the outcome of a method. We want to check that if all pre requisites are satisfied, the method throws no error. This is the opposite scenario of an unhappy case, that is, a happy case for pre conditions. [Test] public void Add_PreCond_HappyCase() { new Stack(maximumNumberOfItemsAllowed: 1) .Add(new object()); } Notice that we are not doing any checking on this test. We simply want to pass all the validations for pre conditions. We are also not interested in testing the state of the stack after adding the item. In other words, we are not testing pre conditions either. We will do that in the nexdt part Coming Next: Testing Post Conditions and Class Invariants">
+  <meta name="description" content="Unit testing with Design By Contract (part 2) This article is the second of three on Unit Testing and Design By Contract Testing Post Conditions and Class Invariants Our User Story contains two pre conditions, so we should write a test for each of them. [Test, ExpectedException( typeof(ArgumentNullException))] public void Add_PreCond_ItemIsRequired() { new Stack(maximumNumberOfItemsAllowed: 1) .Add(null); } [Test, ExpectedException(typeof(InvalidOperationException), ExpectedMessage=&amp;quot;Cannot add items when the stack is full.&amp;quot;)] public void Add_PreCond_StackCantBeFull() { new Stack(maximumNumberOfItemsAllowed: 0) .Add(new object()); } These unit tests ensure that if any of the two pre conditions are not satisfied, the Supplier will not execute the method. To do so, it throws an error to the Client. When we unit tests this behaviour, we assert that the Unit Tests will result in an exception being thrown, and we can additionally specify the type of the exception. These types of tests are also known as Unhappy Tests. Happy Case: The N + 1 Pre Condition How do you test that all pre conditions are met? Well, you could argue that is not needed, when testing post conditions we can assume that the method is executed, what means that we passed all pre condition checks. Let’s suppose a new pre condition is added to the class, and that the developer forgets to write the Unit Test for it. Yes, all post-condition tests should now fail: there is a new pre condition in town. But this may not happen, what if the new pre condition was coincidentally met by all tests? For example, a new requirement that only allows us to add non empty strings to the stack may not be detected by any existing test if they already use non empty strings only. There is another problem, related to error localization. In his brilliant book “Working Effectively with Legacy Code” Michael Feathers emphasizes that one of the benefits of good tests is that it helps us to easily localize problems. With a happy case, we do not want to test the outcome of a method. We want to check that if all pre requisites are satisfied, the method throws no error. This is the opposite scenario of an unhappy case, that is, a happy case for pre conditions. [Test] public void Add_PreCond_HappyCase() { new Stack(maximumNumberOfItemsAllowed: 1) .Add(new object()); } Notice that we are not doing any checking on this test. We simply want to pass all the validations for pre conditions. We are also not interested in testing the state of the stack after adding the item. In other words, we are not testing pre conditions either. We will do that in the nexdt part Coming Next: Testing Post Conditions and Class Invariants">
   
 
   <link rel="stylesheet" href="/blog/assets/main.css">
@@ -108,20 +108,20 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="csharp">[Test, ExpectedException( typeof(ArgumentNullException))]
-public void Add_PreCond_ItemIsRequired()
+<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #7D9029">[Test, ExpectedException( typeof(ArgumentNullException))]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PreCond_ItemIsRequired</span>()
 {
-    new Stack(maximumNumberOfItemsAllowed: 1)
-        .Add(null);
+    <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">Stack</span>(maximumNumberOfItemsAllowed: <span style="color: #666666">1</span>)
+        .Add(<span style="color: #008000; font-weight: bold">null</span>);
 }
 
-[Test,
-ExpectedException(typeof(InvalidOperationException),
-    ExpectedMessage="Cannot add items when the stack is full.")]
-public void Add_PreCond_StackCantBeFull()
+<span style="color: #7D9029">[Test,</span>
+<span style="color: #7D9029">ExpectedException(typeof(InvalidOperationException),</span>
+<span style="color: #7D9029">    ExpectedMessage=&quot;Cannot add items when the stack is full.&quot;)]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PreCond_StackCantBeFull</span>()
 {
-    new Stack(maximumNumberOfItemsAllowed: 0)
-        .Add(new object());
+    <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">Stack</span>(maximumNumberOfItemsAllowed: <span style="color: #666666">0</span>)
+        .Add(<span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">object</span>());
 }</code></pre>
 </div>
 </div>
@@ -145,11 +145,11 @@ of an unhappy case, that is, a happy case for pre conditions.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="csharp">[Test]
-public void Add_PreCond_HappyCase()
+<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #7D9029">[Test]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PreCond_HappyCase</span>()
 {
-    new Stack(maximumNumberOfItemsAllowed: 1)
-        .Add(new object());
+    <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">Stack</span>(maximumNumberOfItemsAllowed: <span style="color: #666666">1</span>)
+        .Add(<span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">object</span>());
 }</code></pre>
 </div>
 </div>

@@ -200,12 +200,12 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="java">//To be implemented by actionfilterattributes that override a global action filter
-public interface IOverridingFilterAttribute
-{
-    //The type of actionfilter to be replaced for this request
-    Type OverriddenType { get; }
-}</code></pre>
+<pre class="pygments highlight"><code data-lang="java"><span style="color: #408080; font-style: italic">//To be implemented by actionfilterattributes that override a global action filter</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">interface</span> <span style="color: #0000FF; font-weight: bold">IOverridingFilterAttribute</span>
+<span style="color: #666666">{</span>
+    <span style="color: #408080; font-style: italic">//The type of actionfilter to be replaced for this request</span>
+    Type OverriddenType <span style="color: #666666">{</span> get<span style="color: #666666">;</span> <span style="color: #666666">}</span>
+<span style="color: #666666">}</span></code></pre>
 </div>
 </div>
 </div>
@@ -216,50 +216,50 @@ public interface IOverridingFilterAttribute
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="c#">public class OverridingFilterProvider : IFilterProvider
+<pre class="pygments highlight"><code data-lang="c#"><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">OverridingFilterProvider</span> : IFilterProvider
 {
-    //called by WebApi on each request, in order
-    // to get the list of filters to apply
-    public IEnumerable&lt;FilterInfo&gt; GetFilters(HttpConfiguration configuration, HttpActionDescriptor actionDescriptor)
+    <span style="color: #408080; font-style: italic">//called by WebApi on each request, in order</span>
+    <span style="color: #408080; font-style: italic">// to get the list of filters to apply</span>
+    <span style="color: #008000; font-weight: bold">public</span> IEnumerable&lt;FilterInfo&gt; GetFilters(HttpConfiguration configuration, HttpActionDescriptor actionDescriptor)
     {
-        var globalFilters = configuration.Filters;
-        var controllerFilters = actionDescriptor.ControllerDescriptor.GetFilters().Select(x =&gt; new FilterInfo(x,FilterScope.Controller));
-        var actionFilters = actionDescriptor.GetFilters().Select(x =&gt; new FilterInfo(x,FilterScope.Action));
+        <span style="color: #B00040">var</span> globalFilters = configuration.Filters;
+        <span style="color: #B00040">var</span> controllerFilters = actionDescriptor.ControllerDescriptor.GetFilters().Select(x =&gt; <span style="color: #008000; font-weight: bold">new</span> FilterInfo(x,FilterScope.Controller));
+        <span style="color: #B00040">var</span> actionFilters = actionDescriptor.GetFilters().Select(x =&gt; <span style="color: #008000; font-weight: bold">new</span> FilterInfo(x,FilterScope.Action));
 
-        //we'll apply global,controller-wide
-        //and then action attribute filters
-        var all = globalFilters.Concat(controllerFilters).Concat(actionFilters);
-        return RemoveAnyOverriddenFilter(all);
+        <span style="color: #408080; font-style: italic">//we&#39;ll apply global,controller-wide</span>
+        <span style="color: #408080; font-style: italic">//and then action attribute filters</span>
+        <span style="color: #B00040">var</span> all = globalFilters.Concat(controllerFilters).Concat(actionFilters);
+        <span style="color: #008000; font-weight: bold">return</span> <span style="color: #0000FF">RemoveAnyOverriddenFilter</span>(all);
     }
 
-    //if there are IOverridingFilterAttributes,
-    //remove the filters they override
-    private IEnumerable&lt;FilterInfo&gt; RemoveAnyOverriddenFilter(IEnumerable&lt;FilterInfo&gt; all)
+    <span style="color: #408080; font-style: italic">//if there are IOverridingFilterAttributes,</span>
+    <span style="color: #408080; font-style: italic">//remove the filters they override</span>
+    <span style="color: #008000; font-weight: bold">private</span> IEnumerable&lt;FilterInfo&gt; RemoveAnyOverriddenFilter(IEnumerable&lt;FilterInfo&gt; all)
     {
-        var overridingFilters =
-            all.Where(x =&gt; (x.Instance as IOverridingFilterAttribute) != null)
+        <span style="color: #B00040">var</span> overridingFilters =
+            all.Where(x =&gt; (x.Instance <span style="color: #008000; font-weight: bold">as</span> IOverridingFilterAttribute) != <span style="color: #008000; font-weight: bold">null</span>)
                 .Select(x =&gt; (IOverridingFilterAttribute) x.Instance);
 
-        var filtered =  all.Where(x =&gt; !IsOverridden(x, overridingFilters));
-        return filtered;
+        <span style="color: #B00040">var</span> filtered =  all.Where(x =&gt; !IsOverridden(x, overridingFilters));
+        <span style="color: #008000; font-weight: bold">return</span> filtered;
     }
 
-    private bool IsOverridden(FilterInfo target, IEnumerable&lt;IOverridingFilterAttribute&gt; overrides)
+    <span style="color: #008000; font-weight: bold">private</span> <span style="color: #B00040">bool</span> <span style="color: #0000FF">IsOverridden</span>(FilterInfo target, IEnumerable&lt;IOverridingFilterAttribute&gt; overrides)
     {
-        foreach (var overridingFilter in overrides)
+        <span style="color: #008000; font-weight: bold">foreach</span> (<span style="color: #B00040">var</span> overridingFilter <span style="color: #008000; font-weight: bold">in</span> overrides)
         {
-            var filterType = target.Instance.GetType();
-            var overriddenType = overridingFilter.OverriddenType;
+            <span style="color: #B00040">var</span> filterType = target.Instance.GetType();
+            <span style="color: #B00040">var</span> overriddenType = overridingFilter.OverriddenType;
 
-            if (overriddenType.IsAssignableFrom(filterType))
-                return true;
+            <span style="color: #008000; font-weight: bold">if</span> (overriddenType.IsAssignableFrom(filterType))
+                <span style="color: #008000; font-weight: bold">return</span> <span style="color: #008000; font-weight: bold">true</span>;
         }
-        return false;
+        <span style="color: #008000; font-weight: bold">return</span> <span style="color: #008000; font-weight: bold">false</span>;
     }
 
-    private IEnumerable&lt;FilterInfo&gt; OrderFilters(IEnumerable&lt;IFilter&gt; filters, FilterScope scope)
+    <span style="color: #008000; font-weight: bold">private</span> IEnumerable&lt;FilterInfo&gt; OrderFilters(IEnumerable&lt;IFilter&gt; filters, FilterScope scope)
     {
-        return filters.Select(instance =&gt; new FilterInfo(instance, scope));
+        <span style="color: #008000; font-weight: bold">return</span> filters.Select(instance =&gt; <span style="color: #008000; font-weight: bold">new</span> FilterInfo(instance, scope));
     }
 }</code></pre>
 </div>
@@ -269,13 +269,13 @@ public interface IOverridingFilterAttribute
 <h3 id="step_3_register_your_filter_provider">Step 3: Register your Filter Provider</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="c#">public class WebApiApplication : HttpApplication
+<pre class="pygments highlight"><code data-lang="c#"><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">WebApiApplication</span> : HttpApplication
 {
-    protected void Application_Start()
+    <span style="color: #008000; font-weight: bold">protected</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Application_Start</span>()
     {
-        var services = GlobalConfiguration.Configuration.Services;
-        services.Replace(typeof(IFilterProvider),
-            new OverridingFilterProvider());
+        <span style="color: #B00040">var</span> services = GlobalConfiguration.Configuration.Services;
+        services.Replace(<span style="color: #008000; font-weight: bold">typeof</span>(IFilterProvider),
+            <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">OverridingFilterProvider</span>());
     }
 }</code></pre>
 </div>
