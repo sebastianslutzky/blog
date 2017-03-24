@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>NAnt and the limitation of xml programming</title>
+  <meta name="description" content="NAnt and the limitation of xml programming I have used NAnt (the .Net port of the Java build tool Ant) in most of the .Net/VB6 projects I have worked on. The decision for using this tool was not always mine, but I guess I did not find (nor look for) a better alternative. As these projects grew, so did their build process and the complexity the build scripts. NAnt was flexible enough to cope with this. If a suitable task does not exist, you can download NAntContrib tasks, other tasks from the web, or you can create yours. If a task is too simple a language construct for the job, you can call an executable and pass the right parameter, create a .Net in-line function, or call a Powershell script. One of the systems I worked on was particularly complex but very well designed. So was its build script. Common functionality was not duplicated, but kept as targets or tasks in separate NAnt files, that where included in the main NAnt script. When reusing these blocks of code, you usually have to pass context-specific parameters to it. You do this by setting properties before invoking the NAnt target. For example: ... &amp;lt;property name=&quot;SpreadsheetPath&quot; value=&quot;${Config} + ${CurrentProject}&quot; /&amp;gt; &amp;lt;call target=&quot;ProcessSpreadsheet&quot; /&amp;gt; ... This syntax becomes more awkward when more properties need to be passed to the target. Worse, the lack of explicit input and outputs to a NAnt target make this syntax a bad practice: code calling a target needs to know the name of the properties the target needs set, and the name of the property containing the expected output of the target. Let me picture this with an example: (Known inputs: SpreadsheetPath and BusinessArea) &amp;lt;property name=&quot;SpreadsheetPath&quot; value=&quot;${Config} + ${CurrentProject}&quot; /&amp;gt; &amp;lt;property name=&quot;BusinessArea&quot; value=&#39;Security&#39; /&amp;gt; &amp;lt;call target=&quot;GenerateCodeFromSpreadsheet&quot; /&amp;gt; (Known output: NumberOfGeneratedFiles) &amp;lt;property name=&quot;TotalCodeFiles&quot; value=&quot;${NumberOfGeneratedFiles}&quot; /&amp;gt; The problem: When XML is not enough I don’t have the intention (nor the knowledge!) to enter the XML vs DSL discussion but I see a real disadvantage in using Ant/NAnt for big and complex systems. Generally speaking is not a good idea to program in an XML based DSL (like NAnt). It makes sense to declare targets that know what to do and how to do it, but as the code base grows and scripts are modularised for better reusability, then is only a matter of time until you find yourself programming on XML. The XML/DSL discussion is a very interesting one, and so is the classification of programming paradigms ( what is NAnt programming. Goal-Oriented? Declarative? Or simply a markup language?), but I’m not interested on them now. I think I’m done with Ant/NAnt…I’ll stop trying to extract oil from stones, as Spaniards say. There’s only so much you can ask xml-based languages, but soon you’ll need a proper programming language, or you’ll become an xmlholic. If you know Maven for Java solutions (NMaven is only an idea at the time of writing), you know this is an XML based tool too so it will suffer the same problems I just mentioned. Maven is, however, more flexible thanks to the life cycle structure and the ability of recursively build projects (as specified in their Project Object Model xml files) in a folder structure. This benefit is not enough to marry xml programming for life&amp;#8230;&amp;#8203;one size doesn’t fit all, in fact in terms of build process; standardisation is the exception rather than the rule. I still need to look into Gradle, but it may be good answer to Ant/Maven approaches. The solution: I don’t know really. Sorry if you’ve read this far, but I just wanted to brain dump my discontent with XML programming. Maybe is a useful question for us developers using or building frameworks on a daily basis. Where should we allow for a more multi-purpose, less templated approach? Extensibility is not always the answer. Some frameworks like NAnt are very extensible, but offer very little at their core. The extended functionality is more useful than the basic framework itself. So no, I don’t know the solution for avoiding XML programming (NAnt or Maven) for the time being I’m moving towards a build script fully written in PowerShell, with a flavour of Maven’s life cycles. I will write in detail about this later, it is not rocket science and is not a full solution, but is a start, just like this blog entry.">
+  
+
+  <link rel="stylesheet" href="/blog/assets/main.css">
+  <link rel="canonical" href="http://youarewhatyoucode/blog/2010/04/16/nant-and-xml-programming/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="you are what you code" href="http://youarewhatyoucode/blog/feed.xml">
+
+  
+
+  
+  <meta name="twitter:card" content="summary">
+  
+  <meta name="twitter:title" content="NAnt and the limitation of xml programming">
+  <meta name="twitter:description" content="NAnt and the limitation of xml programming I have used NAnt (the .Net port of the Java build tool Ant) in most of the .Net/VB6 projects I have worked on. The decision for using this tool was not al...">
+  
+  
+
+  <script type="text/javascript">
+  WebFontConfig = {
+    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+</script>
+
+  
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/blog/">you are what you code</a>
+
+    <nav class="site-nav">
+      
+        
+        <a class="page-link" href="https://ie.linkedin.com/in/sebastianslutzky">About</a>
+      
+        
+        <a class="page-link" href="/blog/archives/">Archives</a>
+      
+        
+        <a class="page-link" href="https://github.com/sebastianslutzky">GitHub</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    
+      <h1 class="post-title" itemprop="name headline">NAnt and the limitation of xml programming</h1>
+    
+    <p class="post-meta"><time datetime="2010-04-16T00:00:00+00:00" itemprop="datePublished">Apr 16, 2010</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h1>NAnt and the limitation of xml programming</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>I have used NAnt (the .Net port of the Java build tool Ant) in most of the .Net/VB6 projects I have worked on. The decision for using this tool was not always mine, but I guess I did not find (nor look for) a better alternative.</p>
+</div>
+<div class="paragraph">
+<p>As these projects grew, so did their build process and the complexity the build scripts. NAnt was flexible enough to cope with this. If a suitable task does not exist, you can download NAntContrib tasks, other tasks from the web, or you can create yours. If a task is too simple a language construct for the job, you can call an executable and pass the right parameter, create a .Net in-line function, or call a Powershell script.</p>
+</div>
+<div class="paragraph">
+<p>One of the systems I worked on was particularly complex but very well designed. So was its build script. Common functionality was not duplicated, but kept as targets or tasks in separate NAnt files, that where included in the main NAnt script.</p>
+</div>
+<div class="paragraph">
+<p>When reusing these blocks of code, you usually have to pass context-specific parameters to it. You do this by setting properties before invoking the NAnt target. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml">...
+&lt;property name="SpreadsheetPath" value="${Config} + ${CurrentProject}" /&gt;
+&lt;call target="ProcessSpreadsheet" /&gt;
+...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This syntax becomes more awkward when more properties need to be passed to the target.</p>
+</div>
+<div class="paragraph">
+<p>Worse, the lack of explicit input and outputs to a NAnt target make this syntax a bad practice: code calling a target needs to know the name of the properties the target needs set, and the name of the property containing the expected output of the target. Let me picture this with an example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml">(Known inputs: SpreadsheetPath and BusinessArea)
+&lt;property name="SpreadsheetPath"
+    value="${Config} + ${CurrentProject}" /&gt;
+&lt;property name="BusinessArea" value='Security' /&gt;
+
+&lt;call target="GenerateCodeFromSpreadsheet" /&gt;
+
+(Known output: NumberOfGeneratedFiles)
+&lt;property name="TotalCodeFiles" value="${NumberOfGeneratedFiles}" /&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="the_problem_when_xml_is_not_enough">The problem: When XML is not enough</h3>
+<div class="paragraph">
+<p>I don’t have the intention (nor the knowledge!) to enter the XML vs DSL discussion but I see a real disadvantage in using Ant/NAnt for big and complex systems. Generally speaking is not a good idea to program in an XML based DSL (like NAnt). It makes sense to declare targets that know what to do and how to do it, but as the code base grows and scripts are modularised for better reusability, then is only a matter of time until you find yourself programming on XML.</p>
+</div>
+<div class="paragraph">
+<p>The XML/DSL discussion is a very interesting one, and so is the classification of programming paradigms ( what is NAnt programming. Goal-Oriented? Declarative? Or simply a markup language?), but I’m not interested on them now. I think I’m done with Ant/NAnt…I’ll stop trying to extract oil from stones, as Spaniards say. There’s only so much you can ask xml-based languages, but soon you’ll need a proper programming language, or you’ll become an xmlholic.</p>
+</div>
+<div class="paragraph">
+<p>If you know Maven for Java solutions (NMaven is only an idea at the time of writing), you know this is an XML based tool too so it will suffer the same problems I just mentioned. Maven is, however, more flexible thanks to the life cycle structure and the ability of recursively build projects (as specified in their Project Object Model xml files) in a folder structure. This benefit is not enough to marry xml programming for life&#8230;&#8203;one size doesn’t fit all, in fact in terms of build process; standardisation is the exception rather than the rule. I still need to look into Gradle, but it may be good answer to Ant/Maven approaches.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="the_solution">The solution:</h3>
+<div class="paragraph">
+<p>I don’t know really. Sorry if you’ve read this far, but I just wanted to brain dump my discontent with XML programming. Maybe is a useful question for us developers using or building frameworks on a daily basis. Where should we allow for a more multi-purpose, less templated approach? Extensibility is not always the answer. Some frameworks like NAnt are very extensible, but offer very little at their core. The extended functionality is more useful than the basic framework itself.</p>
+</div>
+<div class="paragraph">
+<p>So no, I don’t know the solution for avoiding XML programming (NAnt or Maven) for the time being I’m moving towards a build script fully written in PowerShell, with a flavour of Maven’s life cycles. I will write in detail about this later, it is not rocket science and is not a full solution, but is a start, just like this blog entry.</p>
+</div>
+</div>
+  </div>
+
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy; sebastian slutzky - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://youarewhatyoucode/blog/feed.xml">RSS</a>
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

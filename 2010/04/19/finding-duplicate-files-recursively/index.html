@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>Finding duplicated files recursively</title>
+  <meta name="description" content="Finding duplicated files recursively I was cleaning up a folder with files duplicated in subdirectories. Here is a simple Powershell code that identifies duplications recursively. There might be a shorter form, but I think this is as I short I can get without becoming very cryptic. function FindDuplicates{ # Receives a list of ArrayLists # iteratively prints the full path of each ArrayList item # where the ArrayList contains multiple paths (i.e duplicates) Process { if ($_.Count -gt 1) {foreach($d in $_){$d.FullName}} } } function GetFilesInBuckets($dir,$filter = &quot;*.*&quot;) { # Creates a hashtable of arraylists (1 entry per unique file name) # Returns the list of arraylists only (not the entire hashtable) $files = @{} foreach ($fl in (gci $dir -filter $filter -r)) { if(!$files.ContainsKey($fl.Name)) { $files[$fl.Name] = New-Object System.Collections.ArrayList } [void]$files[$fl.Name].Add($fl) } $files.Values } GetFilesInBuckets &quot;C:\MyRootFolder&quot; -f &quot;*.txt&quot; |FindDuplicates Additional filtering methods will look similar to as FindDuplicates, and can be piped at the end of the last line of code: GetFilesInBuckets &quot;C:\MyRootFolder&quot; -f &quot;*.txt&quot;| FindDuplicates| FilterOutOlder">
+  
+
+  <link rel="stylesheet" href="/blog/assets/main.css">
+  <link rel="canonical" href="http://youarewhatyoucode/blog/2010/04/19/finding-duplicate-files-recursively/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="you are what you code" href="http://youarewhatyoucode/blog/feed.xml">
+
+  
+
+  
+  <meta name="twitter:card" content="summary">
+  
+  <meta name="twitter:title" content="Finding duplicated files recursively">
+  <meta name="twitter:description" content="Finding duplicated files recursively I was cleaning up a folder with files duplicated in subdirectories. Here is a simple Powershell code that identifies duplications recursively. There might be a ...">
+  
+  
+
+  <script type="text/javascript">
+  WebFontConfig = {
+    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+</script>
+
+  
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/blog/">you are what you code</a>
+
+    <nav class="site-nav">
+      
+        
+        <a class="page-link" href="https://ie.linkedin.com/in/sebastianslutzky">About</a>
+      
+        
+        <a class="page-link" href="/blog/archives/">Archives</a>
+      
+        
+        <a class="page-link" href="https://github.com/sebastianslutzky">GitHub</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    
+      <h1 class="post-title" itemprop="name headline">Finding duplicated files recursively</h1>
+    
+    <p class="post-meta"><time datetime="2010-04-19T00:00:00+00:00" itemprop="datePublished">Apr 19, 2010</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h1>Finding duplicated files recursively</h1>
+<div class="paragraph">
+<p>I was cleaning up a folder with files duplicated in subdirectories. Here is a simple Powershell code that identifies duplications recursively.</p>
+</div>
+<div class="paragraph">
+<p>There might be a shorter form, but I think this is as I short I can get without becoming very cryptic.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="powershell">function FindDuplicates{
+ # Receives a list of ArrayLists
+ # iteratively prints the full path of each ArrayList item
+ # where the ArrayList contains multiple paths (i.e duplicates)
+Process
+{
+ if ($_.Count -gt 1)
+       {foreach($d in $_){$d.FullName}} }
+}
+
+function GetFilesInBuckets($dir,$filter = "*.*")
+{
+ # Creates a hashtable of arraylists (1 entry per unique file name)
+ # Returns the list of arraylists only (not the entire hashtable)
+  $files = @{}
+ foreach ($fl in (gci $dir -filter $filter -r))
+  {
+    if(!$files.ContainsKey($fl.Name))
+    {
+    $files[$fl.Name] = New-Object System.Collections.ArrayList
+    }
+    [void]$files[$fl.Name].Add($fl)
+  }
+ $files.Values
+}
+
+GetFilesInBuckets "C:\MyRootFolder" -f "*.txt"
+    |FindDuplicates</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Additional filtering methods will look similar to as <code>FindDuplicates</code>, and can be piped at the end of the last line of code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="powershell">GetFilesInBuckets "C:\MyRootFolder" -f "*.txt"|
+    FindDuplicates|
+    FilterOutOlder</code></pre>
+</div>
+</div>
+  </div>
+
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy; sebastian slutzky - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://youarewhatyoucode/blog/feed.xml">RSS</a>
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

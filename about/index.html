@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>About</title>
+  <meta name="description" content="a pretentiusly simple blog, with a series of coherent tech rambles...">
+  
+
+  <link rel="stylesheet" href="/blog/assets/main.css">
+  <link rel="canonical" href="http://youarewhatyoucode/blog/about/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="you are what you code" href="http://youarewhatyoucode/blog/feed.xml">
+
+  
+
+  
+  <meta name="twitter:card" content="summary">
+  
+  <meta name="twitter:title" content="About">
+  <meta name="twitter:description" content="a pretentiusly simple blog, with a series of coherent tech rambles...">
+  
+  
+
+  <script type="text/javascript">
+  WebFontConfig = {
+    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+</script>
+
+  
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/blog/">you are what you code</a>
+
+    <nav class="site-nav">
+      
+        
+        <a class="page-link" href="https://ie.linkedin.com/in/sebastianslutzky">About</a>
+      
+        
+        <a class="page-link" href="/blog/archives/">Archives</a>
+      
+        
+        <a class="page-link" href="https://github.com/sebastianslutzky">GitHub</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">About</h1>
+  </header>
+
+  <div class="post-content">
+    <p>whiteglass is a minimal, responsive Jekyll theme for hackers.</p>
+
+<h2 id="installation">Installation</h2>
+
+<p>Add this link to your Jekyll site’s Gemfile:</p>
+
+<pre><code class="language-ruby">gem "jekyll-whiteglass"
+</code></pre>
+
+<p>And add this line to your Jekyll site’s <code>_config.yml</code>:</p>
+
+<pre><code class="language-yaml">theme: jekyll-whiteglass
+</code></pre>
+
+<p>And then execute:</p>
+
+<pre><code class="language-sh">bundle
+</code></pre>
+
+<p>Or install it yourself as:</p>
+
+<pre><code class="language-sh">gem install jekyll-whiteglass
+</code></pre>
+
+<h2 id="usage">Usage</h2>
+
+<h3 id="customization">Customization</h3>
+
+<p>To override the default structure and style of whiteglass, simply create the
+concerned directory at the root of your site, copy the file you wish to
+customize to that directory, and then edit the file. e.g., to override the
+<a href="_includes/head_custom.html"><code>_includes/head_custom.html</code></a> file to specify a
+custom style path, create an <code>_includes</code> directory, copy
+<code>_includes/head_custom.html</code> from jekyll-whiteglass gem folder to
+<code>&lt;your-site&gt;/_includes</code> and start editing that file.</p>
+
+<p>The site’s default CSS is in the gem itself,
+<a href="assets/main.scss"><code>assets/main.scss</code></a>. To override the default CSS, the file
+has to exist at your site source. Do either of the following:</p>
+
+<ul>
+  <li>Create a new instance of <code>main.scss</code> at site source
+    <ul>
+      <li>Create a new file <code>main.scss</code> at <code>&lt;your-site&gt;/assets/</code></li>
+      <li>Add the frontmatter dashes, and</li>
+      <li>Add <code>@import "whiteglass";</code>, to <code>&lt;your-site&gt;/assets/main.scss</code></li>
+      <li>Add your custom CSS</li>
+    </ul>
+  </li>
+  <li>Download the file from this repo
+    <ul>
+      <li>Create a new file <code>main.scss</code> at <code>&lt;your-site&gt;/assets/</code></li>
+      <li>Copy the contents at <a href="assets/main.scss"><code>assets/main.scss</code></a> onto the <code>main.scss</code> you just created, and edit away</li>
+    </ul>
+  </li>
+  <li>Copy directly from jekyll-whiteglass gem
+    <ul>
+      <li>Go to your local jekyll-whiteglass gem installation directory (run <code>bundle show jekyll-whiteglass</code> to get the path to it)</li>
+      <li>Copy the <code>assets/</code> folder from there into the root of <code>&lt;your-site&gt;</code></li>
+      <li>Change whatever values you want, inside <code>&lt;your-site&gt;/assets/main.scss</code></li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="locale">Locale</h3>
+
+<p><code>site.lang</code> is used to declare the primary language for each web page within the
+site.</p>
+
+<p><code>lang: en-US</code> sets the <code>lang</code> attribute for the site to the United States flavor
+of English, while <code>en-GB</code> would be for the United Kingdom style of English.
+Country codes are optional and the shorter variation <code>lang: en</code> is also
+acceptable. You may want to write a post in different language, then add <code>lang</code>
+attribute to the frontmatter of that post:</p>
+
+<pre><code class="language-yaml">layout: post
+title: "안녕하세요"
+lang: ko
+</code></pre>
+
+<h3 id="description">Description</h3>
+
+<p><code>site.description</code> describes the site. This is mainly used in meta descriptions
+for improving SEO. Also, you can set <code>description</code> attribute for each post:</p>
+
+<pre><code class="language-yaml">layout: post
+title: Awesome Post
+description: This is an awesome post.
+</code></pre>
+
+<h3 id="category">Category</h3>
+
+<p>Each post can have <code>categories</code> attribute. It can be a string or an array. This
+will be displayed on index, archive and each post, and provide a link to the
+archive of category.</p>
+
+<pre><code class="language-yaml">layout: post
+title: Awesome Post
+categories: Misc
+</code></pre>
+
+<pre><code class="language-yaml">layout: post
+title: Another Awesome Post
+categories:
+  - Misc
+  - Idea
+</code></pre>
+
+<h3 id="metadata-for-seo">Metadata for SEO</h3>
+
+<h4 id="keywords">Keywords</h4>
+
+<p>Each post can have <code>keywords</code> attribute. This is a comma-separated list which is
+used in meta descriptions for improving SEO.</p>
+
+<pre><code class="language-yaml">layout: post
+title: How to configure jekyll-whiteglass
+keywords: jekyll, whiteglass, github pages
+</code></pre>
+
+<h4 id="twitter">Twitter</h4>
+
+<ul>
+  <li><code>site.twitter_username</code> sets <code>twitter:site</code> and <code>twitter:creator</code> meta tag</li>
+  <li><code>site.twitter_image</code> sets <code>twitter:image:src</code> meta tag</li>
+  <li><code>page.twitter_card.type</code> sets <code>twitter:card</code> meta tag (default: <code>summary</code>)
+    <ul>
+      <li>If <code>page.twitter_card.type</code> is <code>gallery</code>, it sets <code>twitter:image0</code>, <code>twitter:image1</code>, <code>twitter:image2</code> and <code>twitter:image3</code> meta tags with <code>page.twitter_card.image</code>, <code>page.twitter_card.image1</code>, <code>page.twitter_card.image2</code> and <code>page.twitter_card.image3</code>, respectively</li>
+      <li>If <code>page.twitter_card.type</code> is <code>photo</code>, <code>page.twitter_card.width</code> sets <code>twitter:image:width</code> meta tag and <code>page.twitter_card.height</code> sets <code>twitter:image:height</code> meta tag</li>
+    </ul>
+  </li>
+  <li><code>page.twitter_card.creator</code> sets <code>twitter:creator</code> meta tag. It overrides <code>site.twitter_username</code></li>
+  <li><code>page.twitter_card.image</code> sets <code>twitter:image:src</code> meta tag if <code>page.twitter_card.type</code> is not <code>gallery</code>. It overrides <code>site.twitter_image</code></li>
+</ul>
+
+<h4 id="facebook">Facebook</h4>
+
+<ul>
+  <li><code>site.facebook_app_id</code> sets <code>fb:admins</code> meta tag</li>
+  <li><code>site.facebook_page</code> sets <code>article:author</code> meta tag</li>
+  <li><code>site.facebook_image</code> sets <code>og:image</code> meta tag</li>
+  <li><code>page.facebook.image</code> sets <code>og:image</code> meta tag. It overrides <code>site.facebook_image</code></li>
+</ul>
+
+<h3 id="navigation">Navigation</h3>
+
+<p>To define header links, add titles and URLs under the <code>main</code> key in
+<code>_data/navigation.yml</code>:</p>
+
+<pre><code class="language-yaml">main:
+  - title: "About"
+    url: /about/
+  - title: "Archives"
+    url: /archives/
+  - title: "GitHub"
+    url: https://github.com/yous/whiteglass
+</code></pre>
+
+<h3 id="enabling-google-analytics">Enabling Google Analytics</h3>
+
+<p>To enable Google Analytics, add the following lines to your Jekyll site:</p>
+
+<pre><code class="language-yaml">google_analytics: UA-NNNNNNNN-N
+</code></pre>
+
+  </div>
+
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy; sebastian slutzky - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://youarewhatyoucode/blog/feed.xml">RSS</a>
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

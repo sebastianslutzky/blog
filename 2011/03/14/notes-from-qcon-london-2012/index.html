@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>Notes from QCon London 2011</title>
+  <meta name="description" content="Notes from QCon London 2011 Did you know Facebook is n ordinary single-threaded PHP website? How complex do you think Twitter’s business logic model is? Do you know how Nokia is preparing to scale Ovi once (if) their Microsoft deal is agreed? You may already be familiar with InfoQ, but if you are not, I recommend you to take a look at it at www.infoq.com. InfoQ is an online community focused on innovation in enterprise software development. On a daily basis, they deliver high quality articles for IT communities such as .Net, Java, SOA, Ruby and Agile among others._ QCon is the annual event organised by InfoQ, where experts in each of these diverse areas provide an update on the latest lessons learned, discoveries and challenges ahead. I am just back from QCon 2011 in London, where I had the opportunity to listen to some of these experiences and to get an idea of what is being done in other companies and countries. Is not often that you get to talk to the people behind architectures such as Twitter, Facebook, Nokia and Guardian.co.uk among others, so I want to share some of the good stuff of QCon here. Today I’m starting with an overview of the chats I assisted to on the first of the three days of conference . I can’t guarantee I’ll remember (or I even grasped) all I listened to, but I can at least give you resources and point you to the right documentation. I also plan to write detailed posts on a few topics I found most interesting. Day 1 All presentations were held during three days, and categorised into five areas or tracks per day. Unfortunately there is only one me so I had to select carefully … One of the tracks of Day 1 was “Enterprise Agile Transformation”. Being an Agile geek, I had to force myself to diversify, which was as difficult as getting a dog to eat a balanced diet. Scaling Lean &amp;amp; Agile: Large, Multisite or Offshore Delivery Craig Larman has a vast experience on implementing SCRUM in very large-scale project. With large I mean 500-1500 person, multisite teams with clients such as Xeror &amp;amp; Alcatel-Lucent. From these experiences he shared lessons learned, patterns and anti patterns on how to adopt and maintain Agile projects with multi hundred person teams, both co located and off shore. Larman is also the author of the books “Thinking &amp;amp; Organizational Tools” and “Practices for Scaling Lean &amp;amp; Agile Development” This was the key note of the day what means that a bit of time is wasted on bad jokes, but it gave us an idea on how we can keep a high level of communication and transparency despite teams being very large or non- co-located. The Invisible Computer Lab I am still not sure why I choose this presentation, but it turned out very interesting. Fraser Speirs is an iPhone developer who is also the head of Computer at a School in Greenok, Scotland . He told us how his school provided all children with iPads as the main learning channel. He also shared with us what where the students, teachers and parents reactions, his view of the overall results of the iPad implementation, and how he foresees the future of technology in the classroom. Contracts &amp;amp; Collaboration in Agile “Offshore” Outsourced Development Again Craig Larman (I told you I struggled to diversify this day!) deep-dive on how to scale Agile, in particular with off shore outsourced teams. There were a few useful tips and tricks on how to deal with offsite teams without losing the high level of transparency required by Agile methodologies. From cultural differences to contract-model choices, this was no high level, abstract Agile talk, but a very hand on and pragmatic one instead, including tips as low levels as what video chat software to use in daily SCRUMs . Bringing developers and testers closer together with Visual Studio The “Solutions” track, the only one that run over the three days, was the showroom for commercial products and frameworks. In this context, Gile Davies from Microsoft UK presented Test Manager, a new application for collaboration between testers and developers. I have to say I was extremely impressed by this tool, which is an extension of Team Foundation Server. The amount of help it provides to testers and developers during the lifecycle of bugs is what surprised me: -Testers can record their UI interaction within Windows and store them (okay this is not all that impressive yet…) -They can modularised these UI steps into logical blocks (e.g. “Find a book to buy”, “Add it to the cart with IE 7.0”, ”Cancel order using keyword only”, etc) -All test steps gets auto appended to Bug description. -Developers can click on the logical block that failed. They can even debug the problem as of the execution performed by the tester (yes!, it saves the entire state of the test that failed, so developers and tester are always talking of the same environment!) -It can even take automatic snapshot of cloud environments (we are talking Windows Azure only, of course) Complex Event Processing: DSL for High Frequency Trading Richard Tibbets presented the system his company build, StreamBase. It is an engine for Complex Event Processing Domain Specific Languages, complied into JVM code. The common perception of DSLs is that they are very expressive but that they cannot perform in scenarios where speed is at premium, like front-office trading applications. Unfortunately, I wasn’t able to dissipate my objections to DSLs. Ironically, despite all the talk about speed I felt this chat so slow it was never ending. Where Did My Architecture Go? Preserving software architecture in its implementation Agile systems are evolutionary, which means that the design of the system is not fully detailed up front. Instead, it “emerges” from a series of cycles of iterative development. Now for those who are not used to evolutionary design, this may sound like anarchy or worse, like no design at all. Eoin Woods did a very convincing walk through a set of tools that allow system to generate their representation from their implementation. This allows teams to keep their architectural design updated, so that the big picture is always clear as the software evolves. Some of the tools I knew already, but there were a few others that I’d really like to try in my next project. The tools demonstrated included support for .Net, Java and C++ technologies. More may follow… As I mentioned earlier, I will try to follow this post with other two with the presentation I’ve attended to on Day 2 and 3. After that, I will write a detailed post on some of the talks I’ve found most interesting.">
+  
+
+  <link rel="stylesheet" href="/blog/assets/main.css">
+  <link rel="canonical" href="http://youarewhatyoucode/blog/2011/03/14/notes-from-qcon-london-2012/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="you are what you code" href="http://youarewhatyoucode/blog/feed.xml">
+
+  
+
+  
+  <meta name="twitter:card" content="summary">
+  
+  <meta name="twitter:title" content="Notes from QCon London 2011">
+  <meta name="twitter:description" content="Notes from QCon London 2011 Did you know Facebook is n ordinary single-threaded PHP website? How complex do you think Twitter’s business logic model is? Do you know how Nokia is preparing to scale ...">
+  
+  
+
+  <script type="text/javascript">
+  WebFontConfig = {
+    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+</script>
+
+  
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/blog/">you are what you code</a>
+
+    <nav class="site-nav">
+      
+        
+        <a class="page-link" href="https://ie.linkedin.com/in/sebastianslutzky">About</a>
+      
+        
+        <a class="page-link" href="/blog/archives/">Archives</a>
+      
+        
+        <a class="page-link" href="https://github.com/sebastianslutzky">GitHub</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    
+      <h1 class="post-title" itemprop="name headline">Notes from QCon London 2011</h1>
+    
+    <p class="post-meta"><time datetime="2011-03-14T00:00:00+00:00" itemprop="datePublished">Mar 14, 2011</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h1>Notes from QCon London 2011</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>Did you know Facebook is n ordinary single-threaded PHP website? How complex do you think Twitter’s business logic model is? Do you know how Nokia is preparing to scale Ovi once (if) their Microsoft deal is agreed?</em></p>
+</div>
+<div class="paragraph">
+<p>You may already be familiar with InfoQ, but if you are not, I recommend you to take a look at it at <a href="http://www.infoq.com">www.infoq.com</a>. InfoQ is an online community focused on innovation in enterprise software development. On a daily basis, they deliver high quality articles for IT communities such as .Net, Java, SOA, Ruby and Agile among others._</p>
+</div>
+<div class="paragraph">
+<p>QCon is the annual event organised by InfoQ, where experts in each of these diverse areas provide an update on the latest lessons learned, discoveries and challenges ahead. I am just back from QCon 2011 in London, where I had the opportunity to listen to some of these experiences and to get an idea of what is being done in other companies and countries.</p>
+</div>
+<div class="paragraph">
+<p>Is not often that you get to talk to the people behind architectures such as Twitter, Facebook, Nokia and Guardian.co.uk among others, so I want to share some of the good stuff of QCon here.</p>
+</div>
+<div class="paragraph">
+<p>Today I’m starting with an overview of the chats I assisted to on the first of the three days of conference . I can’t guarantee I’ll remember (or I even grasped) all I listened to, but I can at least give you resources and point you to the right documentation. I also plan to write detailed posts on a few topics I found most interesting.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="day_1">Day 1</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>All presentations were held during three days, and categorised into five areas or tracks per day. Unfortunately there is only one me so I had to select carefully …</p>
+</div>
+<div class="paragraph">
+<p>One of the tracks of Day 1 was <strong>“Enterprise Agile Transformation”</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Being an Agile geek, I had to force myself to diversify, which was as difficult as getting a dog to eat a balanced diet.</p>
+</div>
+<div class="sect2">
+<h3 id="scaling_lean_agile_large_multisite_or_offshore_delivery">Scaling Lean &amp; Agile: Large, Multisite or Offshore Delivery</h3>
+<div class="paragraph">
+<p>Craig Larman has a vast experience on implementing SCRUM in very large-scale project. With large I mean 500-1500 person, multisite teams with clients such as Xeror &amp; Alcatel-Lucent. From these experiences he shared lessons learned, patterns and anti patterns on how to adopt and maintain Agile projects with multi hundred person teams, both co located and off shore.</p>
+</div>
+<div class="paragraph">
+<p>Larman is also the author of the books <em>“Thinking &amp; Organizational Tools”</em> and <em>“Practices for Scaling Lean &amp; Agile Development”</em></p>
+</div>
+<div class="paragraph">
+<p>This was the key note of the day what means that a bit of time is wasted on bad jokes, but it gave us an idea on how we can keep a high level of communication and transparency despite teams being very large or non- co-located.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="the_invisible_computer_lab">The Invisible Computer Lab</h3>
+<div class="paragraph">
+<p>I am still not sure why I choose this presentation, but it turned out very interesting. Fraser Speirs is an iPhone developer who is also the head of Computer at a School in Greenok, Scotland . He told us how his school provided all children with iPads as the main learning channel. He also shared with us what where the students, teachers and parents reactions, his view of the overall results of the iPad implementation, and how he foresees the future of technology in the classroom.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="contracts_collaboration_in_agile_offshore_outsourced_development">Contracts &amp; Collaboration in Agile “Offshore” Outsourced Development</h3>
+<div class="paragraph">
+<p>Again Craig Larman (I told you I struggled to diversify this day!) deep-dive on how to scale Agile, in particular with off shore outsourced teams. There were a few useful tips and tricks on how to deal with offsite teams without losing the high level of transparency required by Agile methodologies. From cultural differences to contract-model choices, this was no high level, abstract Agile talk, but a very hand on and pragmatic one instead, including tips as low levels as what video chat software to use in daily SCRUMs .</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="bringing_developers_and_testers_closer_together_with_visual_studio">Bringing developers and testers closer together with Visual Studio</h3>
+<div class="paragraph">
+<p>The “Solutions” track, the only one that run over the three days, was the showroom for commercial products and frameworks. In this context, Gile Davies from Microsoft UK presented Test Manager, a new application for collaboration between testers and developers.</p>
+</div>
+<div class="paragraph">
+<p>I have to say I was extremely impressed by this tool, which is an extension of Team Foundation Server. The amount of help it provides to testers and developers during the lifecycle of bugs is what surprised me:</p>
+</div>
+<div class="paragraph">
+<p>-Testers can record their UI interaction within Windows and store them (okay this is not all that impressive yet…)</p>
+</div>
+<div class="paragraph">
+<p>-They can modularised these UI steps into logical blocks (e.g. “Find a book to buy”, “Add it to the cart with IE 7.0”, ”Cancel order using keyword only”, etc)</p>
+</div>
+<div class="paragraph">
+<p>-All test steps gets auto appended to Bug description.</p>
+</div>
+<div class="paragraph">
+<p>-Developers can click on the logical block that failed. They can even debug the problem as of the execution performed by the tester (yes!, it saves the entire state of the test that failed, so developers and tester are always talking of the same environment!)</p>
+</div>
+<div class="paragraph">
+<p>-It can even take automatic snapshot of cloud environments (we are talking Windows Azure only, of course)</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="complex_event_processing_dsl_for_high_frequency_trading">Complex Event Processing: DSL for High Frequency Trading</h3>
+<div class="paragraph">
+<p>Richard Tibbets presented the system his company build, StreamBase. It is an engine for Complex Event Processing Domain Specific Languages, complied into JVM code. The common perception of DSLs is that they are very expressive but that they cannot perform in scenarios where speed is at premium, like front-office trading applications.</p>
+</div>
+<div class="paragraph">
+<p>Unfortunately, I wasn’t able to dissipate my objections to DSLs. Ironically, despite all the talk about speed I felt this chat so slow it was never ending.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="where_did_my_architecture_go_preserving_software_architecture_in_its_implementation">Where Did My Architecture Go? Preserving software architecture in its implementation</h3>
+<div class="paragraph">
+<p>Agile systems are evolutionary, which means that the design of the system is not fully detailed up front. Instead, it “emerges” from a series of cycles of iterative development. Now for those who are not used to evolutionary design, this may sound like anarchy or worse, like no design at all.</p>
+</div>
+<div class="paragraph">
+<p>Eoin Woods did a very convincing walk through a set of tools that allow system to generate their representation from their implementation. This allows teams to keep their architectural design updated, so that the big picture is always clear as the software evolves. Some of the tools I knew already, but there were a few others that I’d really like to try in my next project. The tools demonstrated included support for .Net, Java and C++ technologies.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="more_may_follow">More may follow…</h3>
+<div class="paragraph">
+<p>As I mentioned earlier, I will try to follow this post with other two with the presentation I’ve attended to on Day 2 and 3. After that, I will write a detailed post on some of the talks I’ve found most interesting.</p>
+</div>
+</div>
+</div>
+</div>
+  </div>
+
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy; sebastian slutzky - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://youarewhatyoucode/blog/feed.xml">RSS</a>
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

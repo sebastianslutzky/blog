@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>Take control of your Web API aspects</title>
+  <meta name="description" content="Excerpt goes here.">
+  
+
+  <link rel="stylesheet" href="/blog/assets/main.css">
+  <link rel="canonical" href="http://youarewhatyoucode/blog/2015/11/24/take-control-of-your-api-aspects/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="you are what you code" href="http://youarewhatyoucode/blog/feed.xml">
+
+  
+
+  
+  <meta name="twitter:card" content="summary">
+  
+  <meta name="twitter:title" content="Take control of your Web API aspects">
+  <meta name="twitter:description" content="Excerpt goes here.">
+  
+  
+
+  <script type="text/javascript">
+  WebFontConfig = {
+    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+</script>
+
+  
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/blog/">you are what you code</a>
+
+    <nav class="site-nav">
+      
+        
+        <a class="page-link" href="https://ie.linkedin.com/in/sebastianslutzky">About</a>
+      
+        
+        <a class="page-link" href="/blog/archives/">Archives</a>
+      
+        
+        <a class="page-link" href="https://github.com/sebastianslutzky">GitHub</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    
+      <h1 class="post-title" itemprop="name headline">Take control of your Web API aspects</h1>
+    
+    <p class="post-meta"><time datetime="2015-11-24T00:00:00+00:00" itemprop="datePublished">Nov 24, 2015</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h1>Take control of your Web API aspects</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Action filters  are a way of modifying or decorating the execution of one or more action methods. They provide points of execution before and after the action method itself executes.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>For more details on action filters see <a href="http://www.asp.net/mvc/overview/older-versions-1/controllers-and-routing/understanding-action-filters-cs"">this article</a></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="order_of_execution_salami_slice_russian_doll">Order of Execution: Salami Slice + Russian Doll</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can have action filters declared at three levels: globally, controller-wide or action-specific. <strong>They will execute in that order&#8230;&#8203;sort of.</strong></p>
+</div>
+<div class="paragraph">
+<p>Once ordered, action filters are executed <strong>sequentially</strong>, without connection between them.</p>
+</div>
+<div class="paragraph">
+<p>But here&#8217;s the fun bit, the order of execution is reverted when the response is processed. In other words, if when processing the request the order of filters is</p>
+</div>
+<div class="paragraph">
+<p><span class="menuseq"><span class="menu">View</span>&#160;&#9656; <span class="submenu">FilterA</span>&#160;&#9656; <span class="submenu">FilterB</span>&#160;&#9656; <span class="submenu">FilterC</span>&#160;&#9656; <span class="menuitem">Action</span></span></p>
+</div>
+<div class="paragraph">
+<p>then when processing the response the order will be</p>
+</div>
+<div class="paragraph">
+<p><span class="menuseq"><span class="menu">View</span>&#160;&#9656; <span class="submenu">Action</span>&#160;&#9656; <span class="submenu">FilterC</span>&#160;&#9656; <span class="submenu">FilterB</span>&#160;&#9656; <span class="menuitem">Filter</span></span></p>
+</div>
+<div class="paragraph">
+<p>there are some design patterns like:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Chain-of-responsibility_pattern">Chain of Responsibility</a></p>
+</li>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Command_pattern">Commands</a></p>
+</li>
+<li>
+<p>I prefer to use the more visual <a href="http://blogs.msdn.com/b/skaufman/archive/2005/04/25/411809.aspx">Salami Slice</a> for the sequential execution.</p>
+</li>
+<li>
+<p><a href="http://blogs.msdn.com/b/skaufman/archive/2005/04/21/410486.aspx">Russian Doll</a></p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="overriding_a_global_filter_from_an_action_method">Overriding a global filter from an action method</h3>
+<div class="paragraph">
+<p>This default order is convenient in many cases, but not always. I found myself in the following scenario: I needed to execute a default action filter <strong>unless</strong> an action was annotated with an overriding action filter attribute.</p>
+</div>
+<div class="paragraph">
+<p>Two examples when this could be useful:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong><strong>Always log http traffic, except sensitive data: </strong></strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Log the raw http request and response to all action methods.</p>
+</li>
+<li>
+<p>But: when the request is for PUT /PaymentCardDetails, then use a custom logger that will not log the payment card number and security code.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong><strong>Always require authentication tokens, except Login and Forgot Password methods: </strong></strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Add a global action filter that will always require authentication token in the request&#8217;s header.</p>
+</li>
+<li>
+<p>But: annotate the Login and ForgotPassword action methods with an attribute that will bypass the authentication requirement.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="so_here_is_the_implementation">&#8230;&#8203;so here is the implementation:</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="step_1_create_an_interface_for_overriding_attributes">Step 1: Create an interface for overriding attributes</h3>
+<div class="paragraph">
+<p>Something like this is the simplest thing that can possibly do the job:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java">//To be implemented by actionfilterattributes that override a global action filter
+public interface IOverridingFilterAttribute
+{
+    //The type of actionfilter to be replaced for this request
+    Type OverriddenType { get; }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="step_2_create_your_own_actionfilterprovider_with_the_overriding_behaviour">Step 2: Create your own ActionFilterProvider with the overriding behaviour</h3>
+<div class="paragraph">
+<p>IFilterProvider is a component you can customise. It defines what action filters to use in this request, and in which order</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="c#">public class OverridingFilterProvider : IFilterProvider
+{
+    //called by WebApi on each request, in order
+    // to get the list of filters to apply
+    public IEnumerable&lt;FilterInfo&gt; GetFilters(HttpConfiguration configuration, HttpActionDescriptor actionDescriptor)
+    {
+        var globalFilters = configuration.Filters;
+        var controllerFilters = actionDescriptor.ControllerDescriptor.GetFilters().Select(x =&gt; new FilterInfo(x,FilterScope.Controller));
+        var actionFilters = actionDescriptor.GetFilters().Select(x =&gt; new FilterInfo(x,FilterScope.Action));
+
+        //we'll apply global,controller-wide
+        //and then action attribute filters
+        var all = globalFilters.Concat(controllerFilters).Concat(actionFilters);
+        return RemoveAnyOverriddenFilter(all);
+    }
+
+    //if there are IOverridingFilterAttributes,
+    //remove the filters they override
+    private IEnumerable&lt;FilterInfo&gt; RemoveAnyOverriddenFilter(IEnumerable&lt;FilterInfo&gt; all)
+    {
+        var overridingFilters =
+            all.Where(x =&gt; (x.Instance as IOverridingFilterAttribute) != null)
+                .Select(x =&gt; (IOverridingFilterAttribute) x.Instance);
+
+        var filtered =  all.Where(x =&gt; !IsOverridden(x, overridingFilters));
+        return filtered;
+    }
+
+    private bool IsOverridden(FilterInfo target, IEnumerable&lt;IOverridingFilterAttribute&gt; overrides)
+    {
+        foreach (var overridingFilter in overrides)
+        {
+            var filterType = target.Instance.GetType();
+            var overriddenType = overridingFilter.OverriddenType;
+
+            if (overriddenType.IsAssignableFrom(filterType))
+                return true;
+        }
+        return false;
+    }
+
+    private IEnumerable&lt;FilterInfo&gt; OrderFilters(IEnumerable&lt;IFilter&gt; filters, FilterScope scope)
+    {
+        return filters.Select(instance =&gt; new FilterInfo(instance, scope));
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="step_3_register_your_filter_provider">Step 3: Register your Filter Provider</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="c#">public class WebApiApplication : HttpApplication
+{
+    protected void Application_Start()
+    {
+        var services = GlobalConfiguration.Configuration.Services;
+        services.Replace(typeof(IFilterProvider),
+            new OverridingFilterProvider());
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+  </div>
+
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy; sebastian slutzky - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://youarewhatyoucode/blog/feed.xml">RSS</a>
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

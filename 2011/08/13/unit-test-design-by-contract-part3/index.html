@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>Unit testing with Design By Contract (part 3)</title>
+  <meta name="description" content="Unit testing with Design By Contract (part 3) This article is the last of three on Unit Testing and Design By Contract Testing Post Conditions and Class Invariants Now we can test the two post conditions of the Add method: // Count is 0 before adding any items // This is a post condition of the constructor //and should be tested separately [Test] public void Add_PostCond_CountHasIncreasedByOne() { var stack = new Stack(maximumNumberOfItemsAllowed: 10); stack.Add(new object()); Assert.AreEqual(1,stack.Count); } // We use the &#39;Peek&#39; method to access the item on top of the stack. // Pre and Post conditions of this method should be tested separately [Test] public void Add_PostCond_ItemIsOnTopOfTheStack() { var stack = new Stack(maximumNumberOfItemsAllowed: 10); var firstItem = new object(); var secondItem = new object(); stack.Add(firstItem); stack.Add(secondItem); Assert.AreSame(secondItem, stack.Peek()); } These types of test are probably the most commonly seen. Good Test Driven Development habits include asserting as few times as possible per tests, ideally one assertion only. The point is, as I mentioned earlier, error localization: if you only test one thing at a time, there has to be one test that explicitly exposes a bug. There is still one more post condition to test: that no invariant rule of the class was violated by the Add method. Checking Class Invariants As mentioned earlier, Class Invariants are the rules that should always remain true after any method is executed on a class. The Add method is no exception, so we will have to test that class invariants were enforced when it executed. We don’t want to repeat ourselves, so we will delegate to a reusable method called CheckInvariants that throws an exception if an Invariant rule has been broken. [Test] public void Add_PostCond_InvariantsWereEnforced() { //Arrange var stack = new MockRepository().PartialMock&amp;lt;Stack&amp;gt;(1); stack.Expect(x=&amp;gt;x.CheckInvariants()); stack.Replay(); //Act stack.Add(new object()); //Assert stack.VerifyAllExpectations(); } This tests ensures that the method CheckInvariants has been invoked by the Add method. This type of tests, which verifies the interaction of methods rather than the resulting state of objects is known as Behavioural Tests. The delegation itself is tested by using the Rhino Mocks mocking library for .Net. In this case we create a Partial Mock Stack object. It is partial because we only want to mock one method (CheckInvariants) but we do want to execute a different one (Add) of the same class. We tell the partially mocked Stack that we are expecting the CheckInvariants method to be called later. After we explicitly invoked Add, we tell the stack to verify our expectation. This verification will fail if the method was not invoked indirectly by Add. How public are the Class Invariants? So the last thing is to test the Class Invariants. This is just another method called void CheckInvariants() of the class, but its access level deserves a bit of thought. Let’s see what options we have: private: This method cannot be private because we need to write tests for it (as we did before) protected: This would at least let us create the class TestStack that inherits the Stack class and create a public method that invokes CheckInvariants. See this article for more details on how to mock a protected method internal: Internal methods can be invoked from within the assembly or an external assembly explicitly designated. This is the option chosen in this example public: Not a bad option either in my opinion, any object can invoke this method anytime, which should not cause any inconvenient. And here are the two test for CheckInvariants itself [Test,ExpectedException(typeof(InvalidOperationException), ExpectedMessage=&quot;Count cannnot be negative&quot;)] public void CheckInvariants_PostCond_CountIsNonNegative() { var stack = new MockRepository().PartialMock&amp;lt;Stack&amp;gt;(1); stack.Replay(); stack.Count = -1; stack.CheckInvariants(); } [Test, ExpectedException(typeof(InvalidOperationException), ExpectedMessage = &quot;Count cannot be greater than 7&quot;)] public void CheckInvariants_PostCond_CountIsLessThanMaximumAllowed() { var stack = new MockRepository().PartialMock&amp;lt;Stack&amp;gt;(7); stack.Replay(); stack.Count = 8; stack.CheckInvariants(); } And finally, here is the code for the Stack class, a class that honors its contract: public class Stack { private int _maximumNumberOfItemsAllowed; public Stack(int maximumNumberOfItemsAllowed) { _maximumNumberOfItemsAllowed = maximumNumberOfItemsAllowed; } public int Count { get; protected internal set; } public void Add(object item) { if (item == null) throw new ArgumentNullException(&quot;item&quot;); if (_maximumNumberOfItemsAllowed == Count) throw new InvalidOperationException( &quot;Cannot add items when the stack is full.&quot;); Count++; _array.Add(item); CheckInvariants(); } private IList _array = new ArrayList(); public object Peek() { return _array[Count - 1]; } protected internal virtual void CheckInvariants() { if (Count &amp;lt; 0) throw new InvalidOperationException(&quot;Count cannnot be negative&quot;); if (Count &amp;gt; _maximumNumberOfItemsAllowed) throw new InvalidOperationException(&quot;Count cannot be greater than &quot; + _maximumNumberOfItemsAllowed); } }">
+  
+
+  <link rel="stylesheet" href="/blog/assets/main.css">
+  <link rel="canonical" href="http://youarewhatyoucode/blog/2011/08/13/unit-test-design-by-contract-part3/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="you are what you code" href="http://youarewhatyoucode/blog/feed.xml">
+
+  
+
+  
+  <meta name="twitter:card" content="summary">
+  
+  <meta name="twitter:title" content="Unit testing with Design By Contract (part 3)">
+  <meta name="twitter:description" content="Unit testing with Design By Contract (part 3) This article is the last of three on Unit Testing and Design By Contract Testing Post Conditions and Class Invariants Now we can test the two post cond...">
+  
+  
+
+  <script type="text/javascript">
+  WebFontConfig = {
+    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+</script>
+
+  
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/blog/">you are what you code</a>
+
+    <nav class="site-nav">
+      
+        
+        <a class="page-link" href="https://ie.linkedin.com/in/sebastianslutzky">About</a>
+      
+        
+        <a class="page-link" href="/blog/archives/">Archives</a>
+      
+        
+        <a class="page-link" href="https://github.com/sebastianslutzky">GitHub</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    
+      <h1 class="post-title" itemprop="name headline">Unit testing with Design By Contract (part 3)</h1>
+    
+    <p class="post-meta"><time datetime="2011-08-13T00:00:00+00:00" itemprop="datePublished">Aug 13, 2011</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h1>Unit testing with Design By Contract (part 3)</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="imageblock">
+<div class="content">
+<img src="/images/dbc.png" alt="dbc" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p><em>This article is the last of three on <a href="http://sebastianslutzky.com/2011/08/08/unit-testing-with-design-by-contract/">Unit Testing and Design By Contract</a></em></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="testing_post_conditions_and_class_invariants">Testing Post Conditions and Class Invariants</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now we can test the two post conditions of the <code>Add</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="csharp">// Count is 0 before adding any items
+// This is a post condition of the constructor
+//and should be tested separately
+[Test]
+public void Add_PostCond_CountHasIncreasedByOne()
+{
+    var stack = new Stack(maximumNumberOfItemsAllowed: 10);
+    stack.Add(new object());
+    Assert.AreEqual(1,stack.Count);
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="csharp">// We use the 'Peek' method to access the item on top of the stack.
+// Pre and Post conditions of this method should be tested separately
+[Test]
+public void Add_PostCond_ItemIsOnTopOfTheStack()
+{
+    var stack = new Stack(maximumNumberOfItemsAllowed: 10);
+    var firstItem = new object();
+    var secondItem = new object();
+    stack.Add(firstItem);
+    stack.Add(secondItem);
+
+    Assert.AreSame(secondItem, stack.Peek());
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>These types of test are probably the most commonly seen. Good Test Driven Development habits include asserting as few times as possible per tests, ideally one assertion only. The point is, as I mentioned earlier, error localization: if you only test one thing at a time, there has to be one test that explicitly exposes a bug.</p>
+</div>
+<div class="paragraph">
+<p>There is still one more post condition to test: that no invariant rule of the class was violated by the <code>Add</code> method.</p>
+</div>
+<div class="sect2">
+<h3 id="checking_class_invariants">Checking Class Invariants</h3>
+<div class="paragraph">
+<p>As mentioned earlier, Class Invariants are the rules that should always remain true after any method is executed on a class. The <code>Add</code> method is no exception, so we will have to test that class invariants were enforced when it executed.
+We don’t want to repeat ourselves, so we will delegate to a reusable method called <code>CheckInvariants</code> that throws an exception if an Invariant rule has been broken.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="csharp">[Test]
+public void Add_PostCond_InvariantsWereEnforced()
+{
+    //Arrange
+    var stack = new MockRepository().PartialMock&lt;Stack&gt;(1);
+    stack.Expect(x=&gt;x.CheckInvariants());
+    stack.Replay();
+
+    //Act
+    stack.Add(new object());
+
+    //Assert
+    stack.VerifyAllExpectations();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This tests ensures that the method <code>CheckInvariants</code> has been invoked by the <code>Add</code> method. This type of tests, which verifies the interaction of methods rather than the resulting state of objects is known as Behavioural Tests.</p>
+</div>
+<div class="paragraph">
+<p>The delegation itself is tested by using the <a href="http://ayende.com/blog/tags/rhino-mocks">Rhino Mocks</a> mocking library for .Net. In this case we create a Partial Mock <code>Stack</code> object. It is partial because we only want to mock one method (<code>CheckInvariants</code>) but we do want to execute a different one (<code>Add</code>) of the same class. We tell the partially mocked <code>Stack</code> that we are expecting the <code>CheckInvariants</code> method to be called later. After we explicitly invoked <code>Add</code>, we tell the stack to verify our expectation.
+This verification will fail if the method was not invoked indirectly by <code>Add</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="how_public_are_the_class_invariants">How public are the Class Invariants?</h3>
+<div class="paragraph">
+<p>So the last thing is to test the Class Invariants. This is just another method called void <code>CheckInvariants()</code> of the class, but its access level deserves a bit of thought.</p>
+</div>
+<div class="paragraph">
+<p>Let’s see what options we have:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>private: This method cannot be private because we need to write tests for it (as we did before)</p>
+</li>
+<li>
+<p>protected: This would at least let us create the class <code>TestStack</code> that inherits the <code>Stack</code> class and create a public method that invokes <code>CheckInvariants</code>. See <a href="http://geekswithblogs.net/MattRobertsBlog/archive/2008/12/16/how-to-make-a-quotprotectedquot-method-available-for-quotpartialquot-mocking-and-again.aspx">this article</a> for more details on how to mock a protected method</p>
+</li>
+<li>
+<p>internal: Internal methods can be invoked from within the assembly or an external assembly explicitly designated. This is the option chosen in this example</p>
+</li>
+<li>
+<p>public: Not a bad option either in my opinion, any object can invoke this method anytime, which should not cause any inconvenient.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>And here are the two test for <code>CheckInvariants</code> itself</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="csharp">[Test,ExpectedException(typeof(InvalidOperationException),
+    ExpectedMessage="Count cannnot be negative")]
+public void CheckInvariants_PostCond_CountIsNonNegative()
+{
+    var stack = new MockRepository().PartialMock&lt;Stack&gt;(1);
+    stack.Replay();
+    stack.Count = -1;
+
+    stack.CheckInvariants();
+}
+[Test,
+ExpectedException(typeof(InvalidOperationException),
+    ExpectedMessage = "Count cannot be greater than 7")]
+public void CheckInvariants_PostCond_CountIsLessThanMaximumAllowed()
+{
+    var stack = new MockRepository().PartialMock&lt;Stack&gt;(7);
+    stack.Replay();
+    stack.Count = 8;
+
+    stack.CheckInvariants();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And finally, here is the code for the <code>Stack</code> class, a class that honors its contract:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="csharp">public class Stack
+{
+    private int _maximumNumberOfItemsAllowed;
+    public Stack(int maximumNumberOfItemsAllowed)
+    {
+        _maximumNumberOfItemsAllowed = maximumNumberOfItemsAllowed;
+    }
+
+    public int Count { get; protected internal set; }
+
+    public void Add(object item)
+    {
+        if (item == null)
+            throw new ArgumentNullException("item");
+
+        if (_maximumNumberOfItemsAllowed == Count)
+            throw new InvalidOperationException(
+                "Cannot add items when the stack is full.");
+        Count++;
+        _array.Add(item);
+
+        CheckInvariants();
+    }
+
+    private IList _array = new ArrayList();
+
+    public object Peek()
+    {
+        return _array[Count - 1];
+    }
+
+    protected internal virtual void CheckInvariants()
+    {
+        if (Count &lt; 0)
+            throw new InvalidOperationException("Count cannnot be negative");
+
+       if (Count &gt; _maximumNumberOfItemsAllowed)
+            throw new InvalidOperationException("Count cannot be greater than " + _maximumNumberOfItemsAllowed);
+        }
+    }</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+  </div>
+
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy; sebastian slutzky - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://youarewhatyoucode/blog/feed.xml">RSS</a>
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

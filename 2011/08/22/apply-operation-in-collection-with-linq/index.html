@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>Apply an operation to a collection with LinQ</title>
+  <meta name="description" content="Apply an operation to a collection with LinQ These days, it is unusual to write an implementation of the Iterator pattern. Most of the modern languages included a library with a set of aggregate objects that follow this pattern as defined in the Gang of Four book. In .Net, these objects are in the System.Collections namespace and they include classes such as Lists, Queues, Dictionaries, and also their specialised strongly typed (Generic) version. The Gang Of Four defines two types of iterators: External and Internal. The External requires the client to traverse the items (by looping through the items until the end of the iterator). In contrast to this, the internal iterator delegates this process to a Traverse mix-in class that can be extended and customised. I was looking for something similar to the internal iterator in .Net. That is, a generic way of passing an operation to a collection that would apply it to each of its items. None of the LinQ extension methods for collections seemed to do this, so I wrote one: public static class Extensions { public static void ApplyOperation&amp;lt;T&amp;gt; (this IEnumerable&amp;lt;T&amp;gt; iterator, Action&amp;lt;T&amp;gt; action) { foreach (var item in iterator) action(item); } } Which can be used as follows: IEnumerable&amp;lt;string&amp;gt; cities = new string[] { &quot;Dublin&quot;, &quot;Buenos Aires&quot;, &quot;Madrid&quot; }; cities.ApplyOperation(x=&amp;gt;Console.WriteLine(&quot;City name: &quot; + x)); or simply new string[] { &quot;Dublin&quot;, &quot;Buenos Aires&quot;, &quot;Madrid&quot; } .ApplyOperation( x =&amp;gt; Console.WriteLine(&quot;City name: &quot; + x)); which prints the following output:">
+  
+
+  <link rel="stylesheet" href="/blog/assets/main.css">
+  <link rel="canonical" href="http://youarewhatyoucode/blog/2011/08/22/apply-operation-in-collection-with-linq/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="you are what you code" href="http://youarewhatyoucode/blog/feed.xml">
+
+  
+
+  
+  <meta name="twitter:card" content="summary">
+  
+  <meta name="twitter:title" content="Apply an operation to a collection with LinQ">
+  <meta name="twitter:description" content="Apply an operation to a collection with LinQ These days, it is unusual to write an implementation of the Iterator pattern. Most of the modern languages included a library with a set of aggregate ob...">
+  
+  
+
+  <script type="text/javascript">
+  WebFontConfig = {
+    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+</script>
+
+  
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/blog/">you are what you code</a>
+
+    <nav class="site-nav">
+      
+        
+        <a class="page-link" href="https://ie.linkedin.com/in/sebastianslutzky">About</a>
+      
+        
+        <a class="page-link" href="/blog/archives/">Archives</a>
+      
+        
+        <a class="page-link" href="https://github.com/sebastianslutzky">GitHub</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    
+      <h1 class="post-title" itemprop="name headline">Apply an operation to a collection with LinQ</h1>
+    
+    <p class="post-meta"><time datetime="2011-08-22T00:00:00+00:00" itemprop="datePublished">Aug 22, 2011</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <h1>Apply an operation to a collection with LinQ</h1>
+<div class="paragraph">
+<p>These days, it is unusual to write an implementation of the Iterator pattern. Most of the modern languages included a library with a set of aggregate objects that follow this pattern as defined in the <a href="https://www.amazon.com/Design-Patterns-Elements-Reusable-Object-Oriented/dp/0201633612">Gang of Four book</a>.</p>
+</div>
+<div class="paragraph">
+<p>In .Net, these objects are in the System.Collections namespace and they include classes such as Lists, Queues, Dictionaries, and also their specialised strongly typed (Generic) version.</p>
+</div>
+<div class="paragraph">
+<p>The Gang Of Four defines two types of iterators: External and Internal. The External requires the client to traverse the items (by looping through the items until the end of the iterator). In contrast to this, the internal iterator delegates this process to a Traverse mix-in class that can be extended and customised.</p>
+</div>
+<div class="paragraph">
+<p>I was looking for something similar to the internal iterator in .Net. That is, a generic way of passing an operation to a collection that would apply it to each of its items. None of the LinQ extension methods for collections seemed to do this, so I wrote one:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="csharp">public static class Extensions
+{
+    public static void ApplyOperation&lt;T&gt;
+                (this IEnumerable&lt;T&gt; iterator,
+                Action&lt;T&gt; action)
+    {
+        foreach (var item in iterator)
+            action(item);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Which can be used as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="csharp">IEnumerable&lt;string&gt; cities =
+            new string[] { "Dublin", "Buenos Aires", "Madrid" };
+cities.ApplyOperation(x=&gt;Console.WriteLine("City name: " + x));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or simply</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="csharp">new string[] {
+    "Dublin",
+    "Buenos Aires",
+    "Madrid" }
+    .ApplyOperation(
+        x =&gt; Console.WriteLine("City name: " + x));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>which prints the following output:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/images/console.png" alt="console">
+</div>
+</div>
+  </div>
+
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy; sebastian slutzky - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://youarewhatyoucode/blog/feed.xml">RSS</a>
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

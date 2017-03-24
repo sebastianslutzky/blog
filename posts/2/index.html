@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>you are what you code</title>
+  <meta name="description" content="a pretentiusly simple blog, with a series of coherent tech rambles...">
+  
+
+  <link rel="stylesheet" href="/blog/assets/main.css">
+  <link rel="canonical" href="http://youarewhatyoucode/blog/posts/2/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="you are what you code" href="http://youarewhatyoucode/blog/feed.xml">
+
+  
+
+  
+  <meta name="twitter:card" content="summary">
+  
+  <meta name="twitter:title" content="you are what you code">
+  <meta name="twitter:description" content="a pretentiusly simple blog, with a series of coherent tech rambles...">
+  
+  
+
+  <script type="text/javascript">
+  WebFontConfig = {
+    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+</script>
+
+  
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/blog/">you are what you code</a>
+
+    <nav class="site-nav">
+      
+        
+        <a class="page-link" href="https://ie.linkedin.com/in/sebastianslutzky">About</a>
+      
+        
+        <a class="page-link" href="/blog/archives/">Archives</a>
+      
+        
+        <a class="page-link" href="https://github.com/sebastianslutzky">GitHub</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <div class="home">
+
+  
+
+  
+
+  <ul class="post-list">
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/blog/2011/08/08/unit-test-design-by-contract-part1/">Unit testing with Design By Contract</a>
+          </h1>
+
+          <p class="post-meta">Aug 8, 2011</p>
+        </header>
+
+        <div class="post-content">
+          <h1>Unit testing with Design By Contract</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="imageblock">
+<div class="content">
+<img src="/images/dbc.png" alt="dbc" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p>One of the most useful metaphors for organising software is the one of Design by Contract.</p>
+</div>
+<div class="paragraph">
+<p>This technique, which was formalised by Bertrand Meyer in 1986 has its roots in previous ideas from Tony Hoare and Barbara Liskov.
+In a nutshell, DBC equates the relationship of two pieces of software (i.e. two methods) to that of a <strong><em>Client</em></strong> and a <strong><em>Supplier</em></strong> in the business world,
+both interacting with each other with clear rights and obligations, specified in a <strong><em>Contract</em></strong>.</p>
+</div>
+<div class="paragraph">
+<p>In DBC, a <em>Supplier</em> can serve a request from a <em>Client</em> only if the latter satisfy the prerequisites or <strong><em>preconditions</em></strong> required by the <em>Supplier</em>.
+The <em>Supplier</em> has an obligation to return a property as expected by the <em>Client</em>, the <strong><em>post-condition</em></strong>, once the request is served.</p>
+</div>
+<div class="paragraph">
+<p>Additionally, a contract must specify certain properties that must remain true before and after the nteraction between <em>Client</em> and <em>Supplier</em>.
+This obligation is known as a <strong><em>class invariant</em></strong>.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="example">Example:</h3>
+<div class="paragraph">
+<p>A classic example to show DBC in practice is by building a data structure class, such as a Stack class. The rules of adding items to this structure are very clear:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Pre conditions</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>An item must be provided to be added to the stack</p>
+</li>
+<li>
+<p>There must be room in the stack to store the item</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Post conditions</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>The number of items in the Stack increased by one</p>
+</li>
+<li>
+<p>The item on top of the Stack is the one we just added</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Class Invariants</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>The  number of items in the Stack  are greater or equal than zero</p>
+</li>
+<li>
+<p>The number of items in the Stack are less or equal to the maximum size allowed</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect1">
+<h2 id="who_checks_the_contract">Who checks the contract?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Typically, a method checks the pre-conditions of the contract only. If any of the pre conditions were not enforced by the Client of the method, the Supplier will not continue with the execution of the method since its result (and even its execution) can be unexpected. This is usually done by assertions at the beginning of a method: we assert that a precondition is true prior to executing the method, if the assertion is wrong, then the execution is suspended (an exception is thrown).</p>
+</div>
+<div class="paragraph">
+<p>Post conditions and Class Invariant could, in theory, be checked in code too. However, this would lead to very long, unreadable and inefficient code. Also, in many cases testing the post-conditions is simply not viable. Remember the DBC metaphor and it will be clear that the party who is responsible for an obligation (the Supplier in this case) cannot be in charge of verifying that the obligation has been fulfilled (i.e. that the post condition is true).</p>
+</div>
+<div class="paragraph">
+<p>Now, the Client could verify Post-Conditions and Class invariants, but we don’t know (and shouldn’t care) who will be the client of the method we are currently building. And if we are creating a Client of a method, our code requires the Supplier to do what is expected when we invoke its method. So where do we test Post conditions and Class invariants? You know the answer, in the Unit Tests.</p>
+</div>
+<div class="paragraph">
+<p>Each of the six rules defined above can be converted into a unit test. This is what we’ll do next.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="a_structure_for_your_tests">A structure for your tests</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>But before writing the tests, let me suggest a naming convention for them. I like naming the tests using the following pattern:
+%MethodName%<em>%ruleType%</em>%Description%</p>
+</div>
+<div class="paragraph">
+<p>Where rule type is any of the three types of DBC rule: pre condition, post condition or class invariant
+Here is the list of test we will write for this User Story, based on the previous pattern</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="csharp">[Test]
+public void Add_PreCond_ItemIsRequired()
+    { throw new NotImplementedException(); }
+
+[Test]
+public void Add_PreCond_StackCantBeFull()
+    { throw new NotImplementedException(); }
+
+[Test]
+public void Add_PreCond_HappyCase()
+    { throw new NotImplementedException(); }
+
+[Test]
+public void Add_PostCond_CountHasIncreasedByOne()
+    { throw new NotImplementedException(); }
+
+[Test]
+public void Add_PostCond_ItemIsOnTopOfTheStack()
+    { throw new NotImplementedException(); }
+
+[Test]
+public void Add_PostCond_InvariantsWereEnforced()
+    { throw new NotImplementedException(); }
+
+[Test]
+public void CheckInvariants_PostCond_CountIsNonNegative()
+    { throw new NotImplementedException(); }
+
+[Test]
+public void CheckInvariants_PostCond_CountIsLessThanMaximumAllowed()
+    { throw new NotImplementedException(); }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <em>Happy Case</em> test was not in the list, and there are two tests for a method called <code>Check Invariants</code>. We will look into these tests in detail later.
+Typically you would put these methods in a class called <code>StackTests</code>. However, if you have a method that requires a large number of tests, you can have one test class per method instead.
+Your test class would be named <code>Stack_AddTests</code> and the test names would be, for example, <code>PreCond_ItemIsRequired</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="generating_documentation_from_your_tests">Generating Documentation from your Tests</h3>
+<div class="paragraph">
+<p>By following this structure for tests and fixtures, we can enrich the documentation generated from our code.
+This requires customisation of tools like <a href="http://ndoc.sourceforge.net">NDoc</a> or <a href="http://sandcastle.codeplex.com/">Sandcastle</a>.
+The exact implementation is outside of the scope of this article, but I will post it at some point. The idea is to parse the name of Fixtures and Tests to append pre and post conditions to their relative methods, in a readable way.</p>
+</div>
+<div class="paragraph">
+<p>One caveat I have with this idea is that you have to remember that you are not using the “true” code for generating the docs, but the names of the apis. This means that your documentation will be as accurate as the name of your tests.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="coming_next">Coming next:</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://sebastianslutzky.wordpress.com/2011/08/12/testing-pre-conditions">Checking Pre Conditions</a></p>
+</div>
+</div>
+</div>
+        </div>
+        
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/blog/2011/03/14/notes-from-qcon-london-2012/">Notes from QCon London 2011</a>
+          </h1>
+
+          <p class="post-meta">Mar 14, 2011</p>
+        </header>
+
+        <div class="post-content">
+          <h1>Notes from QCon London 2011</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>Did you know Facebook is n ordinary single-threaded PHP website? How complex do you think Twitter’s business logic model is? Do you know how Nokia is preparing to scale Ovi once (if) their Microsoft deal is agreed?</em></p>
+</div>
+<div class="paragraph">
+<p>You may already be familiar with InfoQ, but if you are not, I recommend you to take a look at it at <a href="http://www.infoq.com">www.infoq.com</a>. InfoQ is an online community focused on innovation in enterprise software development. On a daily basis, they deliver high quality articles for IT communities such as .Net, Java, SOA, Ruby and Agile among others._</p>
+</div>
+<div class="paragraph">
+<p>QCon is the annual event organised by InfoQ, where experts in each of these diverse areas provide an update on the latest lessons learned, discoveries and challenges ahead. I am just back from QCon 2011 in London, where I had the opportunity to listen to some of these experiences and to get an idea of what is being done in other companies and countries.</p>
+</div>
+<div class="paragraph">
+<p>Is not often that you get to talk to the people behind architectures such as Twitter, Facebook, Nokia and Guardian.co.uk among others, so I want to share some of the good stuff of QCon here.</p>
+</div>
+<div class="paragraph">
+<p>Today I’m starting with an overview of the chats I assisted to on the first of the three days of conference . I can’t guarantee I’ll remember (or I even grasped) all I listened to, but I can at least give you resources and point you to the right documentation. I also plan to write detailed posts on a few topics I found most interesting.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="day_1">Day 1</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>All presentations were held during three days, and categorised into five areas or tracks per day. Unfortunately there is only one me so I had to select carefully …</p>
+</div>
+<div class="paragraph">
+<p>One of the tracks of Day 1 was <strong>“Enterprise Agile Transformation”</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Being an Agile geek, I had to force myself to diversify, which was as difficult as getting a dog to eat a balanced diet.</p>
+</div>
+<div class="sect2">
+<h3 id="scaling_lean_agile_large_multisite_or_offshore_delivery">Scaling Lean &amp; Agile: Large, Multisite or Offshore Delivery</h3>
+<div class="paragraph">
+<p>Craig Larman has a vast experience on implementing SCRUM in very large-scale project. With large I mean 500-1500 person, multisite teams with clients such as Xeror &amp; Alcatel-Lucent. From these experiences he shared lessons learned, patterns and anti patterns on how to adopt and maintain Agile projects with multi hundred person teams, both co located and off shore.</p>
+</div>
+<div class="paragraph">
+<p>Larman is also the author of the books <em>“Thinking &amp; Organizational Tools”</em> and <em>“Practices for Scaling Lean &amp; Agile Development”</em></p>
+</div>
+<div class="paragraph">
+<p>This was the key note of the day what means that a bit of time is wasted on bad jokes, but it gave us an idea on how we can keep a high level of communication and transparency despite teams being very large or non- co-located.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="the_invisible_computer_lab">The Invisible Computer Lab</h3>
+<div class="paragraph">
+<p>I am still not sure why I choose this presentation, but it turned out very interesting. Fraser Speirs is an iPhone developer who is also the head of Computer at a School in Greenok, Scotland . He told us how his school provided all children with iPads as the main learning channel. He also shared with us what where the students, teachers and parents reactions, his view of the overall results of the iPad implementation, and how he foresees the future of technology in the classroom.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="contracts_collaboration_in_agile_offshore_outsourced_development">Contracts &amp; Collaboration in Agile “Offshore” Outsourced Development</h3>
+<div class="paragraph">
+<p>Again Craig Larman (I told you I struggled to diversify this day!) deep-dive on how to scale Agile, in particular with off shore outsourced teams. There were a few useful tips and tricks on how to deal with offsite teams without losing the high level of transparency required by Agile methodologies. From cultural differences to contract-model choices, this was no high level, abstract Agile talk, but a very hand on and pragmatic one instead, including tips as low levels as what video chat software to use in daily SCRUMs .</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="bringing_developers_and_testers_closer_together_with_visual_studio">Bringing developers and testers closer together with Visual Studio</h3>
+<div class="paragraph">
+<p>The “Solutions” track, the only one that run over the three days, was the showroom for commercial products and frameworks. In this context, Gile Davies from Microsoft UK presented Test Manager, a new application for collaboration between testers and developers.</p>
+</div>
+<div class="paragraph">
+<p>I have to say I was extremely impressed by this tool, which is an extension of Team Foundation Server. The amount of help it provides to testers and developers during the lifecycle of bugs is what surprised me:</p>
+</div>
+<div class="paragraph">
+<p>-Testers can record their UI interaction within Windows and store them (okay this is not all that impressive yet…)</p>
+</div>
+<div class="paragraph">
+<p>-They can modularised these UI steps into logical blocks (e.g. “Find a book to buy”, “Add it to the cart with IE 7.0”, ”Cancel order using keyword only”, etc)</p>
+</div>
+<div class="paragraph">
+<p>-All test steps gets auto appended to Bug description.</p>
+</div>
+<div class="paragraph">
+<p>-Developers can click on the logical block that failed. They can even debug the problem as of the execution performed by the tester (yes!, it saves the entire state of the test that failed, so developers and tester are always talking of the same environment!)</p>
+</div>
+<div class="paragraph">
+<p>-It can even take automatic snapshot of cloud environments (we are talking Windows Azure only, of course)</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="complex_event_processing_dsl_for_high_frequency_trading">Complex Event Processing: DSL for High Frequency Trading</h3>
+<div class="paragraph">
+<p>Richard Tibbets presented the system his company build, StreamBase. It is an engine for Complex Event Processing Domain Specific Languages, complied into JVM code. The common perception of DSLs is that they are very expressive but that they cannot perform in scenarios where speed is at premium, like front-office trading applications.</p>
+</div>
+<div class="paragraph">
+<p>Unfortunately, I wasn’t able to dissipate my objections to DSLs. Ironically, despite all the talk about speed I felt this chat so slow it was never ending.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="where_did_my_architecture_go_preserving_software_architecture_in_its_implementation">Where Did My Architecture Go? Preserving software architecture in its implementation</h3>
+<div class="paragraph">
+<p>Agile systems are evolutionary, which means that the design of the system is not fully detailed up front. Instead, it “emerges” from a series of cycles of iterative development. Now for those who are not used to evolutionary design, this may sound like anarchy or worse, like no design at all.</p>
+</div>
+<div class="paragraph">
+<p>Eoin Woods did a very convincing walk through a set of tools that allow system to generate their representation from their implementation. This allows teams to keep their architectural design updated, so that the big picture is always clear as the software evolves. Some of the tools I knew already, but there were a few others that I’d really like to try in my next project. The tools demonstrated included support for .Net, Java and C++ technologies.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="more_may_follow">More may follow…</h3>
+<div class="paragraph">
+<p>As I mentioned earlier, I will try to follow this post with other two with the presentation I’ve attended to on Day 2 and 3. After that, I will write a detailed post on some of the talks I’ve found most interesting.</p>
+</div>
+</div>
+</div>
+</div>
+        </div>
+        
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/blog/2010/04/19/finding-duplicate-files-recursively/">Finding duplicated files recursively</a>
+          </h1>
+
+          <p class="post-meta">Apr 19, 2010</p>
+        </header>
+
+        <div class="post-content">
+          <h1>Finding duplicated files recursively</h1>
+<div class="paragraph">
+<p>I was cleaning up a folder with files duplicated in subdirectories. Here is a simple Powershell code that identifies duplications recursively.</p>
+</div>
+<div class="paragraph">
+<p>There might be a shorter form, but I think this is as I short I can get without becoming very cryptic.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="powershell">function FindDuplicates{
+ # Receives a list of ArrayLists
+ # iteratively prints the full path of each ArrayList item
+ # where the ArrayList contains multiple paths (i.e duplicates)
+Process
+{
+ if ($_.Count -gt 1)
+       {foreach($d in $_){$d.FullName}} }
+}
+
+function GetFilesInBuckets($dir,$filter = "*.*")
+{
+ # Creates a hashtable of arraylists (1 entry per unique file name)
+ # Returns the list of arraylists only (not the entire hashtable)
+  $files = @{}
+ foreach ($fl in (gci $dir -filter $filter -r))
+  {
+    if(!$files.ContainsKey($fl.Name))
+    {
+    $files[$fl.Name] = New-Object System.Collections.ArrayList
+    }
+    [void]$files[$fl.Name].Add($fl)
+  }
+ $files.Values
+}
+
+GetFilesInBuckets "C:\MyRootFolder" -f "*.txt"
+    |FindDuplicates</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Additional filtering methods will look similar to as <code>FindDuplicates</code>, and can be piped at the end of the last line of code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="powershell">GetFilesInBuckets "C:\MyRootFolder" -f "*.txt"|
+    FindDuplicates|
+    FilterOutOlder</code></pre>
+</div>
+</div>
+        </div>
+        
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/blog/2010/04/16/nant-and-xml-programming/">NAnt and the limitation of xml programming</a>
+          </h1>
+
+          <p class="post-meta">Apr 16, 2010</p>
+        </header>
+
+        <div class="post-content">
+          <h1>NAnt and the limitation of xml programming</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>I have used NAnt (the .Net port of the Java build tool Ant) in most of the .Net/VB6 projects I have worked on. The decision for using this tool was not always mine, but I guess I did not find (nor look for) a better alternative.</p>
+</div>
+<div class="paragraph">
+<p>As these projects grew, so did their build process and the complexity the build scripts. NAnt was flexible enough to cope with this. If a suitable task does not exist, you can download NAntContrib tasks, other tasks from the web, or you can create yours. If a task is too simple a language construct for the job, you can call an executable and pass the right parameter, create a .Net in-line function, or call a Powershell script.</p>
+</div>
+<div class="paragraph">
+<p>One of the systems I worked on was particularly complex but very well designed. So was its build script. Common functionality was not duplicated, but kept as targets or tasks in separate NAnt files, that where included in the main NAnt script.</p>
+</div>
+<div class="paragraph">
+<p>When reusing these blocks of code, you usually have to pass context-specific parameters to it. You do this by setting properties before invoking the NAnt target. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml">...
+&lt;property name="SpreadsheetPath" value="${Config} + ${CurrentProject}" /&gt;
+&lt;call target="ProcessSpreadsheet" /&gt;
+...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This syntax becomes more awkward when more properties need to be passed to the target.</p>
+</div>
+<div class="paragraph">
+<p>Worse, the lack of explicit input and outputs to a NAnt target make this syntax a bad practice: code calling a target needs to know the name of the properties the target needs set, and the name of the property containing the expected output of the target. Let me picture this with an example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml">(Known inputs: SpreadsheetPath and BusinessArea)
+&lt;property name="SpreadsheetPath"
+    value="${Config} + ${CurrentProject}" /&gt;
+&lt;property name="BusinessArea" value='Security' /&gt;
+
+&lt;call target="GenerateCodeFromSpreadsheet" /&gt;
+
+(Known output: NumberOfGeneratedFiles)
+&lt;property name="TotalCodeFiles" value="${NumberOfGeneratedFiles}" /&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="the_problem_when_xml_is_not_enough">The problem: When XML is not enough</h3>
+<div class="paragraph">
+<p>I don’t have the intention (nor the knowledge!) to enter the XML vs DSL discussion but I see a real disadvantage in using Ant/NAnt for big and complex systems. Generally speaking is not a good idea to program in an XML based DSL (like NAnt). It makes sense to declare targets that know what to do and how to do it, but as the code base grows and scripts are modularised for better reusability, then is only a matter of time until you find yourself programming on XML.</p>
+</div>
+<div class="paragraph">
+<p>The XML/DSL discussion is a very interesting one, and so is the classification of programming paradigms ( what is NAnt programming. Goal-Oriented? Declarative? Or simply a markup language?), but I’m not interested on them now. I think I’m done with Ant/NAnt…I’ll stop trying to extract oil from stones, as Spaniards say. There’s only so much you can ask xml-based languages, but soon you’ll need a proper programming language, or you’ll become an xmlholic.</p>
+</div>
+<div class="paragraph">
+<p>If you know Maven for Java solutions (NMaven is only an idea at the time of writing), you know this is an XML based tool too so it will suffer the same problems I just mentioned. Maven is, however, more flexible thanks to the life cycle structure and the ability of recursively build projects (as specified in their Project Object Model xml files) in a folder structure. This benefit is not enough to marry xml programming for life&#8230;&#8203;one size doesn’t fit all, in fact in terms of build process; standardisation is the exception rather than the rule. I still need to look into Gradle, but it may be good answer to Ant/Maven approaches.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="the_solution">The solution:</h3>
+<div class="paragraph">
+<p>I don’t know really. Sorry if you’ve read this far, but I just wanted to brain dump my discontent with XML programming. Maybe is a useful question for us developers using or building frameworks on a daily basis. Where should we allow for a more multi-purpose, less templated approach? Extensibility is not always the answer. Some frameworks like NAnt are very extensible, but offer very little at their core. The extended functionality is more useful than the basic framework itself.</p>
+</div>
+<div class="paragraph">
+<p>So no, I don’t know the solution for avoiding XML programming (NAnt or Maven) for the time being I’m moving towards a build script fully written in PowerShell, with a flavour of Maven’s life cycles. I will write in detail about this later, it is not rocket science and is not a full solution, but is a start, just like this blog entry.</p>
+</div>
+</div>
+        </div>
+        
+      </li>
+    
+  </ul>
+
+  
+  <div class="pagination">
+    
+
+    
+      <a class="next" href="/blog/">Newer &raquo;</a>
+    
+  </div>
+
+
+
+</div>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy; sebastian slutzky - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://youarewhatyoucode/blog/feed.xml">RSS</a>
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
