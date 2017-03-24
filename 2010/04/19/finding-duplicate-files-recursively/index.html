@@ -9,8 +9,8 @@
   
   
   
-  <title>Finding duplicated files recursively</title>
-  <meta name="description" content="Finding duplicated files recursively I was cleaning up a folder with files duplicated in subdirectories. Here is a simple Powershell code that identifies duplications recursively. There might be a shorter form, but I think this is as I short I can get without becoming very cryptic. function FindDuplicates{ # Receives a list of ArrayLists # iteratively prints the full path of each ArrayList item # where the ArrayList contains multiple paths (i.e duplicates) Process { if ($_.Count -gt 1) {foreach($d in $_){$d.FullName}} } } function GetFilesInBuckets($dir,$filter = &amp;quot;*.*&amp;quot;) { # Creates a hashtable of arraylists (1 entry per unique file name) # Returns the list of arraylists only (not the entire hashtable) $files = @{} foreach ($fl in (gci $dir -filter $filter -r)) { if(!$files.ContainsKey($fl.Name)) { $files[$fl.Name] = New-Object System.Collections.ArrayList } [void]$files[$fl.Name].Add($fl) } $files.Values } GetFilesInBuckets &amp;quot;C:\MyRootFolder&amp;quot; -f &amp;quot;*.txt&amp;quot; |FindDuplicates Additional filtering methods will look similar to as FindDuplicates, and can be piped at the end of the last line of code: GetFilesInBuckets &amp;quot;C:\MyRootFolder&amp;quot; -f &amp;quot;*.txt&amp;quot;| FindDuplicates| FilterOutOlder">
+  <title>Finding Duplicate Files Recursively</title>
+  <meta name="description" content="I was cleaning up a folder with files duplicated in subdirectories. Here is a simple Powershell code that identifies duplications recursively. There might be a shorter form, but I think this is as I short I can get without becoming very cryptic. function FindDuplicates{ # Receives a list of ArrayLists # iteratively prints the full path of each ArrayList item # where the ArrayList contains multiple paths (i.e duplicates) Process { if ($_.Count -gt 1) {foreach($d in $_){$d.FullName}} } } function GetFilesInBuckets($dir,$filter = &amp;quot;*.*&amp;quot;) { # Creates a hashtable of arraylists (1 entry per unique file name) # Returns the list of arraylists only (not the entire hashtable) $files = @{} foreach ($fl in (gci $dir -filter $filter -r)) { if(!$files.ContainsKey($fl.Name)) { $files[$fl.Name] = New-Object System.Collections.ArrayList } [void]$files[$fl.Name].Add($fl) } $files.Values } GetFilesInBuckets &amp;quot;C:\MyRootFolder&amp;quot; -f &amp;quot;*.txt&amp;quot; |FindDuplicates Additional filtering methods will look similar to as FindDuplicates, and can be piped at the end of the last line of code: GetFilesInBuckets &amp;quot;C:\MyRootFolder&amp;quot; -f &amp;quot;*.txt&amp;quot;| FindDuplicates| FilterOutOlder">
   
 
   <link rel="stylesheet" href="/assets/main.css">
@@ -24,8 +24,8 @@
   
   <meta name="twitter:card" content="summary">
   
-  <meta name="twitter:title" content="Finding duplicated files recursively">
-  <meta name="twitter:description" content="Finding duplicated files recursively I was cleaning up a folder with files duplicated in subdirectories. Here is a simple Powershell code that identifies duplications recursively. There might be a ...">
+  <meta name="twitter:title" content="Finding Duplicate Files Recursively">
+  <meta name="twitter:description" content="I was cleaning up a folder with files duplicated in subdirectories. Here is a simple Powershell code that identifies duplications recursively. There might be a shorter form, but I think this is as ...">
   
   
 
@@ -81,14 +81,13 @@
 
   <header class="post-header">
     
-      <h1 class="post-title" itemprop="name headline">Finding duplicated files recursively</h1>
+      <h1 class="post-title" itemprop="name headline">Finding Duplicate Files Recursively</h1>
     
     <p class="post-meta"><time datetime="2010-04-19T00:00:00+00:00" itemprop="datePublished">Apr 19, 2010</time></p>
   </header>
 
   <div class="post-content" itemprop="articleBody">
-    <h1>Finding duplicated files recursively</h1>
-<div class="paragraph">
+    <div class="paragraph">
 <p>I was cleaning up a folder with files duplicated in subdirectories. Here is a simple Powershell code that identifies duplications recursively.</p>
 </div>
 <div class="paragraph">

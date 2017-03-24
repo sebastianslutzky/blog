@@ -91,14 +91,204 @@
       <li>
         <header class="post-header">
           <h1 class="post-title">
-            <a class="post-link" href="/2015/11/24/take-control-of-your-api-aspects/">Take control of your Web API aspects</a>
+            <a class="post-link" href="/2015/11/24/take-control-of-your-api-aspects/">Take Control Of Your Api Aspects</a>
           </h1>
 
           <p class="post-meta">Nov 24, 2015</p>
         </header>
 
         <div class="post-content">
-          Excerpt goes here.
+          <div class="paragraph">
+<p>Action filters  are a way of modifying or decorating the execution of one or more action methods. They provide points of execution before and after the action method itself executes.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>For more details on action filters see <a href="http://www.asp.net/mvc/overview/older-versions-1/controllers-and-routing/understanding-action-filters-cs"">this article</a></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect1">
+<h2 id="order_of_execution_salami_slice_russian_doll">Order of Execution: Salami Slice + Russian Doll</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can have action filters declared at three levels: globally, controller-wide or action-specific. <strong>They will execute in that order&#8230;&#8203;sort of.</strong></p>
+</div>
+<div class="paragraph">
+<p>Once ordered, action filters are executed <strong>sequentially</strong>, without connection between them.</p>
+</div>
+<div class="paragraph">
+<p>But here&#8217;s the fun bit, the order of execution is reverted when the response is processed. In other words, if when processing the request the order of filters is</p>
+</div>
+<div class="paragraph">
+<p><span class="menuseq"><span class="menu">View</span>&#160;&#9656; <span class="submenu">FilterA</span>&#160;&#9656; <span class="submenu">FilterB</span>&#160;&#9656; <span class="submenu">FilterC</span>&#160;&#9656; <span class="menuitem">Action</span></span></p>
+</div>
+<div class="paragraph">
+<p>then when processing the response the order will be</p>
+</div>
+<div class="paragraph">
+<p><span class="menuseq"><span class="menu">View</span>&#160;&#9656; <span class="submenu">Action</span>&#160;&#9656; <span class="submenu">FilterC</span>&#160;&#9656; <span class="submenu">FilterB</span>&#160;&#9656; <span class="menuitem">Filter</span></span></p>
+</div>
+<div class="paragraph">
+<p>there are some design patterns like:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Chain-of-responsibility_pattern">Chain of Responsibility</a></p>
+</li>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Command_pattern">Commands</a></p>
+</li>
+<li>
+<p>I prefer to use the more visual <a href="http://blogs.msdn.com/b/skaufman/archive/2005/04/25/411809.aspx">Salami Slice</a> for the sequential execution.</p>
+</li>
+<li>
+<p><a href="http://blogs.msdn.com/b/skaufman/archive/2005/04/21/410486.aspx">Russian Doll</a></p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="overriding_a_global_filter_from_an_action_method">Overriding a global filter from an action method</h3>
+<div class="paragraph">
+<p>This default order is convenient in many cases, but not always. I found myself in the following scenario: I needed to execute a default action filter <strong>unless</strong> an action was annotated with an overriding action filter attribute.</p>
+</div>
+<div class="paragraph">
+<p>Two examples when this could be useful:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong><strong>Always log http traffic, except sensitive data: </strong></strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Log the raw http request and response to all action methods.</p>
+</li>
+<li>
+<p>But: when the request is for PUT /PaymentCardDetails, then use a custom logger that will not log the payment card number and security code.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong><strong>Always require authentication tokens, except Login and Forgot Password methods: </strong></strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Add a global action filter that will always require authentication token in the request&#8217;s header.</p>
+</li>
+<li>
+<p>But: annotate the Login and ForgotPassword action methods with an attribute that will bypass the authentication requirement.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="so_here_is_the_implementation">&#8230;&#8203;so here is the implementation:</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="step_1_create_an_interface_for_overriding_attributes">Step 1: Create an interface for overriding attributes</h3>
+<div class="paragraph">
+<p>Something like this is the simplest thing that can possibly do the job:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="c#"><span style="color: #408080; font-style: italic">//To be implemented by actionfilterattributes that override a global action filter</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">interface</span> IOverridingFilterAttribute
+{
+    <span style="color: #408080; font-style: italic">//The type of actionfilter to be replaced for this request</span>
+    Type OverriddenType { <span style="color: #008000; font-weight: bold">get</span>; }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="step_2_create_your_own_actionfilterprovider_with_the_overriding_behaviour">Step 2: Create your own ActionFilterProvider with the overriding behaviour</h3>
+<div class="paragraph">
+<p>IFilterProvider is a component you can customise. It defines what action filters to use in this request, and in which order</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="c#"><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">OverridingFilterProvider</span> : IFilterProvider
+{
+    <span style="color: #408080; font-style: italic">//called by WebApi on each request, in order</span>
+    <span style="color: #408080; font-style: italic">// to get the list of filters to apply</span>
+    <span style="color: #008000; font-weight: bold">public</span> IEnumerable&lt;FilterInfo&gt; GetFilters(HttpConfiguration configuration, HttpActionDescriptor actionDescriptor)
+    {
+        <span style="color: #B00040">var</span> globalFilters = configuration.Filters;
+        <span style="color: #B00040">var</span> controllerFilters = actionDescriptor.ControllerDescriptor.GetFilters().Select(x =&gt; <span style="color: #008000; font-weight: bold">new</span> FilterInfo(x,FilterScope.Controller));
+        <span style="color: #B00040">var</span> actionFilters = actionDescriptor.GetFilters().Select(x =&gt; <span style="color: #008000; font-weight: bold">new</span> FilterInfo(x,FilterScope.Action));
+
+        <span style="color: #408080; font-style: italic">//we&#39;ll apply global,controller-wide</span>
+        <span style="color: #408080; font-style: italic">//and then action attribute filters</span>
+        <span style="color: #B00040">var</span> all = globalFilters.Concat(controllerFilters).Concat(actionFilters);
+        <span style="color: #008000; font-weight: bold">return</span> <span style="color: #0000FF">RemoveAnyOverriddenFilter</span>(all);
+    }
+
+    <span style="color: #408080; font-style: italic">//if there are IOverridingFilterAttributes,</span>
+    <span style="color: #408080; font-style: italic">//remove the filters they override</span>
+    <span style="color: #008000; font-weight: bold">private</span> IEnumerable&lt;FilterInfo&gt; RemoveAnyOverriddenFilter(IEnumerable&lt;FilterInfo&gt; all)
+    {
+        <span style="color: #B00040">var</span> overridingFilters =
+            all.Where(x =&gt; (x.Instance <span style="color: #008000; font-weight: bold">as</span> IOverridingFilterAttribute) != <span style="color: #008000; font-weight: bold">null</span>)
+                .Select(x =&gt; (IOverridingFilterAttribute) x.Instance);
+
+        <span style="color: #B00040">var</span> filtered =  all.Where(x =&gt; !IsOverridden(x, overridingFilters));
+        <span style="color: #008000; font-weight: bold">return</span> filtered;
+    }
+
+    <span style="color: #008000; font-weight: bold">private</span> <span style="color: #B00040">bool</span> <span style="color: #0000FF">IsOverridden</span>(FilterInfo target, IEnumerable&lt;IOverridingFilterAttribute&gt; overrides)
+    {
+        <span style="color: #008000; font-weight: bold">foreach</span> (<span style="color: #B00040">var</span> overridingFilter <span style="color: #008000; font-weight: bold">in</span> overrides)
+        {
+            <span style="color: #B00040">var</span> filterType = target.Instance.GetType();
+            <span style="color: #B00040">var</span> overriddenType = overridingFilter.OverriddenType;
+
+            <span style="color: #008000; font-weight: bold">if</span> (overriddenType.IsAssignableFrom(filterType))
+                <span style="color: #008000; font-weight: bold">return</span> <span style="color: #008000; font-weight: bold">true</span>;
+        }
+        <span style="color: #008000; font-weight: bold">return</span> <span style="color: #008000; font-weight: bold">false</span>;
+    }
+
+    <span style="color: #008000; font-weight: bold">private</span> IEnumerable&lt;FilterInfo&gt; OrderFilters(IEnumerable&lt;IFilter&gt; filters, FilterScope scope)
+    {
+        <span style="color: #008000; font-weight: bold">return</span> filters.Select(instance =&gt; <span style="color: #008000; font-weight: bold">new</span> FilterInfo(instance, scope));
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="step_3_register_your_filter_provider">Step 3: Register your Filter Provider</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="c#"><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">WebApiApplication</span> : HttpApplication
+{
+    <span style="color: #008000; font-weight: bold">protected</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Application_Start</span>()
+    {
+        <span style="color: #B00040">var</span> services = GlobalConfiguration.Configuration.Services;
+        services.Replace(<span style="color: #008000; font-weight: bold">typeof</span>(IFilterProvider),
+            <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">OverridingFilterProvider</span>());
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
         </div>
         
       </li>
@@ -109,15 +299,14 @@
       <li>
         <header class="post-header">
           <h1 class="post-title">
-            <a class="post-link" href="/2011/10/29/naked-objects-is-opensource/">Nake Objects framework is now open sourced</a>
+            <a class="post-link" href="/2011/10/29/naked-objects-is-opensource/">Naked Objects Is Opensource</a>
           </h1>
 
           <p class="post-meta">Oct 29, 2011</p>
         </header>
 
         <div class="post-content">
-          <h1>Nake Objects framework is now open sourced</h1>
-<div class="paragraph">
+          <div class="paragraph">
 <p>The Naked Objects framework for .Net is now open sourced under Microsoft Public License.</p>
 </div>
 <div class="paragraph">
@@ -136,15 +325,14 @@
       <li>
         <header class="post-header">
           <h1 class="post-title">
-            <a class="post-link" href="/2011/08/22/apply-operation-in-collection-with-linq/">Apply an operation to a collection with LinQ</a>
+            <a class="post-link" href="/2011/08/22/apply-operation-in-collection-with-linq/">Apply Operation In Collection With Linq</a>
           </h1>
 
           <p class="post-meta">Aug 22, 2011</p>
         </header>
 
         <div class="post-content">
-          <h1>Apply an operation to a collection with LinQ</h1>
-<div class="paragraph">
+          <div class="paragraph">
 <p>These days, it is unusual to write an implementation of the Iterator pattern. Most of the modern languages included a library with a set of aggregate objects that follow this pattern as defined in the <a href="https://www.amazon.com/Design-Patterns-Elements-Reusable-Object-Oriented/dp/0201633612">Gang of Four book</a>.</p>
 </div>
 <div class="paragraph">
@@ -198,7 +386,7 @@ cities.ApplyOperation(x=&gt;Console.WriteLine(<span style="color: #BA2121">&quot
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="/images/console.png" alt="console">
+<img src="/assets/images/console.png" alt="console">
 </div>
 </div>
         </div>
@@ -211,25 +399,20 @@ cities.ApplyOperation(x=&gt;Console.WriteLine(<span style="color: #BA2121">&quot
       <li>
         <header class="post-header">
           <h1 class="post-title">
-            <a class="post-link" href="/2011/08/13/unit-test-design-by-contract-part3/">Unit testing with Design By Contract (part 3)</a>
+            <a class="post-link" href="/2011/08/13/unit-test-design-by-contract-part3/">Unit Test &amp; Design By Contract (Part III)</a>
           </h1>
 
           <p class="post-meta">Aug 13, 2011</p>
         </header>
 
         <div class="post-content">
-          <h1>Unit testing with Design By Contract (part 3)</h1>
-<div id="preamble">
-<div class="sectionbody">
-<div class="imageblock">
+          <div class="imageblock">
 <div class="content">
-<img src="/images/dbc.png" alt="dbc" width="100%">
+<img src="/assets/images/dbc.png" alt="dbc" width="100%">
 </div>
 </div>
 <div class="paragraph">
 <p><em>This article is the last of three on <a href="http://sebastianslutzky.com/2011/08/08/unit-testing-with-design-by-contract/">Unit Testing and Design By Contract</a></em></p>
-</div>
-</div>
 </div>
 <div class="sect1">
 <h2 id="testing_post_conditions_and_class_invariants">Testing Post Conditions and Class Invariants</h2>
@@ -418,25 +601,20 @@ This verification will fail if the method was not invoked indirectly by <code>Ad
       <li>
         <header class="post-header">
           <h1 class="post-title">
-            <a class="post-link" href="/2011/08/12/unit-test-design-by-contract-part2/">Unit testing with Design By Contract (part 2)</a>
+            <a class="post-link" href="/2011/08/12/unit-test-design-by-contract-part2/">Unit Test &amp; Design By Contract (Part II)</a>
           </h1>
 
           <p class="post-meta">Aug 12, 2011</p>
         </header>
 
         <div class="post-content">
-          <h1>Unit testing with Design By Contract (part 2)</h1>
-<div id="preamble">
-<div class="sectionbody">
-<div class="imageblock">
+          <div class="imageblock">
 <div class="content">
-<img src="/images/dbc.png" alt="dbc" width="100%">
+<img src="/assets/images/dbc.png" alt="dbc" width="100%">
 </div>
 </div>
 <div class="paragraph">
 <p><em>This article is the second of three on <a href="http://sebastianslutzky.com/2011/08/08/unit-testing-with-design-by-contract/">Unit Testing and Design By Contract</a></em></p>
-</div>
-</div>
 </div>
 <div class="sect1">
 <h2 id="testing_post_conditions_and_class_invariants">Testing Post Conditions and Class Invariants</h2>
@@ -501,7 +679,7 @@ of an unhappy case, that is, a happy case for pre conditions.</p>
 <h2 id="coming_next">Coming Next:</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><a href="https://sebastianslutzky.wordpress.com/2011/08/13/testing-post-conditions-and-class-invariants/">Testing Post Conditions and Class Invariants</a></p>
+<p><a href="/2011/08/13/unit-test-design-by-contract-part3">Testing Post Conditions and Class Invariants</a></p>
 </div>
 </div>
 </div>

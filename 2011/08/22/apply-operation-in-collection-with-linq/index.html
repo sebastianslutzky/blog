@@ -9,8 +9,8 @@
   
   
   
-  <title>Apply an operation to a collection with LinQ</title>
-  <meta name="description" content="Apply an operation to a collection with LinQ These days, it is unusual to write an implementation of the Iterator pattern. Most of the modern languages included a library with a set of aggregate objects that follow this pattern as defined in the Gang of Four book. In .Net, these objects are in the System.Collections namespace and they include classes such as Lists, Queues, Dictionaries, and also their specialised strongly typed (Generic) version. The Gang Of Four defines two types of iterators: External and Internal. The External requires the client to traverse the items (by looping through the items until the end of the iterator). In contrast to this, the internal iterator delegates this process to a Traverse mix-in class that can be extended and customised. I was looking for something similar to the internal iterator in .Net. That is, a generic way of passing an operation to a collection that would apply it to each of its items. None of the LinQ extension methods for collections seemed to do this, so I wrote one: public static class Extensions { public static void ApplyOperation&amp;lt;T&amp;gt; (this IEnumerable&amp;lt;T&amp;gt; iterator, Action&amp;lt;T&amp;gt; action) { foreach (var item in iterator) action(item); } } Which can be used as follows: IEnumerable&amp;lt;string&amp;gt; cities = new string[] { &amp;quot;Dublin&amp;quot;, &amp;quot;Buenos Aires&amp;quot;, &amp;quot;Madrid&amp;quot; }; cities.ApplyOperation(x=&amp;gt;Console.WriteLine(&amp;quot;City name: &amp;quot; + x)); or simply new string[] { &amp;quot;Dublin&amp;quot;, &amp;quot;Buenos Aires&amp;quot;, &amp;quot;Madrid&amp;quot; } .ApplyOperation( x =&amp;gt; Console.WriteLine(&amp;quot;City name: &amp;quot; + x)); which prints the following output:">
+  <title>Apply Operation In Collection With Linq</title>
+  <meta name="description" content="These days, it is unusual to write an implementation of the Iterator pattern. Most of the modern languages included a library with a set of aggregate objects that follow this pattern as defined in the Gang of Four book. In .Net, these objects are in the System.Collections namespace and they include classes such as Lists, Queues, Dictionaries, and also their specialised strongly typed (Generic) version. The Gang Of Four defines two types of iterators: External and Internal. The External requires the client to traverse the items (by looping through the items until the end of the iterator). In contrast to this, the internal iterator delegates this process to a Traverse mix-in class that can be extended and customised. I was looking for something similar to the internal iterator in .Net. That is, a generic way of passing an operation to a collection that would apply it to each of its items. None of the LinQ extension methods for collections seemed to do this, so I wrote one: public static class Extensions { public static void ApplyOperation&amp;lt;T&amp;gt; (this IEnumerable&amp;lt;T&amp;gt; iterator, Action&amp;lt;T&amp;gt; action) { foreach (var item in iterator) action(item); } } Which can be used as follows: IEnumerable&amp;lt;string&amp;gt; cities = new string[] { &amp;quot;Dublin&amp;quot;, &amp;quot;Buenos Aires&amp;quot;, &amp;quot;Madrid&amp;quot; }; cities.ApplyOperation(x=&amp;gt;Console.WriteLine(&amp;quot;City name: &amp;quot; + x)); or simply new string[] { &amp;quot;Dublin&amp;quot;, &amp;quot;Buenos Aires&amp;quot;, &amp;quot;Madrid&amp;quot; } .ApplyOperation( x =&amp;gt; Console.WriteLine(&amp;quot;City name: &amp;quot; + x)); which prints the following output:">
   
 
   <link rel="stylesheet" href="/assets/main.css">
@@ -24,8 +24,8 @@
   
   <meta name="twitter:card" content="summary">
   
-  <meta name="twitter:title" content="Apply an operation to a collection with LinQ">
-  <meta name="twitter:description" content="Apply an operation to a collection with LinQ These days, it is unusual to write an implementation of the Iterator pattern. Most of the modern languages included a library with a set of aggregate ob...">
+  <meta name="twitter:title" content="Apply Operation In Collection With Linq">
+  <meta name="twitter:description" content="These days, it is unusual to write an implementation of the Iterator pattern. Most of the modern languages included a library with a set of aggregate objects that follow this pattern as defined in ...">
   
   
 
@@ -81,14 +81,13 @@
 
   <header class="post-header">
     
-      <h1 class="post-title" itemprop="name headline">Apply an operation to a collection with LinQ</h1>
+      <h1 class="post-title" itemprop="name headline">Apply Operation In Collection With Linq</h1>
     
     <p class="post-meta"><time datetime="2011-08-22T00:00:00+00:00" itemprop="datePublished">Aug 22, 2011</time></p>
   </header>
 
   <div class="post-content" itemprop="articleBody">
-    <h1>Apply an operation to a collection with LinQ</h1>
-<div class="paragraph">
+    <div class="paragraph">
 <p>These days, it is unusual to write an implementation of the Iterator pattern. Most of the modern languages included a library with a set of aggregate objects that follow this pattern as defined in the <a href="https://www.amazon.com/Design-Patterns-Elements-Reusable-Object-Oriented/dp/0201633612">Gang of Four book</a>.</p>
 </div>
 <div class="paragraph">
@@ -142,7 +141,7 @@ cities.ApplyOperation(x=&gt;Console.WriteLine(<span style="color: #BA2121">&quot
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="/images/console.png" alt="console">
+<img src="/assets/images/console.png" alt="console">
 </div>
 </div>
   </div>
