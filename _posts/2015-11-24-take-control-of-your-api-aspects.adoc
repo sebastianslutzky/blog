@@ -1,5 +1,7 @@
+---
+title: Take control of your Web API aspects 
+---
 :showtitle:
-:page-navtitle: Take control of your Web API aspects
 :page-root: ../../../
 :experimental:
 

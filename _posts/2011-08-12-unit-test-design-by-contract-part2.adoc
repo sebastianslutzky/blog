@@ -9,7 +9,7 @@ title: Unit Test & Design By Contract (Part II)
 
 image::dbc.png[dbc, width=100%]
 
-_This article is the second of three on http://sebastianslutzky.com/2011/08/08/unit-testing-with-design-by-contract/[Unit Testing and Design By Contract]_
+_This article is the second of three on link:/2011/08/08/unit-test-design-by-contract-part1/[Unit Testing and Design By Contract]_
 
 == Testing Post Conditions and Class Invariants 
 

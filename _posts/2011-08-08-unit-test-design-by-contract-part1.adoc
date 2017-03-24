@@ -1,5 +1,5 @@
 ---
-title: Unit Test & Design By Contract (I)
+title: Unit Test & Design By Contract (Part I)
 ---
 :showtitle:
 :page-root: ../../../
@@ -101,3 +101,4 @@ One caveat I have with this idea is that you have to remember that you are not u
 
 == Coming next:
 [Checking Pre Conditions]
+link:/2011/08/12/unit-test-design-by-contract-part2[Checking Pre Conditions]
