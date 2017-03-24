@@ -98,5 +98,5 @@ The exact implementation is outside of the scope of this article, but I will pos
 
 One caveat I have with this idea is that you have to remember that you are not using the “true” code for generating the docs, but the names of the apis. This means that your documentation will be as accurate as the name of your tests.
 
-= Coming next:
+== Coming next:
 https://sebastianslutzky.wordpress.com/2011/08/12/testing-pre-conditions[Checking Pre Conditions]

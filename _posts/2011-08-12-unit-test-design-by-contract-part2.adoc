@@ -36,7 +36,7 @@ These unit tests ensure that if any of the two pre conditions are not satisfied,
 
 When we unit tests this behaviour, we assert that the Unit Tests will result in an exception being thrown, and we can additionally specify the type of the exception. These types of tests are also known as Unhappy Tests.
 
-== Happy Case: The N + 1 Pre Condition
+=== Happy Case: The N + 1 Pre Condition
 How do you test that all pre conditions are met? Well, you could argue that is not needed, when testing post conditions we can assume that the method is executed, what means that we passed all pre condition checks.
 
 Let’s suppose a new pre condition is added to the class, and that the developer forgets to write the Unit Test for it. Yes, all post-condition tests should now fail: there is a new pre condition in town. But this may not happen, what if the new pre condition was coincidentally met by all tests? For example, a new requirement that only allows us to add non empty strings to the stack may not be detected by any existing test if they already use non empty strings only.
@@ -56,5 +56,5 @@ public void Add_PreCond_HappyCase()
 
 Notice that we are not doing any checking on this test. We simply want to pass all the validations for pre conditions. We are also not interested in testing the state of the stack after adding the item. In other words, we are not testing pre conditions either. We will do that in the nexdt part
 
-= Coming Next:
+== Coming Next:
 https://sebastianslutzky.wordpress.com/2011/08/13/testing-post-conditions-and-class-invariants/[Testing Post Conditions and Class Invariants]

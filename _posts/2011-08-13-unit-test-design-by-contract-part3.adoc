@@ -49,7 +49,7 @@ These types of test are probably the most commonly seen. Good Test Driven Develo
 
 There is still one more post condition to test: that no invariant rule of the class was violated by the `Add` method.
 
-== Checking Class Invariants
+=== Checking Class Invariants
 As mentioned earlier, Class Invariants are the rules that should always remain true after any method is executed on a class. The `Add` method is no exception, so we will have to test that class invariants were enforced when it executed.
 We don’t want to repeat ourselves, so we will delegate to a reusable method called `CheckInvariants` that throws an exception if an Invariant rule has been broken.
 
@@ -76,7 +76,7 @@ This tests ensures that the method `CheckInvariants` has been invoked by the `Ad
 The delegation itself is tested by using the http://ayende.com/blog/tags/rhino-mocks[Rhino Mocks] mocking library for .Net. In this case we create a Partial Mock `Stack` object. It is partial because we only want to mock one method (`CheckInvariants`) but we do want to execute a different one (`Add`) of the same class. We tell the partially mocked `Stack` that we are expecting the `CheckInvariants` method to be called later. After we explicitly invoked `Add`, we tell the stack to verify our expectation. 
 This verification will fail if the method was not invoked indirectly by `Add`.
 
-== How public are the Class Invariants?
+=== How public are the Class Invariants?
 So the last thing is to test the Class Invariants. This is just another method called void `CheckInvariants()` of the class, but its access level deserves a bit of thought.
 
 Let’s see what options we have:
