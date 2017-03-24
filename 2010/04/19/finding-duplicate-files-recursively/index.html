@@ -13,11 +13,11 @@
   <meta name="description" content="Finding duplicated files recursively I was cleaning up a folder with files duplicated in subdirectories. Here is a simple Powershell code that identifies duplications recursively. There might be a shorter form, but I think this is as I short I can get without becoming very cryptic. function FindDuplicates{ # Receives a list of ArrayLists # iteratively prints the full path of each ArrayList item # where the ArrayList contains multiple paths (i.e duplicates) Process { if ($_.Count -gt 1) {foreach($d in $_){$d.FullName}} } } function GetFilesInBuckets($dir,$filter = &amp;quot;*.*&amp;quot;) { # Creates a hashtable of arraylists (1 entry per unique file name) # Returns the list of arraylists only (not the entire hashtable) $files = @{} foreach ($fl in (gci $dir -filter $filter -r)) { if(!$files.ContainsKey($fl.Name)) { $files[$fl.Name] = New-Object System.Collections.ArrayList } [void]$files[$fl.Name].Add($fl) } $files.Values } GetFilesInBuckets &amp;quot;C:\MyRootFolder&amp;quot; -f &amp;quot;*.txt&amp;quot; |FindDuplicates Additional filtering methods will look similar to as FindDuplicates, and can be piped at the end of the last line of code: GetFilesInBuckets &amp;quot;C:\MyRootFolder&amp;quot; -f &amp;quot;*.txt&amp;quot;| FindDuplicates| FilterOutOlder">
   
 
-  <link rel="stylesheet" href="/blog/assets/main.css">
-  <link rel="canonical" href="http://youarewhatyoucode/blog/2010/04/19/finding-duplicate-files-recursively/">
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="http://youarewhatyoucode/2010/04/19/finding-duplicate-files-recursively/">
   
   
-  <link rel="alternate" type="application/rss+xml" title="you are what you code" href="http://youarewhatyoucode/blog/feed.xml">
+  <link rel="alternate" type="application/rss+xml" title="you are what you code" href="http://youarewhatyoucode/feed.xml">
 
   
 
@@ -55,7 +55,7 @@
 
   <div class="wrapper">
 
-    <a class="site-title" href="/blog/">you are what you code</a>
+    <a class="site-title" href="/">you are what you code</a>
 
     <nav class="site-nav">
       
@@ -63,7 +63,7 @@
         <a class="page-link" href="https://ie.linkedin.com/in/sebastianslutzky">About</a>
       
         
-        <a class="page-link" href="/blog/archives/">Archives</a>
+        <a class="page-link" href="/archives/">Archives</a>
       
         
         <a class="page-link" href="https://github.com/sebastianslutzky">GitHub</a>
@@ -150,7 +150,7 @@ GetFilesInBuckets <span style="color: #BA2121">&quot;C:\MyRootFolder&quot;</span
     <p>
       
 
-&copy; sebastian slutzky - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://youarewhatyoucode/blog/feed.xml">RSS</a>
+&copy; sebastian slutzky - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://youarewhatyoucode/feed.xml">RSS</a>
 
     </p>
 

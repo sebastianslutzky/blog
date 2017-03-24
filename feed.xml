@@ -3,10 +3,10 @@
   <generator uri="http://jekyllrb.com" version="3.4.3">Jekyll</generator>
   
   
-  <link href="http://youarewhatyoucode/blog/feed.xml" rel="self" type="application/atom+xml" />
-  <link href="http://youarewhatyoucode/blog/" rel="alternate" type="text/html" hreflang="en" />
-  <updated>2017-03-24T20:00:55+00:00</updated>
-  <id>http://youarewhatyoucode/blog//</id>
+  <link href="http://youarewhatyoucode/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="http://youarewhatyoucode/" rel="alternate" type="text/html" hreflang="en" />
+  <updated>2017-03-24T20:10:49+00:00</updated>
+  <id>http://youarewhatyoucode//</id>
 
   
     <title type="html">you are what you code</title>
@@ -30,11 +30,11 @@
       
       <title type="html">Take control of your Web API aspects</title>
       
-      <link href="http://youarewhatyoucode/blog/2015/11/24/take-control-of-your-api-aspects/" rel="alternate" type="text/html" title="Take control of your Web API aspects" />
+      <link href="http://youarewhatyoucode/2015/11/24/take-control-of-your-api-aspects/" rel="alternate" type="text/html" title="Take control of your Web API aspects" />
       <published>2015-11-24T00:00:00+00:00</published>
       <updated>2015-11-24T00:00:00+00:00</updated>
-      <id>http://youarewhatyoucode/blog/2015/11/24/take-control-of-your-api-aspects</id>
-      <content type="html" xml:base="http://youarewhatyoucode/blog/2015/11/24/take-control-of-your-api-aspects/">&lt;h1&gt;Take control of your Web API aspects&lt;/h1&gt;
+      <id>http://youarewhatyoucode/2015/11/24/take-control-of-your-api-aspects</id>
+      <content type="html" xml:base="http://youarewhatyoucode/2015/11/24/take-control-of-your-api-aspects/">&lt;h1&gt;Take control of your Web API aspects&lt;/h1&gt;
 &lt;div id=&quot;preamble&quot;&gt;
 &lt;div class=&quot;sectionbody&quot;&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
@@ -263,50 +263,19 @@
       
       <title type="html">Nake Objects framework is now open sourced</title>
       
-      <link href="http://youarewhatyoucode/blog/2011/10/29/naked-objects-is-opensource/" rel="alternate" type="text/html" title="Nake Objects framework is now open sourced" />
+      <link href="http://youarewhatyoucode/2011/10/29/naked-objects-is-opensource/" rel="alternate" type="text/html" title="Nake Objects framework is now open sourced" />
       <published>2011-10-29T00:00:00+00:00</published>
       <updated>2011-10-29T00:00:00+00:00</updated>
-      <id>http://youarewhatyoucode/blog/2011/10/29/naked-objects-is-opensource</id>
-      <content type="html" xml:base="http://youarewhatyoucode/blog/2011/10/29/naked-objects-is-opensource/">&lt;h1&gt;Nake Objects framework is now open sourced&lt;/h1&gt;
-&lt;div id=&quot;preamble&quot;&gt;
-&lt;div class=&quot;sectionbody&quot;&gt;
+      <id>http://youarewhatyoucode/2011/10/29/naked-objects-is-opensource</id>
+      <content type="html" xml:base="http://youarewhatyoucode/2011/10/29/naked-objects-is-opensource/">&lt;h1&gt;Nake Objects framework is now open sourced&lt;/h1&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;The Naked Objects framework for .Net is now open sourced under Microsoft Public License.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;The projects is now hosted at &lt;a href=&quot;http://nakedobjects.codeplex.com/&quot;&gt;Codeplex&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class=&quot;sect1&quot;&gt;
-&lt;h2 id=&quot;hola&quot;&gt;hola&lt;/h2&gt;
-&lt;div class=&quot;sectionbody&quot;&gt;
-&lt;div class=&quot;paragraph&quot;&gt;
-&lt;p&gt;asfdasfdas&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class=&quot;sect2&quot;&gt;
-&lt;h3 id=&quot;mundo&quot;&gt;mundo&lt;/h3&gt;
-&lt;div class=&quot;paragraph&quot;&gt;
-&lt;p&gt;safasf&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class=&quot;sect1&quot;&gt;
-&lt;h2 id=&quot;como&quot;&gt;como&lt;/h2&gt;
-&lt;div class=&quot;sectionbody&quot;&gt;
-&lt;div class=&quot;paragraph&quot;&gt;
-&lt;p&gt;asfafsd
-sfd
-=== estas&lt;/p&gt;
-&lt;/div&gt;
-&lt;div class=&quot;paragraph&quot;&gt;
-&lt;p&gt;asdfas&lt;/p&gt;
-&lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;You can download the framework from there or in Visual Studio, from NuGet&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
 &lt;/div&gt;</content>
 
       
@@ -328,7 +297,7 @@ sfd
       
 
       
-        <summary type="html">Nake Objects framework is now open sourced The Naked Objects framework for .Net is now open sourced under Microsoft Public License. The projects is now hosted at Codeplex hola asfdasfdas mundo safasf como asfafsd sfd === estas asdfas You can download the framework from there or in Visual Studio, from NuGet</summary>
+        <summary type="html">Nake Objects framework is now open sourced The Naked Objects framework for .Net is now open sourced under Microsoft Public License. The projects is now hosted at Codeplex You can download the framework from there or in Visual Studio, from NuGet</summary>
       
 
       
@@ -341,11 +310,11 @@ sfd
       
       <title type="html">Apply an operation to a collection with LinQ</title>
       
-      <link href="http://youarewhatyoucode/blog/2011/08/22/apply-operation-in-collection-with-linq/" rel="alternate" type="text/html" title="Apply an operation to a collection with LinQ" />
+      <link href="http://youarewhatyoucode/2011/08/22/apply-operation-in-collection-with-linq/" rel="alternate" type="text/html" title="Apply an operation to a collection with LinQ" />
       <published>2011-08-22T00:00:00+00:00</published>
       <updated>2011-08-22T00:00:00+00:00</updated>
-      <id>http://youarewhatyoucode/blog/2011/08/22/apply-operation-in-collection-with-linq</id>
-      <content type="html" xml:base="http://youarewhatyoucode/blog/2011/08/22/apply-operation-in-collection-with-linq/">&lt;h1&gt;Apply an operation to a collection with LinQ&lt;/h1&gt;
+      <id>http://youarewhatyoucode/2011/08/22/apply-operation-in-collection-with-linq</id>
+      <content type="html" xml:base="http://youarewhatyoucode/2011/08/22/apply-operation-in-collection-with-linq/">&lt;h1&gt;Apply an operation to a collection with LinQ&lt;/h1&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;These days, it is unusual to write an implementation of the Iterator pattern. Most of the modern languages included a library with a set of aggregate objects that follow this pattern as defined in the &lt;a href=&quot;https://www.amazon.com/Design-Patterns-Elements-Reusable-Object-Oriented/dp/0201633612&quot;&gt;Gang of Four book&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
@@ -436,11 +405,11 @@ cities.ApplyOperation(x=&amp;gt;Console.WriteLine(&lt;span style=&quot;color: #B
       
       <title type="html">Unit testing with Design By Contract (part 3)</title>
       
-      <link href="http://youarewhatyoucode/blog/2011/08/13/unit-test-design-by-contract-part3/" rel="alternate" type="text/html" title="Unit testing with Design By Contract (part 3)" />
+      <link href="http://youarewhatyoucode/2011/08/13/unit-test-design-by-contract-part3/" rel="alternate" type="text/html" title="Unit testing with Design By Contract (part 3)" />
       <published>2011-08-13T00:00:00+00:00</published>
       <updated>2011-08-13T00:00:00+00:00</updated>
-      <id>http://youarewhatyoucode/blog/2011/08/13/unit-test-design-by-contract-part3</id>
-      <content type="html" xml:base="http://youarewhatyoucode/blog/2011/08/13/unit-test-design-by-contract-part3/">&lt;h1&gt;Unit testing with Design By Contract (part 3)&lt;/h1&gt;
+      <id>http://youarewhatyoucode/2011/08/13/unit-test-design-by-contract-part3</id>
+      <content type="html" xml:base="http://youarewhatyoucode/2011/08/13/unit-test-design-by-contract-part3/">&lt;h1&gt;Unit testing with Design By Contract (part 3)&lt;/h1&gt;
 &lt;div id=&quot;preamble&quot;&gt;
 &lt;div class=&quot;sectionbody&quot;&gt;
 &lt;div class=&quot;imageblock&quot;&gt;
@@ -663,11 +632,11 @@ This verification will fail if the method was not invoked indirectly by &lt;code
       
       <title type="html">Unit testing with Design By Contract (part 2)</title>
       
-      <link href="http://youarewhatyoucode/blog/2011/08/12/unit-test-design-by-contract-part2/" rel="alternate" type="text/html" title="Unit testing with Design By Contract (part 2)" />
+      <link href="http://youarewhatyoucode/2011/08/12/unit-test-design-by-contract-part2/" rel="alternate" type="text/html" title="Unit testing with Design By Contract (part 2)" />
       <published>2011-08-12T00:00:00+00:00</published>
       <updated>2011-08-12T00:00:00+00:00</updated>
-      <id>http://youarewhatyoucode/blog/2011/08/12/unit-test-design-by-contract-part2</id>
-      <content type="html" xml:base="http://youarewhatyoucode/blog/2011/08/12/unit-test-design-by-contract-part2/">&lt;h1&gt;Unit testing with Design By Contract (part 2)&lt;/h1&gt;
+      <id>http://youarewhatyoucode/2011/08/12/unit-test-design-by-contract-part2</id>
+      <content type="html" xml:base="http://youarewhatyoucode/2011/08/12/unit-test-design-by-contract-part2/">&lt;h1&gt;Unit testing with Design By Contract (part 2)&lt;/h1&gt;
 &lt;div id=&quot;preamble&quot;&gt;
 &lt;div class=&quot;sectionbody&quot;&gt;
 &lt;div class=&quot;imageblock&quot;&gt;
@@ -780,11 +749,11 @@ of an unhappy case, that is, a happy case for pre conditions.&lt;/p&gt;
       
       <title type="html">Unit testing with Design By Contract</title>
       
-      <link href="http://youarewhatyoucode/blog/2011/08/08/unit-test-design-by-contract-part1/" rel="alternate" type="text/html" title="Unit testing with Design By Contract" />
+      <link href="http://youarewhatyoucode/2011/08/08/unit-test-design-by-contract-part1/" rel="alternate" type="text/html" title="Unit testing with Design By Contract" />
       <published>2011-08-08T00:00:00+00:00</published>
       <updated>2011-08-08T00:00:00+00:00</updated>
-      <id>http://youarewhatyoucode/blog/2011/08/08/unit-test-design-by-contract-part1</id>
-      <content type="html" xml:base="http://youarewhatyoucode/blog/2011/08/08/unit-test-design-by-contract-part1/">&lt;h1&gt;Unit testing with Design By Contract&lt;/h1&gt;
+      <id>http://youarewhatyoucode/2011/08/08/unit-test-design-by-contract-part1</id>
+      <content type="html" xml:base="http://youarewhatyoucode/2011/08/08/unit-test-design-by-contract-part1/">&lt;h1&gt;Unit testing with Design By Contract&lt;/h1&gt;
 &lt;div id=&quot;preamble&quot;&gt;
 &lt;div class=&quot;sectionbody&quot;&gt;
 &lt;div class=&quot;imageblock&quot;&gt;
@@ -981,11 +950,11 @@ The exact implementation is outside of the scope of this article, but I will pos
       
       <title type="html">Notes from QCon London 2011</title>
       
-      <link href="http://youarewhatyoucode/blog/2011/03/14/notes-from-qcon-london-2012/" rel="alternate" type="text/html" title="Notes from QCon London 2011" />
+      <link href="http://youarewhatyoucode/2011/03/14/notes-from-qcon-london-2012/" rel="alternate" type="text/html" title="Notes from QCon London 2011" />
       <published>2011-03-14T00:00:00+00:00</published>
       <updated>2011-03-14T00:00:00+00:00</updated>
-      <id>http://youarewhatyoucode/blog/2011/03/14/notes-from-qcon-london-2012</id>
-      <content type="html" xml:base="http://youarewhatyoucode/blog/2011/03/14/notes-from-qcon-london-2012/">&lt;h1&gt;Notes from QCon London 2011&lt;/h1&gt;
+      <id>http://youarewhatyoucode/2011/03/14/notes-from-qcon-london-2012</id>
+      <content type="html" xml:base="http://youarewhatyoucode/2011/03/14/notes-from-qcon-london-2012/">&lt;h1&gt;Notes from QCon London 2011&lt;/h1&gt;
 &lt;div id=&quot;preamble&quot;&gt;
 &lt;div class=&quot;sectionbody&quot;&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
@@ -1124,11 +1093,11 @@ The exact implementation is outside of the scope of this article, but I will pos
       
       <title type="html">Finding duplicated files recursively</title>
       
-      <link href="http://youarewhatyoucode/blog/2010/04/19/finding-duplicate-files-recursively/" rel="alternate" type="text/html" title="Finding duplicated files recursively" />
+      <link href="http://youarewhatyoucode/2010/04/19/finding-duplicate-files-recursively/" rel="alternate" type="text/html" title="Finding duplicated files recursively" />
       <published>2010-04-19T00:00:00+00:00</published>
       <updated>2010-04-19T00:00:00+00:00</updated>
-      <id>http://youarewhatyoucode/blog/2010/04/19/finding-duplicate-files-recursively</id>
-      <content type="html" xml:base="http://youarewhatyoucode/blog/2010/04/19/finding-duplicate-files-recursively/">&lt;h1&gt;Finding duplicated files recursively&lt;/h1&gt;
+      <id>http://youarewhatyoucode/2010/04/19/finding-duplicate-files-recursively</id>
+      <content type="html" xml:base="http://youarewhatyoucode/2010/04/19/finding-duplicate-files-recursively/">&lt;h1&gt;Finding duplicated files recursively&lt;/h1&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;I was cleaning up a folder with files duplicated in subdirectories. Here is a simple Powershell code that identifies duplications recursively.&lt;/p&gt;
 &lt;/div&gt;
@@ -1210,11 +1179,11 @@ GetFilesInBuckets &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;C:\MyRo
       
       <title type="html">NAnt and the limitation of xml programming</title>
       
-      <link href="http://youarewhatyoucode/blog/2010/04/16/nant-and-xml-programming/" rel="alternate" type="text/html" title="NAnt and the limitation of xml programming" />
+      <link href="http://youarewhatyoucode/2010/04/16/nant-and-xml-programming/" rel="alternate" type="text/html" title="NAnt and the limitation of xml programming" />
       <published>2010-04-16T00:00:00+00:00</published>
       <updated>2010-04-16T00:00:00+00:00</updated>
-      <id>http://youarewhatyoucode/blog/2010/04/16/nant-and-xml-programming</id>
-      <content type="html" xml:base="http://youarewhatyoucode/blog/2010/04/16/nant-and-xml-programming/">&lt;h1&gt;NAnt and the limitation of xml programming&lt;/h1&gt;
+      <id>http://youarewhatyoucode/2010/04/16/nant-and-xml-programming</id>
+      <content type="html" xml:base="http://youarewhatyoucode/2010/04/16/nant-and-xml-programming/">&lt;h1&gt;NAnt and the limitation of xml programming&lt;/h1&gt;
 &lt;div id=&quot;preamble&quot;&gt;
 &lt;div class=&quot;sectionbody&quot;&gt;
 &lt;div class=&quot;paragraph&quot;&gt;

@@ -13,11 +13,11 @@
   <meta name="description" content="Apply an operation to a collection with LinQ These days, it is unusual to write an implementation of the Iterator pattern. Most of the modern languages included a library with a set of aggregate objects that follow this pattern as defined in the Gang of Four book. In .Net, these objects are in the System.Collections namespace and they include classes such as Lists, Queues, Dictionaries, and also their specialised strongly typed (Generic) version. The Gang Of Four defines two types of iterators: External and Internal. The External requires the client to traverse the items (by looping through the items until the end of the iterator). In contrast to this, the internal iterator delegates this process to a Traverse mix-in class that can be extended and customised. I was looking for something similar to the internal iterator in .Net. That is, a generic way of passing an operation to a collection that would apply it to each of its items. None of the LinQ extension methods for collections seemed to do this, so I wrote one: public static class Extensions { public static void ApplyOperation&amp;lt;T&amp;gt; (this IEnumerable&amp;lt;T&amp;gt; iterator, Action&amp;lt;T&amp;gt; action) { foreach (var item in iterator) action(item); } } Which can be used as follows: IEnumerable&amp;lt;string&amp;gt; cities = new string[] { &amp;quot;Dublin&amp;quot;, &amp;quot;Buenos Aires&amp;quot;, &amp;quot;Madrid&amp;quot; }; cities.ApplyOperation(x=&amp;gt;Console.WriteLine(&amp;quot;City name: &amp;quot; + x)); or simply new string[] { &amp;quot;Dublin&amp;quot;, &amp;quot;Buenos Aires&amp;quot;, &amp;quot;Madrid&amp;quot; } .ApplyOperation( x =&amp;gt; Console.WriteLine(&amp;quot;City name: &amp;quot; + x)); which prints the following output:">
   
 
-  <link rel="stylesheet" href="/blog/assets/main.css">
-  <link rel="canonical" href="http://youarewhatyoucode/blog/2011/08/22/apply-operation-in-collection-with-linq/">
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="http://youarewhatyoucode/2011/08/22/apply-operation-in-collection-with-linq/">
   
   
-  <link rel="alternate" type="application/rss+xml" title="you are what you code" href="http://youarewhatyoucode/blog/feed.xml">
+  <link rel="alternate" type="application/rss+xml" title="you are what you code" href="http://youarewhatyoucode/feed.xml">
 
   
 
@@ -55,7 +55,7 @@
 
   <div class="wrapper">
 
-    <a class="site-title" href="/blog/">you are what you code</a>
+    <a class="site-title" href="/">you are what you code</a>
 
     <nav class="site-nav">
       
@@ -63,7 +63,7 @@
         <a class="page-link" href="https://ie.linkedin.com/in/sebastianslutzky">About</a>
       
         
-        <a class="page-link" href="/blog/archives/">Archives</a>
+        <a class="page-link" href="/archives/">Archives</a>
       
         
         <a class="page-link" href="https://github.com/sebastianslutzky">GitHub</a>
@@ -159,7 +159,7 @@ cities.ApplyOperation(x=&gt;Console.WriteLine(<span style="color: #BA2121">&quot
     <p>
       
 
-&copy; sebastian slutzky - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://youarewhatyoucode/blog/feed.xml">RSS</a>
+&copy; sebastian slutzky - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://youarewhatyoucode/feed.xml">RSS</a>
 
     </p>
 
