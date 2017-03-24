@@ -13,9 +13,9 @@ For more details on action filters see http://www.asp.net/mvc/overview/older-ver
 ====
 
 == Order of Execution: Salami Slice + Russian Doll
-You can have action filters declared at three levels: globally, controller-wide or action-specific. <strong>They will execute in that order...sort of.</strong>
+You can have action filters declared at three levels: globally, controller-wide or action-specific. **They will execute in that order...sort of.**
 
-Once ordered, action filters are executed <strong>sequentially</strong>, without connection between them.
+Once ordered, action filters are executed **sequentially**, without connection between them.
 
 But here's the fun bit, the order of execution is reverted when the response is processed. In other words, if when processing the request the order of filters is
 
@@ -50,7 +50,7 @@ Two examples when this could be useful:
 
 Something like this is the simplest thing that can possibly do the job:
 
-[source,csharp]
+[source,java]
 ----
 //To be implemented by actionfilterattributes that override a global action filter
 public interface IOverridingFilterAttribute
@@ -63,7 +63,7 @@ public interface IOverridingFilterAttribute
 === Step 2: Create your own ActionFilterProvider with the overriding behaviour ===
 IFilterProvider is a component you can customise. It defines what action filters to use in this request, and in which order
 
-[source,csharp]
+[source,c#]
 ----
 public class OverridingFilterProvider : IFilterProvider
 {
@@ -115,7 +115,7 @@ public class OverridingFilterProvider : IFilterProvider
 
 === Step 3: Register your Filter Provider ===
 
-[source,csharp]
+[source,c#]
 ----
 public class WebApiApplication : HttpApplication
 {
