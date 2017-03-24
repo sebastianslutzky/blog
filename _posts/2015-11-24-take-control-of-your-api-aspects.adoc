@@ -50,7 +50,7 @@ Two examples when this could be useful:
 
 Something like this is the simplest thing that can possibly do the job:
 
-[source,java]
+[source,c#]
 ----
 //To be implemented by actionfilterattributes that override a global action filter
 public interface IOverridingFilterAttribute

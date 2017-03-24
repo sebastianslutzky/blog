@@ -37,14 +37,13 @@ twitter_image:
 facebook_app_id:
 facebook_image:
 google_analytics:
-
+disqus_shortname: "nandothemes"
 # Plugins
 gems:
   - jekyll-archives
   - jekyll-paginate
   - jekyll-sitemap
   - jekyll-asciidoc
-  - rouge
 
 # Build settings
 excerpt_separator: "<!-- more -->"
@@ -67,6 +66,8 @@ asciidoctor:
   base_dir: :docdir
   safe: unsafe
   attributes:
-    - source-highlighter=coderay
-    - idseparator=_
-    - icons=font
+   source-highlighter: pygments
+   pygments-stylesheet: 'public/css/syntax.css'
+   pygments-css: emacs
+   icons: font
+   idseparator: _
