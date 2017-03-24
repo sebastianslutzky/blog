@@ -1,9 +1,8 @@
-= Finding duplicated files recursively
 :showtitle:
 :page-navtitle: Finding duplicated files recursively
 :page-root: ../../../
 :experimental:
-:imagesdir: /images 
+:imagesdir: /assets/images 
 
 I was cleaning up a folder with files duplicated in subdirectories. Here is a simple Powershell code that identifies duplications recursively.
 

@@ -1,4 +1,3 @@
-= Nake Objects framework is now open sourced
 :showtitle:
 :page-navtitle: Naked Objects is now open sourced.
 :page-root: ../../../

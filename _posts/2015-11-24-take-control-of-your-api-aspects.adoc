@@ -1,7 +1,5 @@
-= Take control of your Web API aspects
 :showtitle:
 :page-navtitle: Take control of your Web API aspects
-:page-excerpt: Excerpt goes here.
 :page-root: ../../../
 :experimental:
 

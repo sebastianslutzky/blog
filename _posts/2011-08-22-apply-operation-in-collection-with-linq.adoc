@@ -1,9 +1,8 @@
-= Apply an operation to a collection with LinQ 
 :showtitle:
 :page-navtitle: Apply an operation to a collection with LinQ
 :page-root: ../../../
 :experimental:
-:imagesdir: /images 
+:imagesdir: /assets/images 
 
 These days, it is unusual to write an implementation of the Iterator pattern. Most of the modern languages included a library with a set of aggregate objects that follow this pattern as defined in the https://www.amazon.com/Design-Patterns-Elements-Reusable-Object-Oriented/dp/0201633612[Gang of Four book].
 

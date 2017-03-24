@@ -1,9 +1,10 @@
-= Unit testing with Design By Contract 
+---
+title: Unit Test & Design By Contract (I)
+---
 :showtitle:
-:page-navtitle: Unit Test & Design By Contract (I)
 :page-root: ../../../
 :experimental:
-:imagesdir: /images 
+:imagesdir: /assets/images 
 
 image::dbc.png[dbc, width=100%]
 
@@ -99,4 +100,4 @@ The exact implementation is outside of the scope of this article, but I will pos
 One caveat I have with this idea is that you have to remember that you are not using the “true” code for generating the docs, but the names of the apis. This means that your documentation will be as accurate as the name of your tests.
 
 == Coming next:
-https://sebastianslutzky.wordpress.com/2011/08/12/testing-pre-conditions[Checking Pre Conditions]
+[Checking Pre Conditions]

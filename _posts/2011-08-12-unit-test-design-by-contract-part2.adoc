@@ -1,9 +1,11 @@
-= Unit testing with Design By Contract (part 2)
+---
+title: Unit Test & Design By Contract (Part II)
+---
+[dbc2]
 :showtitle:
-:page-navtitle: Unit Test & Design By Contract (II)
 :page-root: ../../../
 :experimental:
-:imagesdir: /images 
+:imagesdir: /assets/images 
 
 image::dbc.png[dbc, width=100%]
 
@@ -57,4 +59,4 @@ public void Add_PreCond_HappyCase()
 Notice that we are not doing any checking on this test. We simply want to pass all the validations for pre conditions. We are also not interested in testing the state of the stack after adding the item. In other words, we are not testing pre conditions either. We will do that in the nexdt part
 
 == Coming Next:
-https://sebastianslutzky.wordpress.com/2011/08/13/testing-post-conditions-and-class-invariants/[Testing Post Conditions and Class Invariants]
+link:/2011/08/13/unit-test-design-by-contract-part3[Testing Post Conditions and Class Invariants]

@@ -1,9 +1,7 @@
-= NAnt and the limitation of xml programming 
-:showtitle:
-:page-navtitle: NAnt and the limitation of xml programming 
+:title: NAnt and the limitation of xml programming 
 :page-root: ../../../
 :experimental:
-:imagesdir: /images 
+:imagesdir: /assets/images 
 
 I have used NAnt (the .Net port of the Java build tool Ant) in most of the .Net/VB6 projects I have worked on. The decision for using this tool was not always mine, but I guess I did not find (nor look for) a better alternative.
 

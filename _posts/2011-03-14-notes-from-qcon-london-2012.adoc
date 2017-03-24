@@ -1,9 +1,8 @@
-= Notes from QCon London 2011
 :showtitle:
 :page-navtitle: Notes from QCon London 2011
 :page-root: ../../../
 :experimental:
-:imagesdir: /images 
+:imagesdir: /assets/images 
 
 _Did you know Facebook is n ordinary single-threaded PHP website? How complex do you think Twitter’s business logic model is? Do you know how Nokia is preparing to scale Ovi once (if) their Microsoft deal is agreed?_ 
 

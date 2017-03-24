@@ -1,9 +1,10 @@
-= Unit testing with Design By Contract (part 3)
+---
+title: Unit Test & Design By Contract (Part III)
+---
 :showtitle:
-:page-navtitle: Unit Test & Design By Contract (III)
 :page-root: ../../../
 :experimental:
-:imagesdir: /images 
+:imagesdir: /assets/images 
 
 image::dbc.png[dbc, width=100%]
 
