@@ -1,0 +1,69 @@
+:showtitle:
+//:page-navtitle: Apply an operation to a collection with LinQ --> overrides title
+:page-root: ../../../
+:experimental:
+:imagesdir: /assets/images 
+
+With the increasing adoption of source code management workflows such as http://nvie.com/posts/a-successful-git-branching-model/[Git Flow], 
+it is common to keep "stale" branches in local repositories.
+
+== Steps to reproduce
+
+The steps needed to end up in this situation are more or less like this:
+
+ * Dev1 creates & publishes the branch Feature1
+
+ git checkout -B Feature1
+ ..make & commit changes..
+ git push -u origin Feature1
+  
+ * Dev2 fetches the branch to collaborate or review
+
+ git fetch
+ git checkout Feature1
+
+ * Dev2 deletes the Feature1 branch after merging it into master
+
+ # delete the branch on the remote 
+ git push origin --delete Feature1
+ # delete the branch locally
+ git branch -D Feature1
+
+== Pruning stale references 
+At this stage,  Dev1 (and 3, 4 etc) will want to have the deleted branch gone from their workspace too.
+
+A quick search will lead you to the `prune` sub command
+
+ $> git remote update origin --prune
+ Fetching origin
+ From https://github.com/sebastianslutzky/TestRepo
+ x [deleted]         (none)     -> origin/Feature1
+
+However, this command only removes the reference to the tracking branch, not the local branch itself.
+You can see that the orphan branch is still here:
+
+ $> git branch -l
+  Feature1
+  * master
+
+== Delete branches not in the remote
+So here is a simple Powershell script that deletes the orphan local branch:
+
+[source,powershell,numbered]
+----
+ $local=git branch -l
+ $remote=git branch -r
+ $local|
+    %{$_.Trim()}|
+    ?{-not ($remote -like '*' + $_) }|
+    ?{-not($_ -match "master" )}|
+    %{git branch -D $_}
+----
+
+Surely this code could be compressed in one single piped command, but it could turn a bit confusing.
+
+We are getting the list of local and remote branches (lines 1 & 2).
+Then we perform a substraction set operation ($local - $remote) (line 5).
+This will gives us the set of local branches not in the remote local branches not in the remote.
+
+We finally delete them in line 7.

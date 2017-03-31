@@ -1,0 +1,5 @@
+:showtitle:
+//:page-navtitle: Apply an operation to a collection with LinQ --> overrides title
+:page-root: ../../../
+:experimental:
+:imagesdir: /assets/images 
