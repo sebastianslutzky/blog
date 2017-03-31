@@ -5,7 +5,7 @@
   
   <link href="http://youarewhatyoucode/feed.xml" rel="self" type="application/atom+xml" />
   <link href="http://youarewhatyoucode/" rel="alternate" type="text/html" hreflang="en" />
-  <updated>2017-03-31T20:42:40+00:00</updated>
+  <updated>2017-03-31T23:01:19+00:00</updated>
   <id>http://youarewhatyoucode//</id>
 
   
@@ -162,6 +162,10 @@ This will gives us the set of local branches not in the remote local branches no
         </author>
       
 
+      
+        <category term="git" />
+      
+        <category term="powershell" />
       
 
       
@@ -391,6 +395,14 @@ This will gives us the set of local branches not in the remote local branches no
       
 
       
+        <category term="asp web api" />
+      
+        <category term="architecture" />
+      
+        <category term=".net" />
+      
+        <category term="c#" />
+      
 
       
 
@@ -436,6 +448,12 @@ This will gives us the set of local branches not in the remote local branches no
         </author>
       
 
+      
+        <category term="news" />
+      
+        <category term="nakedobjects" />
+      
+        <category term="ddd" />
       
 
       
@@ -530,6 +548,12 @@ cities.ApplyOperation(x=&amp;gt;Console.WriteLine(&lt;span style=&quot;color: #B
         </author>
       
 
+      
+        <category term="linQ" />
+      
+        <category term=".net" />
+      
+        <category term="c#" />
       
 
       
@@ -753,6 +777,14 @@ This verification will fail if the method was not invoked indirectly by &lt;code
       
 
       
+        <category term="test-driven development" />
+      
+        <category term="architecture" />
+      
+        <category term="c#" />
+      
+        <category term="unit-testing" />
+      
 
       
 
@@ -864,6 +896,14 @@ of an unhappy case, that is, a happy case for pre conditions.&lt;/p&gt;
         </author>
       
 
+      
+        <category term="test-driven development" />
+      
+        <category term="architecture" />
+      
+        <category term="c#" />
+      
+        <category term="unit-testing" />
       
 
       
@@ -1061,6 +1101,14 @@ The exact implementation is outside of the scope of this article, but I will pos
       
 
       
+        <category term="test-driven development" />
+      
+        <category term="architecture" />
+      
+        <category term="c#" />
+      
+        <category term="unit-testing" />
+      
 
       
 
@@ -1199,6 +1247,8 @@ The exact implementation is outside of the scope of this article, but I will pos
       
 
       
+        <category term="news" />
+      
 
       
 
@@ -1283,6 +1333,8 @@ GetFilesInBuckets &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;C:\MyRo
         </author>
       
 
+      
+        <category term="powershell" />
       
 
       
@@ -1380,6 +1432,10 @@ GetFilesInBuckets &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;C:\MyRo
         </author>
       
 
+      
+        <category term="architecture" />
+      
+        <category term="ranting" />
       
 
       
