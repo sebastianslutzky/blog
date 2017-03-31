@@ -1,3 +1,9 @@
+---
+categories:
+- news
+- nakedobjects
+- ddd
+---
 :showtitle:
 :page-navtitle: Naked Objects is now open sourced.
 :page-root: ../../../

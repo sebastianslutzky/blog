@@ -1,5 +1,10 @@
 ---
 title: Unit Test & Design By Contract (Part II)
+categories:
+- test-driven development
+- architecture
+- c#
+- unit-testing
 ---
 [dbc2]
 :showtitle:

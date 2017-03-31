@@ -1,3 +1,9 @@
+---
+categories:
+- linQ
+- .net
+- c#
+---
 :showtitle:
 :page-navtitle: Apply an operation to a collection with LinQ
 :page-root: ../../../

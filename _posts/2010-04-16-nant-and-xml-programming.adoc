@@ -1,3 +1,8 @@
+---
+categories:
+- architecture
+- ranting
+---
 :title: NAnt and the limitation of xml programming 
 :page-root: ../../../
 :experimental:

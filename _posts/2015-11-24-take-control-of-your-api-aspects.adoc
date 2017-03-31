@@ -1,5 +1,10 @@
 ---
 title: Take control of your Web API aspects 
+categories:
+- asp web api
+- architecture
+- .net
+- c#
 ---
 :showtitle:
 :page-root: ../../../

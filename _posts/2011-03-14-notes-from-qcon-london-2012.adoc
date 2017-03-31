@@ -1,3 +1,7 @@
+---
+categories:
+- news
+---
 :showtitle:
 :page-navtitle: Notes from QCon London 2011
 :page-root: ../../../

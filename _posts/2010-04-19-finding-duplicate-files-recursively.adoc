@@ -1,3 +1,7 @@
+---
+categories:
+- powershell
+---
 :showtitle:
 :page-navtitle: Finding duplicated files recursively
 :page-root: ../../../
