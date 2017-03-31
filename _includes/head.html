@@ -17,7 +17,9 @@
     {% assign feed_path = site.feed.path %}
   {% endif %}
   <link rel="alternate" type="application/rss+xml" title="{{ site.title | escape }}" href="{{ feed_path | absolute_url }}">
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+     <!-- favicon -->
+    <link rel="shortcut icon" href="{{site.url}}/favicon.ico" type="image/icon"> 
+    <link rel="icon" href="{{site.url}}/favicon.ico" type="image/icon">
 
   {% include head_custom.html %}
 
