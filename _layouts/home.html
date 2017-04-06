@@ -3,7 +3,6 @@ layout: default
 ---
 
 <div class="home">
-
   {{ content }}
 
   {% capture site_lang %}{{ site.lang | default: "en" }}{% endcapture %}
@@ -30,6 +29,10 @@ layout: default
             <a href="{{ post.url | relative_url }}">Read on &rarr;</a>
           </p>
         {% endif %}
+          <p class="post-continue">
+            <a href="{{ post.url | relative_url }}#disqus_thread">Leave a comment</a>
+          </p>
+
       </li>
     {% endfor %}
   </ul>

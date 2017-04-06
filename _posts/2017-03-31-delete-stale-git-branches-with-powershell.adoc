@@ -50,7 +50,6 @@ You can see that the orphan branch is still here:
  $> git branch -l
   Feature1
   * master
-
 == Delete branches not in the remote
 So here is a simple Powershell script that deletes the orphan local branch:
 
