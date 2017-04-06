@@ -5,7 +5,7 @@
   
   <link href="http://youarewhatyoucode/feed.xml" rel="self" type="application/atom+xml" />
   <link href="http://youarewhatyoucode/" rel="alternate" type="text/html" hreflang="en" />
-  <updated>2017-04-06T12:27:38+00:00</updated>
+  <updated>2017-04-06T21:52:01+00:00</updated>
   <id>http://youarewhatyoucode//</id>
 
   
@@ -103,18 +103,12 @@ You can see that the orphan branch is still here:&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;literalblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre&gt;$&amp;gt; git branch -l
- Feature1
- * master&lt;/pre&gt;
+&lt;pre&gt; $&amp;gt; git branch -l
+  Feature1
+  * master
+== Delete branches not in the remote
+So here is a simple Powershell script that deletes the orphan local branch:&lt;/pre&gt;
 &lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div class=&quot;sect1&quot;&gt;
-&lt;h2 id=&quot;delete_branches_not_in_the_remote&quot;&gt;Delete branches not in the remote&lt;/h2&gt;
-&lt;div class=&quot;sectionbody&quot;&gt;
-&lt;div class=&quot;paragraph&quot;&gt;
-&lt;p&gt;So here is a simple Powershell script that deletes the orphan local branch:&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
@@ -171,7 +165,7 @@ This will gives us the set of local branches not in the remote local branches no
       
 
       
-        <summary type="html">With the increasing adoption of source code management workflows such as Git Flow, it is common to keep &quot;stale&quot; branches in local repositories. Steps to reproduce The steps needed to end up in this situation are more or less like this: Dev1 creates &amp;amp; publishes the branch Feature1 git checkout -B Feature1 ..make &amp;amp; commit changes.. git push -u origin Feature1 Dev2 fetches the branch to collaborate or review git fetch git checkout Feature1 Dev2 deletes the Feature1 branch after merging it into master # delete the branch on the remote git push origin --delete Feature1 # delete the branch locally git branch -D Feature1 Pruning stale references At this stage, Dev1 (and 3, 4 etc) will want to have the deleted branch gone from their workspace too. A quick search will lead you to the prune sub command $&amp;gt; git remote update origin --prune Fetching origin From https://github.com/sebastianslutzky/TestRepo x [deleted] (none) -&amp;gt; origin/Feature1 However, this command only removes the reference to the tracking branch, not the local branch itself. You can see that the orphan branch is still here: $&amp;gt; git branch -l Feature1 * master Delete branches not in the remote So here is a simple Powershell script that deletes the orphan local branch: 1 2 3 4 5 6 7 $local=git branch -l $remote=git branch -r $local| %{$_.Trim()}| ?{-not ($remote -like &amp;#39;*&amp;#39; + $_) }| ?{-not($_ -match &amp;quot;master&amp;quot; )}| %{git branch -D $_} Surely this code could be compressed in one single piped command, but it could turn a bit confusing. We are getting the list of local and remote branches (lines 1 &amp;amp; 2). Then we perform a substraction set operation ($local - $remote) (line 5). This will gives us the set of local branches not in the remote local branches not in the remote. We finally delete them in line 7.</summary>
+        <summary type="html">With the increasing adoption of source code management workflows such as Git Flow, it is common to keep &quot;stale&quot; branches in local repositories. Steps to reproduce The steps needed to end up in this situation are more or less like this: Dev1 creates &amp;amp; publishes the branch Feature1 git checkout -B Feature1 ..make &amp;amp; commit changes.. git push -u origin Feature1 Dev2 fetches the branch to collaborate or review git fetch git checkout Feature1 Dev2 deletes the Feature1 branch after merging it into master # delete the branch on the remote git push origin --delete Feature1 # delete the branch locally git branch -D Feature1 Pruning stale references At this stage, Dev1 (and 3, 4 etc) will want to have the deleted branch gone from their workspace too. A quick search will lead you to the prune sub command $&amp;gt; git remote update origin --prune Fetching origin From https://github.com/sebastianslutzky/TestRepo x [deleted] (none) -&amp;gt; origin/Feature1 However, this command only removes the reference to the tracking branch, not the local branch itself. You can see that the orphan branch is still here: $&amp;gt; git branch -l Feature1 * master == Delete branches not in the remote So here is a simple Powershell script that deletes the orphan local branch: 1 2 3 4 5 6 7 $local=git branch -l $remote=git branch -r $local| %{$_.Trim()}| ?{-not ($remote -like &amp;#39;*&amp;#39; + $_) }| ?{-not($_ -match &amp;quot;master&amp;quot; )}| %{git branch -D $_} Surely this code could be compressed in one single piped command, but it could turn a bit confusing. We are getting the list of local and remote branches (lines 1 &amp;amp; 2). Then we perform a substraction set operation ($local - $remote) (line 5). This will gives us the set of local branches not in the remote local branches not in the remote. We finally delete them in line 7.</summary>
       
 
       
