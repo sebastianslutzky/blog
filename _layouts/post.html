@@ -15,6 +15,10 @@ layout: default
       <span itemprop="name">{{ page.author }}</span></span>
       {% endif %}
       {% if page.categories != empty %} • {% include category_links.html categories=page.categories %}{% endif %}</p>
+
+      {%if page.categories %}
+        <meta name="keywords" content="{{ page.categories | join: ', ' | escape }}"/>
+      {%endif %}
   </header>
 
   <div class="post-content" itemprop="articleBody">
