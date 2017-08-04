@@ -102,10 +102,10 @@ statistics" style="border:none;" /></a></div>
       <li>
         <header class="post-header">
           <h1 class="post-title">
-            <a class="post-link" href="/2011/08/12/unit-test-design-by-contract-part2/">Unit Test &amp; Design By Contract (Part II)</a>
+            <a class="post-link" href="/2011/08/13/unit-test-design-by-contract-part3/">Unit Test &amp; Design By Contract (Part III)</a>
           </h1>
 
-          <p class="post-meta">Aug 12, 2011 • 
+          <p class="post-meta">Aug 13, 2011 • 
   
   
     
@@ -136,11 +136,23 @@ statistics" style="border:none;" /></a></div>
   
     
   
+    
+  
+    
+  
+    
+  
 
   
   
     
       <a href="/categories/architecture/">architecture</a>,
+    
+  
+    
+  
+    
+  
     
   
     
@@ -198,6 +210,12 @@ statistics" style="border:none;" /></a></div>
   
     
   
+    
+  
+    
+  
+    
+  
 
   
   
@@ -215,6 +233,367 @@ statistics" style="border:none;" /></a></div>
   
     
       <a href="/categories/unit-testing/">unit-testing</a>
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <div class="imageblock">
+<div class="content">
+<img src="/assets/images/dbc.png" alt="dbc" width="100%">
+</div>
+</div>
+<div class="paragraph">
+<p><em>This article is the last of three on <a href="/2011/08/08/unit-test-design-by-contract-part1/">Unit Testing and Design By Contract</a></em></p>
+</div>
+<div class="sect1">
+<h2 id="testing_post_conditions_and_class_invariants">Testing Post Conditions and Class Invariants</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now we can test the two post conditions of the <code>Add</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="csharp"><span></span><span style="color: #408080; font-style: italic">// Count is 0 before adding any items</span>
+<span style="color: #408080; font-style: italic">// This is a post condition of the constructor</span>
+<span style="color: #408080; font-style: italic">//and should be tested separately</span>
+<span style="color: #7D9029">[Test]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PostCond_CountHasIncreasedByOne</span>()
+{
+    <span style="color: #B00040">var</span> stack = <span style="color: #008000; font-weight: bold">new</span> Stack(maximumNumberOfItemsAllowed: <span style="color: #666666">10</span>);
+    stack.Add(<span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">object</span>());
+    Assert.AreEqual(<span style="color: #666666">1</span>,stack.Count);
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="csharp"><span></span><span style="color: #408080; font-style: italic">// We use the &#39;Peek&#39; method to access the item on top of the stack.</span>
+<span style="color: #408080; font-style: italic">// Pre and Post conditions of this method should be tested separately</span>
+<span style="color: #7D9029">[Test]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PostCond_ItemIsOnTopOfTheStack</span>()
+{
+    <span style="color: #B00040">var</span> stack = <span style="color: #008000; font-weight: bold">new</span> Stack(maximumNumberOfItemsAllowed: <span style="color: #666666">10</span>);
+    <span style="color: #B00040">var</span> firstItem = <span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">object</span>();
+    <span style="color: #B00040">var</span> secondItem = <span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">object</span>();
+    stack.Add(firstItem);
+    stack.Add(secondItem);
+
+    Assert.AreSame(secondItem, stack.Peek());
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>These types of test are probably the most commonly seen. Good Test Driven Development habits include asserting as few times as possible per tests, ideally one assertion only. The point is, as I mentioned earlier, error localization: if you only test one thing at a time, there has to be one test that explicitly exposes a bug.</p>
+</div>
+<div class="paragraph">
+<p>There is still one more post condition to test: that no invariant rule of the class was violated by the <code>Add</code> method.</p>
+</div>
+<div class="sect2">
+<h3 id="checking_class_invariants">Checking Class Invariants</h3>
+<div class="paragraph">
+<p>As mentioned earlier, Class Invariants are the rules that should always remain true after any method is executed on a class. The <code>Add</code> method is no exception, so we will have to test that class invariants were enforced when it executed.
+We don’t want to repeat ourselves, so we will delegate to a reusable method called <code>CheckInvariants</code> that throws an exception if an Invariant rule has been broken.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="csharp"><span></span><span style="color: #7D9029">[Test]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PostCond_InvariantsWereEnforced</span>()
+{
+    <span style="color: #408080; font-style: italic">//Arrange</span>
+    <span style="color: #B00040">var</span> stack = <span style="color: #008000; font-weight: bold">new</span> MockRepository().PartialMock&lt;Stack&gt;(<span style="color: #666666">1</span>);
+    stack.Expect(x=&gt;x.CheckInvariants());
+    stack.Replay();
+
+    <span style="color: #408080; font-style: italic">//Act</span>
+    stack.Add(<span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">object</span>());
+
+    <span style="color: #408080; font-style: italic">//Assert</span>
+    stack.VerifyAllExpectations();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This tests ensures that the method <code>CheckInvariants</code> has been invoked by the <code>Add</code> method. This type of tests, which verifies the interaction of methods rather than the resulting state of objects is known as Behavioural Tests.</p>
+</div>
+<div class="paragraph">
+<p>The delegation itself is tested by using the <a href="http://ayende.com/blog/tags/rhino-mocks">Rhino Mocks</a> mocking library for .Net. In this case we create a Partial Mock <code>Stack</code> object. It is partial because we only want to mock one method (<code>CheckInvariants</code>) but we do want to execute a different one (<code>Add</code>) of the same class. We tell the partially mocked <code>Stack</code> that we are expecting the <code>CheckInvariants</code> method to be called later. After we explicitly invoked <code>Add</code>, we tell the stack to verify our expectation.
+This verification will fail if the method was not invoked indirectly by <code>Add</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="how_public_are_the_class_invariants">How public are the Class Invariants?</h3>
+<div class="paragraph">
+<p>So the last thing is to test the Class Invariants. This is just another method called void <code>CheckInvariants()</code> of the class, but its access level deserves a bit of thought.</p>
+</div>
+<div class="paragraph">
+<p>Let’s see what options we have:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>private: This method cannot be private because we need to write tests for it (as we did before)</p>
+</li>
+<li>
+<p>protected: This would at least let us create the class <code>TestStack</code> that inherits the <code>Stack</code> class and create a public method that invokes <code>CheckInvariants</code>. See <a href="http://geekswithblogs.net/MattRobertsBlog/archive/2008/12/16/how-to-make-a-quotprotectedquot-method-available-for-quotpartialquot-mocking-and-again.aspx">this article</a> for more details on how to mock a protected method</p>
+</li>
+<li>
+<p>internal: Internal methods can be invoked from within the assembly or an external assembly explicitly designated. This is the option chosen in this example</p>
+</li>
+<li>
+<p>public: Not a bad option either in my opinion, any object can invoke this method anytime, which should not cause any inconvenient.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>And here are the two test for <code>CheckInvariants</code> itself</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="csharp"><span></span><span style="color: #7D9029">[Test,ExpectedException(typeof(InvalidOperationException),</span>
+<span style="color: #7D9029">    ExpectedMessage=&quot;Count cannnot be negative&quot;)]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">CheckInvariants_PostCond_CountIsNonNegative</span>()
+{
+    <span style="color: #B00040">var</span> stack = <span style="color: #008000; font-weight: bold">new</span> MockRepository().PartialMock&lt;Stack&gt;(<span style="color: #666666">1</span>);
+    stack.Replay();
+    stack.Count = -<span style="color: #666666">1</span>;
+
+    stack.CheckInvariants();
+}
+<span style="color: #7D9029">[Test,</span>
+<span style="color: #7D9029">ExpectedException(typeof(InvalidOperationException),</span>
+<span style="color: #7D9029">    ExpectedMessage = &quot;Count cannot be greater than 7&quot;)]</span>
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">CheckInvariants_PostCond_CountIsLessThanMaximumAllowed</span>()
+{
+    <span style="color: #B00040">var</span> stack = <span style="color: #008000; font-weight: bold">new</span> MockRepository().PartialMock&lt;Stack&gt;(<span style="color: #666666">7</span>);
+    stack.Replay();
+    stack.Count = <span style="color: #666666">8</span>;
+
+    stack.CheckInvariants();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And finally, here is the code for the <code>Stack</code> class, a class that honors its contract:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="csharp"><span></span><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">Stack</span>
+{
+    <span style="color: #008000; font-weight: bold">private</span> <span style="color: #B00040">int</span> _maximumNumberOfItemsAllowed;
+    <span style="color: #008000; font-weight: bold">public</span> <span style="color: #0000FF">Stack</span>(<span style="color: #B00040">int</span> maximumNumberOfItemsAllowed)
+    {
+        _maximumNumberOfItemsAllowed = maximumNumberOfItemsAllowed;
+    }
+
+    <span style="color: #008000; font-weight: bold">public</span> <span style="color: #B00040">int</span> Count { <span style="color: #008000; font-weight: bold">get</span>; <span style="color: #008000; font-weight: bold">protected</span> <span style="color: #008000; font-weight: bold">internal</span> <span style="color: #008000; font-weight: bold">set</span>; }
+
+    <span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add</span>(<span style="color: #B00040">object</span> item)
+    {
+        <span style="color: #008000; font-weight: bold">if</span> (item == <span style="color: #008000; font-weight: bold">null</span>)
+            <span style="color: #008000; font-weight: bold">throw</span> <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">ArgumentNullException</span>(<span style="color: #BA2121">&quot;item&quot;</span>);
+
+        <span style="color: #008000; font-weight: bold">if</span> (_maximumNumberOfItemsAllowed == Count)
+            <span style="color: #008000; font-weight: bold">throw</span> <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">InvalidOperationException</span>(
+                <span style="color: #BA2121">&quot;Cannot add items when the stack is full.&quot;</span>);
+        Count++;
+        _array.Add(item);
+
+        CheckInvariants();
+    }
+
+    <span style="color: #008000; font-weight: bold">private</span> IList _array = <span style="color: #008000; font-weight: bold">new</span> ArrayList();
+
+    <span style="color: #008000; font-weight: bold">public</span> <span style="color: #B00040">object</span> <span style="color: #0000FF">Peek</span>()
+    {
+        <span style="color: #008000; font-weight: bold">return</span> _array[Count - <span style="color: #666666">1</span>];
+    }
+
+    <span style="color: #008000; font-weight: bold">protected</span> <span style="color: #008000; font-weight: bold">internal</span> <span style="color: #008000; font-weight: bold">virtual</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">CheckInvariants</span>()
+    {
+        <span style="color: #008000; font-weight: bold">if</span> (Count &lt; <span style="color: #666666">0</span>)
+            <span style="color: #008000; font-weight: bold">throw</span> <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">InvalidOperationException</span>(<span style="color: #BA2121">&quot;Count cannnot be negative&quot;</span>);
+
+       <span style="color: #008000; font-weight: bold">if</span> (Count &gt; _maximumNumberOfItemsAllowed)
+            <span style="color: #008000; font-weight: bold">throw</span> <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">InvalidOperationException</span>(<span style="color: #BA2121">&quot;Count cannot be greater than &quot;</span> + _maximumNumberOfItemsAllowed);
+        }
+    }</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+        </div>
+        
+          <p class="post-continue">
+            <a href="/2011/08/13/unit-test-design-by-contract-part3/#disqus_thread">Leave a comment</a>
+          </p>
+
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
+            <a class="post-link" href="/2011/08/12/unit-test-design-by-contract-part2/">Unit Test &amp; Design By Contract (Part II)</a>
+          </h1>
+
+          <p class="post-meta">Aug 12, 2011 • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/test-driven-development/">test-driven development</a>,
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+  
+  
+    
+      <a href="/categories/architecture/">architecture</a>,
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/c/">c#</a>,
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/unit-testing/">unit-testing</a>
+    
+  
+    
+  
+    
+  
     
   
     
@@ -250,7 +629,7 @@ statistics" style="border:none;" /></a></div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #7D9029">[Test, ExpectedException( typeof(ArgumentNullException))]</span>
+<pre class="pygments highlight"><code data-lang="csharp"><span></span><span style="color: #7D9029">[Test, ExpectedException( typeof(ArgumentNullException))]</span>
 <span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PreCond_ItemIsRequired</span>()
 {
     <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">Stack</span>(maximumNumberOfItemsAllowed: <span style="color: #666666">1</span>)
@@ -287,7 +666,7 @@ of an unhappy case, that is, a happy case for pre conditions.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #7D9029">[Test]</span>
+<pre class="pygments highlight"><code data-lang="csharp"><span></span><span style="color: #7D9029">[Test]</span>
 <span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PreCond_HappyCase</span>()
 {
     <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">Stack</span>(maximumNumberOfItemsAllowed: <span style="color: #666666">1</span>)
@@ -357,11 +736,23 @@ of an unhappy case, that is, a happy case for pre conditions.</p>
   
     
   
+    
+  
+    
+  
+    
+  
 
   
   
     
       <a href="/categories/architecture/">architecture</a>,
+    
+  
+    
+  
+    
+  
     
   
     
@@ -419,6 +810,12 @@ of an unhappy case, that is, a happy case for pre conditions.</p>
   
     
   
+    
+  
+    
+  
+    
+  
 
   
   
@@ -436,6 +833,12 @@ of an unhappy case, that is, a happy case for pre conditions.</p>
   
     
       <a href="/categories/unit-testing/">unit-testing</a>
+    
+  
+    
+  
+    
+  
     
   
     
@@ -555,7 +958,7 @@ Here is the list of test we will write for this User Story, based on the previou
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #7D9029">[Test]</span>
+<pre class="pygments highlight"><code data-lang="csharp"><span></span><span style="color: #7D9029">[Test]</span>
 <span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PreCond_ItemIsRequired</span>()
     { <span style="color: #008000; font-weight: bold">throw</span> <span style="color: #008000; font-weight: bold">new</span> NotImplementedException(); }
 
@@ -642,6 +1045,12 @@ The exact implementation is outside of the scope of this article, but I will pos
   
     
       <a href="/categories/news/">news</a>
+    
+  
+    
+  
+    
+  
     
   
     
@@ -816,6 +1225,12 @@ The exact implementation is outside of the scope of this article, but I will pos
   
     
   
+    
+  
+    
+  
+    
+  
 
 </p>
         </header>
@@ -829,7 +1244,7 @@ The exact implementation is outside of the scope of this article, but I will pos
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="powershell"><span style="color: #008000; font-weight: bold">function</span> FindDuplicates{
+<pre class="pygments highlight"><code data-lang="powershell"><span></span><span style="color: #008000; font-weight: bold">function</span> FindDuplicates{
  <span style="color: #408080; font-style: italic"># Receives a list of ArrayLists</span>
  <span style="color: #408080; font-style: italic"># iteratively prints the full path of each ArrayList item</span>
  <span style="color: #408080; font-style: italic"># where the ArrayList contains multiple paths (i.e duplicates)</span>
@@ -864,7 +1279,7 @@ GetFilesInBuckets <span style="color: #BA2121">&quot;C:\MyRootFolder&quot;</span
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="powershell">GetFilesInBuckets <span style="color: #BA2121">&quot;C:\MyRootFolder&quot;</span> <span style="color: #666666">-f</span> <span style="color: #BA2121">&quot;*.txt&quot;</span>|
+<pre class="pygments highlight"><code data-lang="powershell"><span></span>GetFilesInBuckets <span style="color: #BA2121">&quot;C:\MyRootFolder&quot;</span> <span style="color: #666666">-f</span> <span style="color: #BA2121">&quot;*.txt&quot;</span>|
     FindDuplicates|
     FilterOutOlder</code></pre>
 </div>
@@ -877,154 +1292,12 @@ GetFilesInBuckets <span style="color: #BA2121">&quot;C:\MyRootFolder&quot;</span
 
       </li>
     
-      
-      
-
-      <li>
-        <header class="post-header">
-          <h1 class="post-title">
-            <a class="post-link" href="/2010/04/16/nant-and-xml-programming/">Nant And Xml Programming</a>
-          </h1>
-
-          <p class="post-meta">Apr 16, 2010 • 
-  
-  
-    
-      <a href="/categories/architecture/">architecture</a>,
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-
-  
-  
-    
-  
-    
-      <a href="/categories/ranting/">ranting</a>
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-
-</p>
-        </header>
-
-        <div class="post-content">
-          <div class="paragraph">
-<p>I have used NAnt (the .Net port of the Java build tool Ant) in most of the .Net/VB6 projects I have worked on. The decision for using this tool was not always mine, but I guess I did not find (nor look for) a better alternative.</p>
-</div>
-<div class="paragraph">
-<p>As these projects grew, so did their build process and the complexity the build scripts. NAnt was flexible enough to cope with this. If a suitable task does not exist, you can download NAntContrib tasks, other tasks from the web, or you can create yours. If a task is too simple a language construct for the job, you can call an executable and pass the right parameter, create a .Net in-line function, or call a Powershell script.</p>
-</div>
-<div class="paragraph">
-<p>One of the systems I worked on was particularly complex but very well designed. So was its build script. Common functionality was not duplicated, but kept as targets or tasks in separate NAnt files, that where included in the main NAnt script.</p>
-</div>
-<div class="paragraph">
-<p>When reusing these blocks of code, you usually have to pass context-specific parameters to it. You do this by setting properties before invoking the NAnt target. For example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="xml">...
-<span style="color: #008000; font-weight: bold">&lt;property</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;SpreadsheetPath&quot;</span> <span style="color: #7D9029">value=</span><span style="color: #BA2121">&quot;${Config} + ${CurrentProject}&quot;</span> <span style="color: #008000; font-weight: bold">/&gt;</span>
-<span style="color: #008000; font-weight: bold">&lt;call</span> <span style="color: #7D9029">target=</span><span style="color: #BA2121">&quot;ProcessSpreadsheet&quot;</span> <span style="color: #008000; font-weight: bold">/&gt;</span>
-...</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This syntax becomes more awkward when more properties need to be passed to the target.</p>
-</div>
-<div class="paragraph">
-<p>Worse, the lack of explicit input and outputs to a NAnt target make this syntax a bad practice: code calling a target needs to know the name of the properties the target needs set, and the name of the property containing the expected output of the target. Let me picture this with an example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="xml">(Known inputs: SpreadsheetPath and BusinessArea)
-<span style="color: #008000; font-weight: bold">&lt;property</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;SpreadsheetPath&quot;</span>
-    <span style="color: #7D9029">value=</span><span style="color: #BA2121">&quot;${Config} + ${CurrentProject}&quot;</span> <span style="color: #008000; font-weight: bold">/&gt;</span>
-<span style="color: #008000; font-weight: bold">&lt;property</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;BusinessArea&quot;</span> <span style="color: #7D9029">value=</span><span style="color: #BA2121">&#39;Security&#39;</span> <span style="color: #008000; font-weight: bold">/&gt;</span>
-
-<span style="color: #008000; font-weight: bold">&lt;call</span> <span style="color: #7D9029">target=</span><span style="color: #BA2121">&quot;GenerateCodeFromSpreadsheet&quot;</span> <span style="color: #008000; font-weight: bold">/&gt;</span>
-
-(Known output: NumberOfGeneratedFiles)
-<span style="color: #008000; font-weight: bold">&lt;property</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;TotalCodeFiles&quot;</span> <span style="color: #7D9029">value=</span><span style="color: #BA2121">&quot;${NumberOfGeneratedFiles}&quot;</span> <span style="color: #008000; font-weight: bold">/&gt;</span></code></pre>
-</div>
-</div>
-<div class="sect2">
-<h3 id="the_problem_when_xml_is_not_enough">The problem: When XML is not enough</h3>
-<div class="paragraph">
-<p>I don’t have the intention (nor the knowledge!) to enter the XML vs DSL discussion but I see a real disadvantage in using Ant/NAnt for big and complex systems. Generally speaking is not a good idea to program in an XML based DSL (like NAnt). It makes sense to declare targets that know what to do and how to do it, but as the code base grows and scripts are modularised for better reusability, then is only a matter of time until you find yourself programming on XML.</p>
-</div>
-<div class="paragraph">
-<p>The XML/DSL discussion is a very interesting one, and so is the classification of programming paradigms ( what is NAnt programming. Goal-Oriented? Declarative? Or simply a markup language?), but I’m not interested on them now. I think I’m done with Ant/NAnt…I’ll stop trying to extract oil from stones, as Spaniards say. There’s only so much you can ask xml-based languages, but soon you’ll need a proper programming language, or you’ll become an xmlholic.</p>
-</div>
-<div class="paragraph">
-<p>If you know Maven for Java solutions (NMaven is only an idea at the time of writing), you know this is an XML based tool too so it will suffer the same problems I just mentioned. Maven is, however, more flexible thanks to the life cycle structure and the ability of recursively build projects (as specified in their Project Object Model xml files) in a folder structure. This benefit is not enough to marry xml programming for life&#8230;&#8203;one size doesn’t fit all, in fact in terms of build process; standardisation is the exception rather than the rule. I still need to look into Gradle, but it may be good answer to Ant/Maven approaches.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="the_solution">The solution:</h3>
-<div class="paragraph">
-<p>I don’t know really. Sorry if you’ve read this far, but I just wanted to brain dump my discontent with XML programming. Maybe is a useful question for us developers using or building frameworks on a daily basis. Where should we allow for a more multi-purpose, less templated approach? Extensibility is not always the answer. Some frameworks like NAnt are very extensible, but offer very little at their core. The extended functionality is more useful than the basic framework itself.</p>
-</div>
-<div class="paragraph">
-<p>So no, I don’t know the solution for avoiding XML programming (NAnt or Maven) for the time being I’m moving towards a build script fully written in PowerShell, with a flavour of Maven’s life cycles. I will write in detail about this later, it is not rocket science and is not a full solution, but is a start, just like this blog entry.</p>
-</div>
-</div>
-        </div>
-        
-          <p class="post-continue">
-            <a href="/2010/04/16/nant-and-xml-programming/#disqus_thread">Leave a comment</a>
-          </p>
-
-      </li>
-    
   </ul>
 
   
   <div class="pagination">
+    
+      <a class="previous" href="/posts/3/">&laquo; Older</a>
     
 
     

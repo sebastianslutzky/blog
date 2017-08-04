@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
-  <generator uri="http://jekyllrb.com" version="3.4.3">Jekyll</generator>
+  <generator uri="http://jekyllrb.com" version="3.5.1">Jekyll</generator>
   
   
   <link href="http://youarewhatyoucode/feed.xml" rel="self" type="application/atom+xml" />
   <link href="http://youarewhatyoucode/" rel="alternate" type="text/html" hreflang="en" />
-  <updated>2017-04-08T20:28:51+00:00</updated>
+  <updated>2017-08-04T09:14:44+00:00</updated>
   <id>http://youarewhatyoucode//</id>
 
   
@@ -24,6 +24,132 @@
     </author>
   
 
+  
+  
+    <entry>
+      
+      <title type="html">Find Jobs In All Jenkins Folders</title>
+      
+      <link href="http://youarewhatyoucode/2017/08/04/find-jobs-in-all-jenkins-folders/" rel="alternate" type="text/html" title="Find Jobs In All Jenkins Folders" />
+      <published>2017-08-04T00:00:00+00:00</published>
+      <updated>2017-08-04T00:00:00+00:00</updated>
+      <id>http://youarewhatyoucode/2017/08/04/find-jobs-in-all-jenkins-folders</id>
+      <content type="html" xml:base="http://youarewhatyoucode/2017/08/04/find-jobs-in-all-jenkins-folders/">&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Sometimes it is useful to list or apply an operation to a Jenkins job based on a regular expression.
+The Jenkins DSL plugin, which executes Groovy code within Jenkins, is probably the easier way to achieve this.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;I was able to find code snippets in my first web search. However, all the solutions I found
+had a major limitation: not dealing with Jenkins folder.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;In case you have not used them yet, &lt;a href=&quot;https://wiki.jenkins.io/display/JENKINS/CloudBees+Folders+Plugin&quot;&gt;Jenkins folders&lt;/a&gt;
+is a great plugin that let you organise your jobs into &quot;container&quot; folders, just like you would do on a file system.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;searching_recursively&quot;&gt;Searching recursively&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;The following Groovy snippet will return a list of jobs across &lt;strong&gt;all folders&lt;/strong&gt;.
+Optionally, you can pass a regular expression to filter out jobs by name.
+This regulare expression will be matched against the full name of the job, that is, including
+folder names. This allows you, for example, to find all unit tests jobs in a folder.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;groovy&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;import&lt;/span&gt; &lt;span style=&quot;color: #0000FF; font-weight: bold&quot;&gt;jenkins.model.*&lt;/span&gt;
+
+&lt;span style=&quot;color: #B00040&quot;&gt;def&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;isFolder&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;(&lt;/span&gt;abstractJob&lt;span style=&quot;color: #666666&quot;&gt;){&lt;/span&gt;
+ &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;return&lt;/span&gt; abstractJob&lt;span style=&quot;color: #666666&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;getClass&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;().&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;getName&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;()&lt;/span&gt; &lt;span style=&quot;color: #666666&quot;&gt;==&lt;/span&gt; &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;com.cloudbees.hudson.plugins.folder.Folder&amp;quot;&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;)&lt;/span&gt;
+&lt;span style=&quot;color: #666666&quot;&gt;}&lt;/span&gt;
+
+&lt;span style=&quot;color: #B00040&quot;&gt;def&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;collectJobRecursively&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;(&lt;/span&gt;abstractJob&lt;span style=&quot;color: #666666&quot;&gt;,&lt;/span&gt;resultCollector&lt;span style=&quot;color: #666666&quot;&gt;){&lt;/span&gt;
+  &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;if&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;(&lt;/span&gt;isFolder&lt;span style=&quot;color: #666666&quot;&gt;(&lt;/span&gt;abstractJob&lt;span style=&quot;color: #666666&quot;&gt;))&lt;/span&gt;
+        &lt;span style=&quot;color: #666666&quot;&gt;{&lt;/span&gt;
+            abstractJob&lt;span style=&quot;color: #666666&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;items&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;findAll&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;().&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;each&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;{&lt;/span&gt; nestedJob &lt;span style=&quot;color: #666666&quot;&gt;-&amp;gt;&lt;/span&gt;
+            collectJobRecursively&lt;span style=&quot;color: #666666&quot;&gt;(&lt;/span&gt;nestedJob&lt;span style=&quot;color: #666666&quot;&gt;,&lt;/span&gt;resultCollector&lt;span style=&quot;color: #666666&quot;&gt;)&lt;/span&gt;
+        &lt;span style=&quot;color: #666666&quot;&gt;}&lt;/span&gt;
+  &lt;span style=&quot;color: #666666&quot;&gt;}&lt;/span&gt;
+  &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;else&lt;/span&gt;
+  &lt;span style=&quot;color: #666666&quot;&gt;{&lt;/span&gt;
+    &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;//only add actual jobs to the list&lt;/span&gt;
+    resultCollector &lt;span style=&quot;color: #666666&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; abstractJob
+  &lt;span style=&quot;color: #666666&quot;&gt;}&lt;/span&gt;
+&lt;span style=&quot;color: #666666&quot;&gt;}&lt;/span&gt;
+
+&lt;span style=&quot;color: #B00040&quot;&gt;def&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;findAll&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;(&lt;/span&gt;pattern &lt;span style=&quot;color: #666666&quot;&gt;=&lt;/span&gt; &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;#39;.*&amp;#39;&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;){&lt;/span&gt;
+ &lt;span style=&quot;color: #B00040&quot;&gt;def&lt;/span&gt; resultCollector &lt;span style=&quot;color: #666666&quot;&gt;=&lt;/span&gt; &lt;span style=&quot;color: #666666&quot;&gt;[]&lt;/span&gt;
+ Jenkins&lt;span style=&quot;color: #666666&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;instance&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;items&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;findAll&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;().&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;each&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;{&lt;/span&gt; job &lt;span style=&quot;color: #666666&quot;&gt;-&amp;gt;&lt;/span&gt;
+    recurse&lt;span style=&quot;color: #666666&quot;&gt;(&lt;/span&gt;job&lt;span style=&quot;color: #666666&quot;&gt;,&lt;/span&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;null&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;,&lt;/span&gt;resultCollector&lt;span style=&quot;color: #666666&quot;&gt;)&lt;/span&gt;
+  &lt;span style=&quot;color: #666666&quot;&gt;}&lt;/span&gt;
+
+  &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;return&lt;/span&gt; resultCollector
+  &lt;span style=&quot;color: #666666&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;findAll&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;{&lt;/span&gt;
+    &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;// apply the regular expression here.&lt;/span&gt;
+    &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;// we are matching the Full Name (including folder names)&lt;/span&gt;
+      &lt;span style=&quot;color: #666666&quot;&gt;(&lt;/span&gt;it&lt;span style=&quot;color: #666666&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;fullName&lt;/span&gt; &lt;span style=&quot;color: #666666&quot;&gt;=~&lt;/span&gt; &lt;span style=&quot;color: #BA2121&quot;&gt;/$pattern/&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;)&lt;/span&gt;
+   &lt;span style=&quot;color: #666666&quot;&gt;}&lt;/span&gt;
+&lt;span style=&quot;color: #666666&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;using_the_recursive_findall_function&quot;&gt;Using the recursive findAll function&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;You  can now use the previous &lt;code&gt;findAll&lt;/code&gt; function to search for all unit test jobs in a folder called &quot;master_branch&quot;:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;groovy&quot;&gt;&lt;span&gt;&lt;/span&gt;
+findAll&lt;span style=&quot;color: #666666&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;.*/master_branch/.*UnitTest.*&amp;quot;&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;)&lt;/span&gt;
+&lt;span style=&quot;color: #666666&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;each&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;{&lt;/span&gt;
+  job &lt;span style=&quot;color: #666666&quot;&gt;-&amp;gt;&lt;/span&gt;
+   &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;if&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;(&lt;/span&gt;job&lt;span style=&quot;color: #666666&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;lastBuild&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;){&lt;/span&gt;
+      println job&lt;span style=&quot;color: #666666&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;fullName&lt;/span&gt; &lt;span style=&quot;color: #666666&quot;&gt;+&lt;/span&gt; &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;#39;:&amp;#39;&lt;/span&gt; &lt;span style=&quot;color: #666666&quot;&gt;+&lt;/span&gt; job&lt;span style=&quot;color: #666666&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;lastBuild&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;result&lt;/span&gt;
+    &lt;span style=&quot;color: #666666&quot;&gt;}&lt;/span&gt;
+  &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;else&lt;/span&gt; &lt;span style=&quot;color: #666666&quot;&gt;{&lt;/span&gt;
+    println job&lt;span style=&quot;color: #666666&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;fullName&lt;/span&gt; &lt;span style=&quot;color: #666666&quot;&gt;+&lt;/span&gt; &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot; has not run yet&amp;quot;&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;;&lt;/span&gt;
+  &lt;span style=&quot;color: #666666&quot;&gt;}&lt;/span&gt;
+ &lt;span style=&quot;color: #666666&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;</content>
+
+      
+      
+      
+      
+      
+
+      
+        <author>
+            <name>sebastian slutzky</name>
+          
+          
+        </author>
+      
+
+      
+        <category term="jenkins" />
+      
+        <category term="groovy" />
+      
+        <category term="jenkins_dsl" />
+      
+
+      
+
+      
+        <summary type="html">Sometimes it is useful to list or apply an operation to a Jenkins job based on a regular expression. The Jenkins DSL plugin, which executes Groovy code within Jenkins, is probably the easier way to achieve this. I was able to find code snippets in my first web search. However, all the solutions I found had a major limitation: not dealing with Jenkins folder. In case you have not used them yet, Jenkins folders is a great plugin that let you organise your jobs into &quot;container&quot; folders, just like you would do on a file system. Searching recursively The following Groovy snippet will return a list of jobs across all folders. Optionally, you can pass a regular expression to filter out jobs by name. This regulare expression will be matched against the full name of the job, that is, including folder names. This allows you, for example, to find all unit tests jobs in a folder. import jenkins.model.* def isFolder(abstractJob){ return abstractJob.getClass().getName() == &amp;quot;com.cloudbees.hudson.plugins.folder.Folder&amp;quot;) } def collectJobRecursively(abstractJob,resultCollector){ if(isFolder(abstractJob)) { abstractJob.items.findAll().each{ nestedJob -&amp;gt; collectJobRecursively(nestedJob,resultCollector) } } else { //only add actual jobs to the list resultCollector &amp;lt;&amp;lt; abstractJob } } def findAll(pattern = &amp;#39;.*&amp;#39;){ def resultCollector = [] Jenkins.instance.items.findAll().each{ job -&amp;gt; recurse(job,null,resultCollector) } return resultCollector .findAll{ // apply the regular expression here. // we are matching the Full Name (including folder names) (it.fullName =~ /$pattern/) } } Using the recursive findAll function You can now use the previous findAll function to search for all unit test jobs in a folder called &quot;master_branch&quot;: findAll(&amp;quot;.*/master_branch/.*UnitTest.*&amp;quot;) .each{ job -&amp;gt; if(job.lastBuild){ println job.fullName + &amp;#39;:&amp;#39; + job.lastBuild.result } else { println job.fullName + &amp;quot; has not run yet&amp;quot;; } }</summary>
+      
+
+      
+      
+    </entry>
+  
   
   
     <entry>
@@ -218,13 +344,13 @@ This will gives us the set of local branches not in the remote local branches no
 &lt;p&gt;But here&amp;#8217;s the fun bit, the order of execution is reverted when the response is processed. In other words, if when processing the request the order of filters is&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
-&lt;p&gt;&lt;span class=&quot;menuseq&quot;&gt;&lt;span class=&quot;menu&quot;&gt;View&lt;/span&gt;&amp;#160;&amp;#9656; &lt;span class=&quot;submenu&quot;&gt;FilterA&lt;/span&gt;&amp;#160;&amp;#9656; &lt;span class=&quot;submenu&quot;&gt;FilterB&lt;/span&gt;&amp;#160;&amp;#9656; &lt;span class=&quot;submenu&quot;&gt;FilterC&lt;/span&gt;&amp;#160;&amp;#9656; &lt;span class=&quot;menuitem&quot;&gt;Action&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&quot;menuseq&quot;&gt;&lt;b class=&quot;menu&quot;&gt;View&lt;/b&gt;&amp;#160;&lt;i class=&quot;fa fa-angle-right caret&quot;&gt;&lt;/i&gt; &lt;b class=&quot;submenu&quot;&gt;FilterA&lt;/b&gt;&amp;#160;&lt;i class=&quot;fa fa-angle-right caret&quot;&gt;&lt;/i&gt; &lt;b class=&quot;submenu&quot;&gt;FilterB&lt;/b&gt;&amp;#160;&lt;i class=&quot;fa fa-angle-right caret&quot;&gt;&lt;/i&gt; &lt;b class=&quot;submenu&quot;&gt;FilterC&lt;/b&gt;&amp;#160;&lt;i class=&quot;fa fa-angle-right caret&quot;&gt;&lt;/i&gt; &lt;b class=&quot;menuitem&quot;&gt;Action&lt;/b&gt;&lt;/span&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;then when processing the response the order will be&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
-&lt;p&gt;&lt;span class=&quot;menuseq&quot;&gt;&lt;span class=&quot;menu&quot;&gt;View&lt;/span&gt;&amp;#160;&amp;#9656; &lt;span class=&quot;submenu&quot;&gt;Action&lt;/span&gt;&amp;#160;&amp;#9656; &lt;span class=&quot;submenu&quot;&gt;FilterC&lt;/span&gt;&amp;#160;&amp;#9656; &lt;span class=&quot;submenu&quot;&gt;FilterB&lt;/span&gt;&amp;#160;&amp;#9656; &lt;span class=&quot;menuitem&quot;&gt;Filter&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&quot;menuseq&quot;&gt;&lt;b class=&quot;menu&quot;&gt;View&lt;/b&gt;&amp;#160;&lt;i class=&quot;fa fa-angle-right caret&quot;&gt;&lt;/i&gt; &lt;b class=&quot;submenu&quot;&gt;Action&lt;/b&gt;&amp;#160;&lt;i class=&quot;fa fa-angle-right caret&quot;&gt;&lt;/i&gt; &lt;b class=&quot;submenu&quot;&gt;FilterC&lt;/b&gt;&amp;#160;&lt;i class=&quot;fa fa-angle-right caret&quot;&gt;&lt;/i&gt; &lt;b class=&quot;submenu&quot;&gt;FilterB&lt;/b&gt;&amp;#160;&lt;i class=&quot;fa fa-angle-right caret&quot;&gt;&lt;/i&gt; &lt;b class=&quot;menuitem&quot;&gt;Filter&lt;/b&gt;&lt;/span&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;there are some design patterns like:&lt;/p&gt;
@@ -296,7 +422,7 @@ This will gives us the set of local branches not in the remote local branches no
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;c#&quot;&gt;&lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;//To be implemented by actionfilterattributes that override a global action filter&lt;/span&gt;
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;c#&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;//To be implemented by actionfilterattributes that override a global action filter&lt;/span&gt;
 &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;interface&lt;/span&gt; IOverridingFilterAttribute
 {
     &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;//The type of actionfilter to be replaced for this request&lt;/span&gt;
@@ -312,7 +438,7 @@ This will gives us the set of local branches not in the remote local branches no
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;c#&quot;&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;class&lt;/span&gt; &lt;span style=&quot;color: #0000FF; font-weight: bold&quot;&gt;OverridingFilterProvider&lt;/span&gt; : IFilterProvider
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;c#&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;class&lt;/span&gt; &lt;span style=&quot;color: #0000FF; font-weight: bold&quot;&gt;OverridingFilterProvider&lt;/span&gt; : IFilterProvider
 {
     &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;//called by WebApi on each request, in order&lt;/span&gt;
     &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;// to get the list of filters to apply&lt;/span&gt;
@@ -365,7 +491,7 @@ This will gives us the set of local branches not in the remote local branches no
 &lt;h3 id=&quot;step_3_register_your_filter_provider&quot;&gt;Step 3: Register your Filter Provider&lt;/h3&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;c#&quot;&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;class&lt;/span&gt; &lt;span style=&quot;color: #0000FF; font-weight: bold&quot;&gt;WebApiApplication&lt;/span&gt; : HttpApplication
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;c#&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;class&lt;/span&gt; &lt;span style=&quot;color: #0000FF; font-weight: bold&quot;&gt;WebApiApplication&lt;/span&gt; : HttpApplication
 {
     &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Application_Start&lt;/span&gt;()
     {
@@ -407,7 +533,7 @@ This will gives us the set of local branches not in the remote local branches no
       
 
       
-        <summary type="html">Action filters are a way of modifying or decorating the execution of one or more action methods. They provide points of execution before and after the action method itself executes. For more details on action filters see this article Order of Execution: Salami Slice + Russian Doll You can have action filters declared at three levels: globally, controller-wide or action-specific. They will execute in that order&amp;#8230;&amp;#8203;sort of. Once ordered, action filters are executed sequentially, without connection between them. But here&amp;#8217;s the fun bit, the order of execution is reverted when the response is processed. In other words, if when processing the request the order of filters is View&amp;#160;&amp;#9656; FilterA&amp;#160;&amp;#9656; FilterB&amp;#160;&amp;#9656; FilterC&amp;#160;&amp;#9656; Action then when processing the response the order will be View&amp;#160;&amp;#9656; Action&amp;#160;&amp;#9656; FilterC&amp;#160;&amp;#9656; FilterB&amp;#160;&amp;#9656; Filter there are some design patterns like: Chain of Responsibility Commands I prefer to use the more visual Salami Slice for the sequential execution. Russian Doll Overriding a global filter from an action method This default order is convenient in many cases, but not always. I found myself in the following scenario: I needed to execute a default action filter unless an action was annotated with an overriding action filter attribute. Two examples when this could be useful: Always log http traffic, except sensitive data: Log the raw http request and response to all action methods. But: when the request is for PUT /PaymentCardDetails, then use a custom logger that will not log the payment card number and security code. Always require authentication tokens, except Login and Forgot Password methods: Add a global action filter that will always require authentication token in the request&amp;#8217;s header. But: annotate the Login and ForgotPassword action methods with an attribute that will bypass the authentication requirement. &amp;#8230;&amp;#8203;so here is the implementation: Step 1: Create an interface for overriding attributes Something like this is the simplest thing that can possibly do the job: //To be implemented by actionfilterattributes that override a global action filter public interface IOverridingFilterAttribute { //The type of actionfilter to be replaced for this request Type OverriddenType { get; } } Step 2: Create your own ActionFilterProvider with the overriding behaviour IFilterProvider is a component you can customise. It defines what action filters to use in this request, and in which order public class OverridingFilterProvider : IFilterProvider { //called by WebApi on each request, in order // to get the list of filters to apply public IEnumerable&amp;lt;FilterInfo&amp;gt; GetFilters(HttpConfiguration configuration, HttpActionDescriptor actionDescriptor) { var globalFilters = configuration.Filters; var controllerFilters = actionDescriptor.ControllerDescriptor.GetFilters().Select(x =&amp;gt; new FilterInfo(x,FilterScope.Controller)); var actionFilters = actionDescriptor.GetFilters().Select(x =&amp;gt; new FilterInfo(x,FilterScope.Action)); //we&amp;#39;ll apply global,controller-wide //and then action attribute filters var all = globalFilters.Concat(controllerFilters).Concat(actionFilters); return RemoveAnyOverriddenFilter(all); } //if there are IOverridingFilterAttributes, //remove the filters they override private IEnumerable&amp;lt;FilterInfo&amp;gt; RemoveAnyOverriddenFilter(IEnumerable&amp;lt;FilterInfo&amp;gt; all) { var overridingFilters = all.Where(x =&amp;gt; (x.Instance as IOverridingFilterAttribute) != null) .Select(x =&amp;gt; (IOverridingFilterAttribute) x.Instance); var filtered = all.Where(x =&amp;gt; !IsOverridden(x, overridingFilters)); return filtered; } private bool IsOverridden(FilterInfo target, IEnumerable&amp;lt;IOverridingFilterAttribute&amp;gt; overrides) { foreach (var overridingFilter in overrides) { var filterType = target.Instance.GetType(); var overriddenType = overridingFilter.OverriddenType; if (overriddenType.IsAssignableFrom(filterType)) return true; } return false; } private IEnumerable&amp;lt;FilterInfo&amp;gt; OrderFilters(IEnumerable&amp;lt;IFilter&amp;gt; filters, FilterScope scope) { return filters.Select(instance =&amp;gt; new FilterInfo(instance, scope)); } } Step 3: Register your Filter Provider public class WebApiApplication : HttpApplication { protected void Application_Start() { var services = GlobalConfiguration.Configuration.Services; services.Replace(typeof(IFilterProvider), new OverridingFilterProvider()); } }</summary>
+        <summary type="html">Action filters are a way of modifying or decorating the execution of one or more action methods. They provide points of execution before and after the action method itself executes. For more details on action filters see this article Order of Execution: Salami Slice + Russian Doll You can have action filters declared at three levels: globally, controller-wide or action-specific. They will execute in that order&amp;#8230;&amp;#8203;sort of. Once ordered, action filters are executed sequentially, without connection between them. But here&amp;#8217;s the fun bit, the order of execution is reverted when the response is processed. In other words, if when processing the request the order of filters is View&amp;#160; FilterA&amp;#160; FilterB&amp;#160; FilterC&amp;#160; Action then when processing the response the order will be View&amp;#160; Action&amp;#160; FilterC&amp;#160; FilterB&amp;#160; Filter there are some design patterns like: Chain of Responsibility Commands I prefer to use the more visual Salami Slice for the sequential execution. Russian Doll Overriding a global filter from an action method This default order is convenient in many cases, but not always. I found myself in the following scenario: I needed to execute a default action filter unless an action was annotated with an overriding action filter attribute. Two examples when this could be useful: Always log http traffic, except sensitive data: Log the raw http request and response to all action methods. But: when the request is for PUT /PaymentCardDetails, then use a custom logger that will not log the payment card number and security code. Always require authentication tokens, except Login and Forgot Password methods: Add a global action filter that will always require authentication token in the request&amp;#8217;s header. But: annotate the Login and ForgotPassword action methods with an attribute that will bypass the authentication requirement. &amp;#8230;&amp;#8203;so here is the implementation: Step 1: Create an interface for overriding attributes Something like this is the simplest thing that can possibly do the job: //To be implemented by actionfilterattributes that override a global action filter public interface IOverridingFilterAttribute { //The type of actionfilter to be replaced for this request Type OverriddenType { get; } } Step 2: Create your own ActionFilterProvider with the overriding behaviour IFilterProvider is a component you can customise. It defines what action filters to use in this request, and in which order public class OverridingFilterProvider : IFilterProvider { //called by WebApi on each request, in order // to get the list of filters to apply public IEnumerable&amp;lt;FilterInfo&amp;gt; GetFilters(HttpConfiguration configuration, HttpActionDescriptor actionDescriptor) { var globalFilters = configuration.Filters; var controllerFilters = actionDescriptor.ControllerDescriptor.GetFilters().Select(x =&amp;gt; new FilterInfo(x,FilterScope.Controller)); var actionFilters = actionDescriptor.GetFilters().Select(x =&amp;gt; new FilterInfo(x,FilterScope.Action)); //we&amp;#39;ll apply global,controller-wide //and then action attribute filters var all = globalFilters.Concat(controllerFilters).Concat(actionFilters); return RemoveAnyOverriddenFilter(all); } //if there are IOverridingFilterAttributes, //remove the filters they override private IEnumerable&amp;lt;FilterInfo&amp;gt; RemoveAnyOverriddenFilter(IEnumerable&amp;lt;FilterInfo&amp;gt; all) { var overridingFilters = all.Where(x =&amp;gt; (x.Instance as IOverridingFilterAttribute) != null) .Select(x =&amp;gt; (IOverridingFilterAttribute) x.Instance); var filtered = all.Where(x =&amp;gt; !IsOverridden(x, overridingFilters)); return filtered; } private bool IsOverridden(FilterInfo target, IEnumerable&amp;lt;IOverridingFilterAttribute&amp;gt; overrides) { foreach (var overridingFilter in overrides) { var filterType = target.Instance.GetType(); var overriddenType = overridingFilter.OverriddenType; if (overriddenType.IsAssignableFrom(filterType)) return true; } return false; } private IEnumerable&amp;lt;FilterInfo&amp;gt; OrderFilters(IEnumerable&amp;lt;IFilter&amp;gt; filters, FilterScope scope) { return filters.Select(instance =&amp;gt; new FilterInfo(instance, scope)); } } Step 3: Register your Filter Provider public class WebApiApplication : HttpApplication { protected void Application_Start() { var services = GlobalConfiguration.Configuration.Services; services.Replace(typeof(IFilterProvider), new OverridingFilterProvider()); } }</summary>
       
 
       
@@ -490,7 +616,7 @@ This will gives us the set of local branches not in the remote local branches no
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;class&lt;/span&gt; &lt;span style=&quot;color: #0000FF; font-weight: bold&quot;&gt;Extensions&lt;/span&gt;
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;class&lt;/span&gt; &lt;span style=&quot;color: #0000FF; font-weight: bold&quot;&gt;Extensions&lt;/span&gt;
 {
     &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; ApplyOperation&amp;lt;T&amp;gt;
                 (&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;this&lt;/span&gt; IEnumerable&amp;lt;T&amp;gt; iterator,
@@ -507,7 +633,7 @@ This will gives us the set of local branches not in the remote local branches no
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;IEnumerable&amp;lt;&lt;span style=&quot;color: #B00040&quot;&gt;string&lt;/span&gt;&amp;gt; cities =
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;IEnumerable&amp;lt;&lt;span style=&quot;color: #B00040&quot;&gt;string&lt;/span&gt;&amp;gt; cities =
             &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color: #B00040&quot;&gt;string&lt;/span&gt;[] { &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;Dublin&amp;quot;&lt;/span&gt;, &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;Buenos Aires&amp;quot;&lt;/span&gt;, &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;Madrid&amp;quot;&lt;/span&gt; };
 cities.ApplyOperation(x=&amp;gt;Console.WriteLine(&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;City name: &amp;quot;&lt;/span&gt; + x));&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
@@ -517,7 +643,7 @@ cities.ApplyOperation(x=&amp;gt;Console.WriteLine(&lt;span style=&quot;color: #B
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color: #B00040&quot;&gt;string&lt;/span&gt;[] {
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color: #B00040&quot;&gt;string&lt;/span&gt;[] {
     &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;Dublin&amp;quot;&lt;/span&gt;,
     &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;Buenos Aires&amp;quot;&lt;/span&gt;,
     &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;Madrid&amp;quot;&lt;/span&gt; }
@@ -592,7 +718,7 @@ cities.ApplyOperation(x=&amp;gt;Console.WriteLine(&lt;span style=&quot;color: #B
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;// Count is 0 before adding any items&lt;/span&gt;
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;// Count is 0 before adding any items&lt;/span&gt;
 &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;// This is a post condition of the constructor&lt;/span&gt;
 &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;//and should be tested separately&lt;/span&gt;
 &lt;span style=&quot;color: #7D9029&quot;&gt;[Test]&lt;/span&gt;
@@ -606,7 +732,7 @@ cities.ApplyOperation(x=&amp;gt;Console.WriteLine(&lt;span style=&quot;color: #B
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;// We use the &amp;#39;Peek&amp;#39; method to access the item on top of the stack.&lt;/span&gt;
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;// We use the &amp;#39;Peek&amp;#39; method to access the item on top of the stack.&lt;/span&gt;
 &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;// Pre and Post conditions of this method should be tested separately&lt;/span&gt;
 &lt;span style=&quot;color: #7D9029&quot;&gt;[Test]&lt;/span&gt;
 &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Add_PostCond_ItemIsOnTopOfTheStack&lt;/span&gt;()
@@ -635,7 +761,7 @@ We don’t want to repeat ourselves, so we will delegate to a reusable method ca
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;[Test]&lt;/span&gt;
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;[Test]&lt;/span&gt;
 &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Add_PostCond_InvariantsWereEnforced&lt;/span&gt;()
 {
     &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;//Arrange&lt;/span&gt;
@@ -688,7 +814,7 @@ This verification will fail if the method was not invoked indirectly by &lt;code
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;[Test,ExpectedException(typeof(InvalidOperationException),&lt;/span&gt;
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;[Test,ExpectedException(typeof(InvalidOperationException),&lt;/span&gt;
 &lt;span style=&quot;color: #7D9029&quot;&gt;    ExpectedMessage=&amp;quot;Count cannnot be negative&amp;quot;)]&lt;/span&gt;
 &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;CheckInvariants_PostCond_CountIsNonNegative&lt;/span&gt;()
 {
@@ -716,7 +842,7 @@ This verification will fail if the method was not invoked indirectly by &lt;code
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;class&lt;/span&gt; &lt;span style=&quot;color: #0000FF; font-weight: bold&quot;&gt;Stack&lt;/span&gt;
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;class&lt;/span&gt; &lt;span style=&quot;color: #0000FF; font-weight: bold&quot;&gt;Stack&lt;/span&gt;
 {
     &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;private&lt;/span&gt; &lt;span style=&quot;color: #B00040&quot;&gt;int&lt;/span&gt; _maximumNumberOfItemsAllowed;
     &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Stack&lt;/span&gt;(&lt;span style=&quot;color: #B00040&quot;&gt;int&lt;/span&gt; maximumNumberOfItemsAllowed)
@@ -822,7 +948,7 @@ This verification will fail if the method was not invoked indirectly by &lt;code
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;[Test, ExpectedException( typeof(ArgumentNullException))]&lt;/span&gt;
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;[Test, ExpectedException( typeof(ArgumentNullException))]&lt;/span&gt;
 &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Add_PreCond_ItemIsRequired&lt;/span&gt;()
 {
     &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Stack&lt;/span&gt;(maximumNumberOfItemsAllowed: &lt;span style=&quot;color: #666666&quot;&gt;1&lt;/span&gt;)
@@ -859,7 +985,7 @@ of an unhappy case, that is, a happy case for pre conditions.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;[Test]&lt;/span&gt;
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;[Test]&lt;/span&gt;
 &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Add_PreCond_HappyCase&lt;/span&gt;()
 {
     &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Stack&lt;/span&gt;(maximumNumberOfItemsAllowed: &lt;span style=&quot;color: #666666&quot;&gt;1&lt;/span&gt;)
@@ -1026,7 +1152,7 @@ Here is the list of test we will write for this User Story, based on the previou
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;[Test]&lt;/span&gt;
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;[Test]&lt;/span&gt;
 &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Add_PreCond_ItemIsRequired&lt;/span&gt;()
     { &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;throw&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; NotImplementedException(); }
 
@@ -1278,7 +1404,7 @@ The exact implementation is outside of the scope of this article, but I will pos
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;powershell&quot;&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;function&lt;/span&gt; FindDuplicates{
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;powershell&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;function&lt;/span&gt; FindDuplicates{
  &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;# Receives a list of ArrayLists&lt;/span&gt;
  &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;# iteratively prints the full path of each ArrayList item&lt;/span&gt;
  &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;# where the ArrayList contains multiple paths (i.e duplicates)&lt;/span&gt;
@@ -1313,7 +1439,7 @@ GetFilesInBuckets &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;C:\MyRo
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;powershell&quot;&gt;GetFilesInBuckets &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;C:\MyRootFolder&amp;quot;&lt;/span&gt; &lt;span style=&quot;color: #666666&quot;&gt;-f&lt;/span&gt; &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;*.txt&amp;quot;&lt;/span&gt;|
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;powershell&quot;&gt;&lt;span&gt;&lt;/span&gt;GetFilesInBuckets &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;C:\MyRootFolder&amp;quot;&lt;/span&gt; &lt;span style=&quot;color: #666666&quot;&gt;-f&lt;/span&gt; &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;*.txt&amp;quot;&lt;/span&gt;|
     FindDuplicates|
     FilterOutOlder&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
@@ -1371,7 +1497,7 @@ GetFilesInBuckets &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;C:\MyRo
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;xml&quot;&gt;...
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;xml&quot;&gt;&lt;span&gt;&lt;/span&gt;...
 &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;&amp;lt;property&lt;/span&gt; &lt;span style=&quot;color: #7D9029&quot;&gt;name=&lt;/span&gt;&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;SpreadsheetPath&amp;quot;&lt;/span&gt; &lt;span style=&quot;color: #7D9029&quot;&gt;value=&lt;/span&gt;&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;${Config} + ${CurrentProject}&amp;quot;&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;/&amp;gt;&lt;/span&gt;
 &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;&amp;lt;call&lt;/span&gt; &lt;span style=&quot;color: #7D9029&quot;&gt;target=&lt;/span&gt;&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;ProcessSpreadsheet&amp;quot;&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;/&amp;gt;&lt;/span&gt;
 ...&lt;/code&gt;&lt;/pre&gt;
@@ -1385,7 +1511,7 @@ GetFilesInBuckets &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;C:\MyRo
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;xml&quot;&gt;(Known inputs: SpreadsheetPath and BusinessArea)
+&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;xml&quot;&gt;&lt;span&gt;&lt;/span&gt;(Known inputs: SpreadsheetPath and BusinessArea)
 &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;&amp;lt;property&lt;/span&gt; &lt;span style=&quot;color: #7D9029&quot;&gt;name=&lt;/span&gt;&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;SpreadsheetPath&amp;quot;&lt;/span&gt;
     &lt;span style=&quot;color: #7D9029&quot;&gt;value=&lt;/span&gt;&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;${Config} + ${CurrentProject}&amp;quot;&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;/&amp;gt;&lt;/span&gt;
 &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;&amp;lt;property&lt;/span&gt; &lt;span style=&quot;color: #7D9029&quot;&gt;name=&lt;/span&gt;&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;BusinessArea&amp;quot;&lt;/span&gt; &lt;span style=&quot;color: #7D9029&quot;&gt;value=&lt;/span&gt;&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;#39;Security&amp;#39;&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;/&amp;gt;&lt;/span&gt;

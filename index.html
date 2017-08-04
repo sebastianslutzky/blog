@@ -102,6 +102,222 @@ statistics" style="border:none;" /></a></div>
       <li>
         <header class="post-header">
           <h1 class="post-title">
+            <a class="post-link" href="/2017/08/04/find-jobs-in-all-jenkins-folders/">Find Jobs In All Jenkins Folders</a>
+          </h1>
+
+          <p class="post-meta">Aug 4, 2017 • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/jenkins/">jenkins</a>,
+    
+  
+    
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/groovy/">groovy</a>,
+    
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/jenkins-dsl/">jenkins_dsl</a>
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <div class="paragraph">
+<p>Sometimes it is useful to list or apply an operation to a Jenkins job based on a regular expression.
+The Jenkins DSL plugin, which executes Groovy code within Jenkins, is probably the easier way to achieve this.</p>
+</div>
+<div class="paragraph">
+<p>I was able to find code snippets in my first web search. However, all the solutions I found
+had a major limitation: not dealing with Jenkins folder.</p>
+</div>
+<div class="paragraph">
+<p>In case you have not used them yet, <a href="https://wiki.jenkins.io/display/JENKINS/CloudBees+Folders+Plugin">Jenkins folders</a>
+is a great plugin that let you organise your jobs into "container" folders, just like you would do on a file system.</p>
+</div>
+<div class="sect1">
+<h2 id="searching_recursively">Searching recursively</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following Groovy snippet will return a list of jobs across <strong>all folders</strong>.
+Optionally, you can pass a regular expression to filter out jobs by name.
+This regulare expression will be matched against the full name of the job, that is, including
+folder names. This allows you, for example, to find all unit tests jobs in a folder.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span></span><span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">jenkins.model.*</span>
+
+<span style="color: #B00040">def</span> <span style="color: #0000FF">isFolder</span><span style="color: #666666">(</span>abstractJob<span style="color: #666666">){</span>
+ <span style="color: #008000; font-weight: bold">return</span> abstractJob<span style="color: #666666">.</span><span style="color: #7D9029">getClass</span><span style="color: #666666">().</span><span style="color: #7D9029">getName</span><span style="color: #666666">()</span> <span style="color: #666666">==</span> <span style="color: #BA2121">&quot;com.cloudbees.hudson.plugins.folder.Folder&quot;</span><span style="color: #666666">)</span>
+<span style="color: #666666">}</span>
+
+<span style="color: #B00040">def</span> <span style="color: #0000FF">collectJobRecursively</span><span style="color: #666666">(</span>abstractJob<span style="color: #666666">,</span>resultCollector<span style="color: #666666">){</span>
+  <span style="color: #008000; font-weight: bold">if</span><span style="color: #666666">(</span>isFolder<span style="color: #666666">(</span>abstractJob<span style="color: #666666">))</span>
+        <span style="color: #666666">{</span>
+            abstractJob<span style="color: #666666">.</span><span style="color: #7D9029">items</span><span style="color: #666666">.</span><span style="color: #7D9029">findAll</span><span style="color: #666666">().</span><span style="color: #7D9029">each</span><span style="color: #666666">{</span> nestedJob <span style="color: #666666">-&gt;</span>
+            collectJobRecursively<span style="color: #666666">(</span>nestedJob<span style="color: #666666">,</span>resultCollector<span style="color: #666666">)</span>
+        <span style="color: #666666">}</span>
+  <span style="color: #666666">}</span>
+  <span style="color: #008000; font-weight: bold">else</span>
+  <span style="color: #666666">{</span>
+    <span style="color: #408080; font-style: italic">//only add actual jobs to the list</span>
+    resultCollector <span style="color: #666666">&lt;&lt;</span> abstractJob
+  <span style="color: #666666">}</span>
+<span style="color: #666666">}</span>
+
+<span style="color: #B00040">def</span> <span style="color: #0000FF">findAll</span><span style="color: #666666">(</span>pattern <span style="color: #666666">=</span> <span style="color: #BA2121">&#39;.*&#39;</span><span style="color: #666666">){</span>
+ <span style="color: #B00040">def</span> resultCollector <span style="color: #666666">=</span> <span style="color: #666666">[]</span>
+ Jenkins<span style="color: #666666">.</span><span style="color: #7D9029">instance</span><span style="color: #666666">.</span><span style="color: #7D9029">items</span><span style="color: #666666">.</span><span style="color: #7D9029">findAll</span><span style="color: #666666">().</span><span style="color: #7D9029">each</span><span style="color: #666666">{</span> job <span style="color: #666666">-&gt;</span>
+    recurse<span style="color: #666666">(</span>job<span style="color: #666666">,</span><span style="color: #008000; font-weight: bold">null</span><span style="color: #666666">,</span>resultCollector<span style="color: #666666">)</span>
+  <span style="color: #666666">}</span>
+
+  <span style="color: #008000; font-weight: bold">return</span> resultCollector
+  <span style="color: #666666">.</span><span style="color: #7D9029">findAll</span><span style="color: #666666">{</span>
+    <span style="color: #408080; font-style: italic">// apply the regular expression here.</span>
+    <span style="color: #408080; font-style: italic">// we are matching the Full Name (including folder names)</span>
+      <span style="color: #666666">(</span>it<span style="color: #666666">.</span><span style="color: #7D9029">fullName</span> <span style="color: #666666">=~</span> <span style="color: #BA2121">/$pattern/</span><span style="color: #666666">)</span>
+   <span style="color: #666666">}</span>
+<span style="color: #666666">}</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="using_the_recursive_findall_function">Using the recursive findAll function</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You  can now use the previous <code>findAll</code> function to search for all unit test jobs in a folder called "master_branch":</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span></span>
+findAll<span style="color: #666666">(</span><span style="color: #BA2121">&quot;.*/master_branch/.*UnitTest.*&quot;</span><span style="color: #666666">)</span>
+<span style="color: #666666">.</span><span style="color: #7D9029">each</span><span style="color: #666666">{</span>
+  job <span style="color: #666666">-&gt;</span>
+   <span style="color: #008000; font-weight: bold">if</span><span style="color: #666666">(</span>job<span style="color: #666666">.</span><span style="color: #7D9029">lastBuild</span><span style="color: #666666">){</span>
+      println job<span style="color: #666666">.</span><span style="color: #7D9029">fullName</span> <span style="color: #666666">+</span> <span style="color: #BA2121">&#39;:&#39;</span> <span style="color: #666666">+</span> job<span style="color: #666666">.</span><span style="color: #7D9029">lastBuild</span><span style="color: #666666">.</span><span style="color: #7D9029">result</span>
+    <span style="color: #666666">}</span>
+  <span style="color: #008000; font-weight: bold">else</span> <span style="color: #666666">{</span>
+    println job<span style="color: #666666">.</span><span style="color: #7D9029">fullName</span> <span style="color: #666666">+</span> <span style="color: #BA2121">&quot; has not run yet&quot;</span><span style="color: #666666">;</span>
+  <span style="color: #666666">}</span>
+ <span style="color: #666666">}</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+        </div>
+        
+          <p class="post-continue">
+            <a href="/2017/08/04/find-jobs-in-all-jenkins-folders/#disqus_thread">Leave a comment</a>
+          </p>
+
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
             <a class="post-link" href="/2017/03/31/delete-stale-git-branches-with-powershell/">Delete Stale Git Branches With Powershell</a>
           </h1>
 
@@ -136,6 +352,12 @@ statistics" style="border:none;" /></a></div>
       <a href="/categories/git/">git</a>,
     
   
+    
+  
+    
+  
+    
+  
 
   
   
@@ -145,6 +367,12 @@ statistics" style="border:none;" /></a></div>
   
     
       <a href="/categories/powershell/">powershell</a>
+    
+  
+    
+  
+    
+  
     
   
     
@@ -333,11 +561,23 @@ This will gives us the set of local branches not in the remote local branches no
   
     
   
+    
+  
+    
+  
+    
+  
 
   
   
     
       <a href="/categories/architecture/">architecture</a>,
+    
+  
+    
+  
+    
+  
     
   
     
@@ -395,6 +635,12 @@ This will gives us the set of local branches not in the remote local branches no
   
     
   
+    
+  
+    
+  
+    
+  
 
   
   
@@ -410,6 +656,12 @@ This will gives us the set of local branches not in the remote local branches no
   
     
       <a href="/categories/c/">c#</a>
+    
+  
+    
+  
+    
+  
     
   
     
@@ -461,13 +713,13 @@ This will gives us the set of local branches not in the remote local branches no
 <p>But here&#8217;s the fun bit, the order of execution is reverted when the response is processed. In other words, if when processing the request the order of filters is</p>
 </div>
 <div class="paragraph">
-<p><span class="menuseq"><span class="menu">View</span>&#160;&#9656; <span class="submenu">FilterA</span>&#160;&#9656; <span class="submenu">FilterB</span>&#160;&#9656; <span class="submenu">FilterC</span>&#160;&#9656; <span class="menuitem">Action</span></span></p>
+<p><span class="menuseq"><b class="menu">View</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">FilterA</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">FilterB</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">FilterC</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Action</b></span></p>
 </div>
 <div class="paragraph">
 <p>then when processing the response the order will be</p>
 </div>
 <div class="paragraph">
-<p><span class="menuseq"><span class="menu">View</span>&#160;&#9656; <span class="submenu">Action</span>&#160;&#9656; <span class="submenu">FilterC</span>&#160;&#9656; <span class="submenu">FilterB</span>&#160;&#9656; <span class="menuitem">Filter</span></span></p>
+<p><span class="menuseq"><b class="menu">View</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Action</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">FilterC</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">FilterB</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Filter</b></span></p>
 </div>
 <div class="paragraph">
 <p>there are some design patterns like:</p>
@@ -539,7 +791,7 @@ This will gives us the set of local branches not in the remote local branches no
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="c#"><span style="color: #408080; font-style: italic">//To be implemented by actionfilterattributes that override a global action filter</span>
+<pre class="pygments highlight"><code data-lang="c#"><span></span><span style="color: #408080; font-style: italic">//To be implemented by actionfilterattributes that override a global action filter</span>
 <span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">interface</span> IOverridingFilterAttribute
 {
     <span style="color: #408080; font-style: italic">//The type of actionfilter to be replaced for this request</span>
@@ -555,7 +807,7 @@ This will gives us the set of local branches not in the remote local branches no
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="c#"><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">OverridingFilterProvider</span> : IFilterProvider
+<pre class="pygments highlight"><code data-lang="c#"><span></span><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">OverridingFilterProvider</span> : IFilterProvider
 {
     <span style="color: #408080; font-style: italic">//called by WebApi on each request, in order</span>
     <span style="color: #408080; font-style: italic">// to get the list of filters to apply</span>
@@ -608,7 +860,7 @@ This will gives us the set of local branches not in the remote local branches no
 <h3 id="step_3_register_your_filter_provider">Step 3: Register your Filter Provider</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="c#"><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">WebApiApplication</span> : HttpApplication
+<pre class="pygments highlight"><code data-lang="c#"><span></span><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">WebApiApplication</span> : HttpApplication
 {
     <span style="color: #008000; font-weight: bold">protected</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Application_Start</span>()
     {
@@ -670,6 +922,12 @@ This will gives us the set of local branches not in the remote local branches no
   
     
   
+    
+  
+    
+  
+    
+  
 
   
   
@@ -693,6 +951,12 @@ This will gives us the set of local branches not in the remote local branches no
   
     
       <a href="/categories/nakedobjects/">nakedobjects</a>,
+    
+  
+    
+  
+    
+  
     
   
     
@@ -726,6 +990,12 @@ This will gives us the set of local branches not in the remote local branches no
   
     
       <a href="/categories/ddd/">ddd</a>
+    
+  
+    
+  
+    
+  
     
   
     
@@ -794,6 +1064,12 @@ This will gives us the set of local branches not in the remote local branches no
   
     
   
+    
+  
+    
+  
+    
+  
 
   
   
@@ -815,6 +1091,12 @@ This will gives us the set of local branches not in the remote local branches no
   
     
       <a href="/categories/net/">.net</a>,
+    
+  
+    
+  
+    
+  
     
   
     
@@ -856,6 +1138,12 @@ This will gives us the set of local branches not in the remote local branches no
   
     
   
+    
+  
+    
+  
+    
+  
 
 </p>
         </header>
@@ -875,7 +1163,7 @@ This will gives us the set of local branches not in the remote local branches no
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">static</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">Extensions</span>
+<pre class="pygments highlight"><code data-lang="csharp"><span></span><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">static</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">Extensions</span>
 {
     <span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">static</span> <span style="color: #008000; font-weight: bold">void</span> ApplyOperation&lt;T&gt;
                 (<span style="color: #008000; font-weight: bold">this</span> IEnumerable&lt;T&gt; iterator,
@@ -892,7 +1180,7 @@ This will gives us the set of local branches not in the remote local branches no
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="csharp">IEnumerable&lt;<span style="color: #B00040">string</span>&gt; cities =
+<pre class="pygments highlight"><code data-lang="csharp"><span></span>IEnumerable&lt;<span style="color: #B00040">string</span>&gt; cities =
             <span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">string</span>[] { <span style="color: #BA2121">&quot;Dublin&quot;</span>, <span style="color: #BA2121">&quot;Buenos Aires&quot;</span>, <span style="color: #BA2121">&quot;Madrid&quot;</span> };
 cities.ApplyOperation(x=&gt;Console.WriteLine(<span style="color: #BA2121">&quot;City name: &quot;</span> + x));</code></pre>
 </div>
@@ -902,7 +1190,7 @@ cities.ApplyOperation(x=&gt;Console.WriteLine(<span style="color: #BA2121">&quot
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">string</span>[] {
+<pre class="pygments highlight"><code data-lang="csharp"><span></span><span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">string</span>[] {
     <span style="color: #BA2121">&quot;Dublin&quot;</span>,
     <span style="color: #BA2121">&quot;Buenos Aires&quot;</span>,
     <span style="color: #BA2121">&quot;Madrid&quot;</span> }
@@ -922,337 +1210,6 @@ cities.ApplyOperation(x=&gt;Console.WriteLine(<span style="color: #BA2121">&quot
         
           <p class="post-continue">
             <a href="/2011/08/22/apply-operation-in-collection-with-linq/#disqus_thread">Leave a comment</a>
-          </p>
-
-      </li>
-    
-      
-      
-
-      <li>
-        <header class="post-header">
-          <h1 class="post-title">
-            <a class="post-link" href="/2011/08/13/unit-test-design-by-contract-part3/">Unit Test &amp; Design By Contract (Part III)</a>
-          </h1>
-
-          <p class="post-meta">Aug 13, 2011 • 
-  
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-      <a href="/categories/test-driven-development/">test-driven development</a>,
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-
-  
-  
-    
-      <a href="/categories/architecture/">architecture</a>,
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-
-  
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-      <a href="/categories/c/">c#</a>,
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-
-  
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-      <a href="/categories/unit-testing/">unit-testing</a>
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-
-</p>
-        </header>
-
-        <div class="post-content">
-          <div class="imageblock">
-<div class="content">
-<img src="/assets/images/dbc.png" alt="dbc" width="100%">
-</div>
-</div>
-<div class="paragraph">
-<p><em>This article is the last of three on <a href="/2011/08/08/unit-test-design-by-contract-part1/">Unit Testing and Design By Contract</a></em></p>
-</div>
-<div class="sect1">
-<h2 id="testing_post_conditions_and_class_invariants">Testing Post Conditions and Class Invariants</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Now we can test the two post conditions of the <code>Add</code> method:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #408080; font-style: italic">// Count is 0 before adding any items</span>
-<span style="color: #408080; font-style: italic">// This is a post condition of the constructor</span>
-<span style="color: #408080; font-style: italic">//and should be tested separately</span>
-<span style="color: #7D9029">[Test]</span>
-<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PostCond_CountHasIncreasedByOne</span>()
-{
-    <span style="color: #B00040">var</span> stack = <span style="color: #008000; font-weight: bold">new</span> Stack(maximumNumberOfItemsAllowed: <span style="color: #666666">10</span>);
-    stack.Add(<span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">object</span>());
-    Assert.AreEqual(<span style="color: #666666">1</span>,stack.Count);
-}</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #408080; font-style: italic">// We use the &#39;Peek&#39; method to access the item on top of the stack.</span>
-<span style="color: #408080; font-style: italic">// Pre and Post conditions of this method should be tested separately</span>
-<span style="color: #7D9029">[Test]</span>
-<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PostCond_ItemIsOnTopOfTheStack</span>()
-{
-    <span style="color: #B00040">var</span> stack = <span style="color: #008000; font-weight: bold">new</span> Stack(maximumNumberOfItemsAllowed: <span style="color: #666666">10</span>);
-    <span style="color: #B00040">var</span> firstItem = <span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">object</span>();
-    <span style="color: #B00040">var</span> secondItem = <span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">object</span>();
-    stack.Add(firstItem);
-    stack.Add(secondItem);
-
-    Assert.AreSame(secondItem, stack.Peek());
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>These types of test are probably the most commonly seen. Good Test Driven Development habits include asserting as few times as possible per tests, ideally one assertion only. The point is, as I mentioned earlier, error localization: if you only test one thing at a time, there has to be one test that explicitly exposes a bug.</p>
-</div>
-<div class="paragraph">
-<p>There is still one more post condition to test: that no invariant rule of the class was violated by the <code>Add</code> method.</p>
-</div>
-<div class="sect2">
-<h3 id="checking_class_invariants">Checking Class Invariants</h3>
-<div class="paragraph">
-<p>As mentioned earlier, Class Invariants are the rules that should always remain true after any method is executed on a class. The <code>Add</code> method is no exception, so we will have to test that class invariants were enforced when it executed.
-We don’t want to repeat ourselves, so we will delegate to a reusable method called <code>CheckInvariants</code> that throws an exception if an Invariant rule has been broken.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #7D9029">[Test]</span>
-<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PostCond_InvariantsWereEnforced</span>()
-{
-    <span style="color: #408080; font-style: italic">//Arrange</span>
-    <span style="color: #B00040">var</span> stack = <span style="color: #008000; font-weight: bold">new</span> MockRepository().PartialMock&lt;Stack&gt;(<span style="color: #666666">1</span>);
-    stack.Expect(x=&gt;x.CheckInvariants());
-    stack.Replay();
-
-    <span style="color: #408080; font-style: italic">//Act</span>
-    stack.Add(<span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">object</span>());
-
-    <span style="color: #408080; font-style: italic">//Assert</span>
-    stack.VerifyAllExpectations();
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This tests ensures that the method <code>CheckInvariants</code> has been invoked by the <code>Add</code> method. This type of tests, which verifies the interaction of methods rather than the resulting state of objects is known as Behavioural Tests.</p>
-</div>
-<div class="paragraph">
-<p>The delegation itself is tested by using the <a href="http://ayende.com/blog/tags/rhino-mocks">Rhino Mocks</a> mocking library for .Net. In this case we create a Partial Mock <code>Stack</code> object. It is partial because we only want to mock one method (<code>CheckInvariants</code>) but we do want to execute a different one (<code>Add</code>) of the same class. We tell the partially mocked <code>Stack</code> that we are expecting the <code>CheckInvariants</code> method to be called later. After we explicitly invoked <code>Add</code>, we tell the stack to verify our expectation.
-This verification will fail if the method was not invoked indirectly by <code>Add</code>.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="how_public_are_the_class_invariants">How public are the Class Invariants?</h3>
-<div class="paragraph">
-<p>So the last thing is to test the Class Invariants. This is just another method called void <code>CheckInvariants()</code> of the class, but its access level deserves a bit of thought.</p>
-</div>
-<div class="paragraph">
-<p>Let’s see what options we have:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>private: This method cannot be private because we need to write tests for it (as we did before)</p>
-</li>
-<li>
-<p>protected: This would at least let us create the class <code>TestStack</code> that inherits the <code>Stack</code> class and create a public method that invokes <code>CheckInvariants</code>. See <a href="http://geekswithblogs.net/MattRobertsBlog/archive/2008/12/16/how-to-make-a-quotprotectedquot-method-available-for-quotpartialquot-mocking-and-again.aspx">this article</a> for more details on how to mock a protected method</p>
-</li>
-<li>
-<p>internal: Internal methods can be invoked from within the assembly or an external assembly explicitly designated. This is the option chosen in this example</p>
-</li>
-<li>
-<p>public: Not a bad option either in my opinion, any object can invoke this method anytime, which should not cause any inconvenient.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>And here are the two test for <code>CheckInvariants</code> itself</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #7D9029">[Test,ExpectedException(typeof(InvalidOperationException),</span>
-<span style="color: #7D9029">    ExpectedMessage=&quot;Count cannnot be negative&quot;)]</span>
-<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">CheckInvariants_PostCond_CountIsNonNegative</span>()
-{
-    <span style="color: #B00040">var</span> stack = <span style="color: #008000; font-weight: bold">new</span> MockRepository().PartialMock&lt;Stack&gt;(<span style="color: #666666">1</span>);
-    stack.Replay();
-    stack.Count = -<span style="color: #666666">1</span>;
-
-    stack.CheckInvariants();
-}
-<span style="color: #7D9029">[Test,</span>
-<span style="color: #7D9029">ExpectedException(typeof(InvalidOperationException),</span>
-<span style="color: #7D9029">    ExpectedMessage = &quot;Count cannot be greater than 7&quot;)]</span>
-<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">CheckInvariants_PostCond_CountIsLessThanMaximumAllowed</span>()
-{
-    <span style="color: #B00040">var</span> stack = <span style="color: #008000; font-weight: bold">new</span> MockRepository().PartialMock&lt;Stack&gt;(<span style="color: #666666">7</span>);
-    stack.Replay();
-    stack.Count = <span style="color: #666666">8</span>;
-
-    stack.CheckInvariants();
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>And finally, here is the code for the <code>Stack</code> class, a class that honors its contract:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="csharp"><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">Stack</span>
-{
-    <span style="color: #008000; font-weight: bold">private</span> <span style="color: #B00040">int</span> _maximumNumberOfItemsAllowed;
-    <span style="color: #008000; font-weight: bold">public</span> <span style="color: #0000FF">Stack</span>(<span style="color: #B00040">int</span> maximumNumberOfItemsAllowed)
-    {
-        _maximumNumberOfItemsAllowed = maximumNumberOfItemsAllowed;
-    }
-
-    <span style="color: #008000; font-weight: bold">public</span> <span style="color: #B00040">int</span> Count { <span style="color: #008000; font-weight: bold">get</span>; <span style="color: #008000; font-weight: bold">protected</span> <span style="color: #008000; font-weight: bold">internal</span> <span style="color: #008000; font-weight: bold">set</span>; }
-
-    <span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add</span>(<span style="color: #B00040">object</span> item)
-    {
-        <span style="color: #008000; font-weight: bold">if</span> (item == <span style="color: #008000; font-weight: bold">null</span>)
-            <span style="color: #008000; font-weight: bold">throw</span> <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">ArgumentNullException</span>(<span style="color: #BA2121">&quot;item&quot;</span>);
-
-        <span style="color: #008000; font-weight: bold">if</span> (_maximumNumberOfItemsAllowed == Count)
-            <span style="color: #008000; font-weight: bold">throw</span> <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">InvalidOperationException</span>(
-                <span style="color: #BA2121">&quot;Cannot add items when the stack is full.&quot;</span>);
-        Count++;
-        _array.Add(item);
-
-        CheckInvariants();
-    }
-
-    <span style="color: #008000; font-weight: bold">private</span> IList _array = <span style="color: #008000; font-weight: bold">new</span> ArrayList();
-
-    <span style="color: #008000; font-weight: bold">public</span> <span style="color: #B00040">object</span> <span style="color: #0000FF">Peek</span>()
-    {
-        <span style="color: #008000; font-weight: bold">return</span> _array[Count - <span style="color: #666666">1</span>];
-    }
-
-    <span style="color: #008000; font-weight: bold">protected</span> <span style="color: #008000; font-weight: bold">internal</span> <span style="color: #008000; font-weight: bold">virtual</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">CheckInvariants</span>()
-    {
-        <span style="color: #008000; font-weight: bold">if</span> (Count &lt; <span style="color: #666666">0</span>)
-            <span style="color: #008000; font-weight: bold">throw</span> <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">InvalidOperationException</span>(<span style="color: #BA2121">&quot;Count cannnot be negative&quot;</span>);
-
-       <span style="color: #008000; font-weight: bold">if</span> (Count &gt; _maximumNumberOfItemsAllowed)
-            <span style="color: #008000; font-weight: bold">throw</span> <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">InvalidOperationException</span>(<span style="color: #BA2121">&quot;Count cannot be greater than &quot;</span> + _maximumNumberOfItemsAllowed);
-        }
-    }</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-        </div>
-        
-          <p class="post-continue">
-            <a href="/2011/08/13/unit-test-design-by-contract-part3/#disqus_thread">Leave a comment</a>
           </p>
 
       </li>

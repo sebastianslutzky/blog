@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  
+  
+  <title>Find Jobs In All Jenkins Folders</title>
+  <meta name="description" content="Sometimes it is useful to list or apply an operation to a Jenkins job based on a regular expression. The Jenkins DSL plugin, which executes Groovy code within Jenkins, is probably the easier way to achieve this. I was able to find code snippets in my first web search. However, all the solutions I found had a major limitation: not dealing with Jenkins folder. In case you have not used them yet, Jenkins folders is a great plugin that let you organise your jobs into &quot;container&quot; folders, just like you would do on a file system. Searching recursively The following Groovy snippet will return a list of jobs across all folders. Optionally, you can pass a regular expression to filter out jobs by name. This regulare expression will be matched against the full name of the job, that is, including folder names. This allows you, for example, to find all unit tests jobs in a folder. import jenkins.model.* def isFolder(abstractJob){ return abstractJob.getClass().getName() == &amp;quot;com.cloudbees.hudson.plugins.folder.Folder&amp;quot;) } def collectJobRecursively(abstractJob,resultCollector){ if(isFolder(abstractJob)) { abstractJob.items.findAll().each{ nestedJob -&amp;gt; collectJobRecursively(nestedJob,resultCollector) } } else { //only add actual jobs to the list resultCollector &amp;lt;&amp;lt; abstractJob } } def findAll(pattern = &amp;#39;.*&amp;#39;){ def resultCollector = [] Jenkins.instance.items.findAll().each{ job -&amp;gt; recurse(job,null,resultCollector) } return resultCollector .findAll{ // apply the regular expression here. // we are matching the Full Name (including folder names) (it.fullName =~ /$pattern/) } } Using the recursive findAll function You can now use the previous findAll function to search for all unit test jobs in a folder called &quot;master_branch&quot;: findAll(&amp;quot;.*/master_branch/.*UnitTest.*&amp;quot;) .each{ job -&amp;gt; if(job.lastBuild){ println job.fullName + &amp;#39;:&amp;#39; + job.lastBuild.result } else { println job.fullName + &amp;quot; has not run yet&amp;quot;; } }">
+  
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="http://youarewhatyoucode/2017/08/04/find-jobs-in-all-jenkins-folders/">
+  
+  
+  <link rel="alternate" type="application/rss+xml" title="you are what you code" href="http://youarewhatyoucode/feed.xml">
+     <!-- favicon -->
+    <link rel="shortcut icon" href="http://youarewhatyoucode/favicon.ico" type="image/icon"> 
+    <link rel="icon" href="http://youarewhatyoucode/favicon.ico" type="image/icon">
+
+    <!-- favicon -->
+    <link rel="shortcut icon" href="http://youarewhatyoucode/favicon.ico?v=2" /> 
+    <link rel="icon" href="http://youarewhatyoucode/favicon.ico?v=2" />
+        <!-- Start of StatCounter Code -->
+<div id="statcounter_image" style="display:inline;"><a
+title="web statistics" href="http://statcounter.com/"
+class="statcounter"><img
+src="//c.statcounter.com/7145507/0/8d806d50/1/" alt="web
+statistics" style="border:none;" /></a></div>
+    <!-- End of StatCounter Code -->
+
+  
+  <meta name="twitter:card" content="summary">
+  
+  <meta name="twitter:title" content="Find Jobs In All Jenkins Folders">
+  <meta name="twitter:description" content="Sometimes it is useful to list or apply an operation to a Jenkins job based on a regular expression. The Jenkins DSL plugin, which executes Groovy code within Jenkins, is probably the easier way to...">
+  
+  
+
+  <script type="text/javascript">
+  WebFontConfig = {
+    google: { families: [ 'Bitter:400,700,400italic:latin' ] }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();
+</script>
+
+  
+
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">you are what you code</a>
+
+    <nav class="site-nav">
+      
+        
+        <a class="page-link" href="https://ie.linkedin.com/in/sebastianslutzky">About</a>
+      
+        
+        <a class="page-link" href="/archives/">Archives</a>
+      
+        
+        <a class="page-link" href="https://github.com/sebastianslutzky">GitHub</a>
+      
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    
+      <h1 class="post-title" itemprop="name headline">Find Jobs In All Jenkins Folders</h1>
+    
+    <p class="post-meta">
+      <time datetime="2017-08-04T00:00:00+00:00" itemprop="datePublished">Aug 4, 2017</time>
+       
+       • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/jenkins/">jenkins</a>,
+    
+  
+    
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/groovy/">groovy</a>,
+    
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/jenkins-dsl/">jenkins_dsl</a>
+    
+  
+
+</p>
+
+      
+        <meta name="keywords" content="jenkins, groovy, jenkins_dsl"/>
+      
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <div class="paragraph">
+<p>Sometimes it is useful to list or apply an operation to a Jenkins job based on a regular expression.
+The Jenkins DSL plugin, which executes Groovy code within Jenkins, is probably the easier way to achieve this.</p>
+</div>
+<div class="paragraph">
+<p>I was able to find code snippets in my first web search. However, all the solutions I found
+had a major limitation: not dealing with Jenkins folder.</p>
+</div>
+<div class="paragraph">
+<p>In case you have not used them yet, <a href="https://wiki.jenkins.io/display/JENKINS/CloudBees+Folders+Plugin">Jenkins folders</a>
+is a great plugin that let you organise your jobs into "container" folders, just like you would do on a file system.</p>
+</div>
+<div class="sect1">
+<h2 id="searching_recursively">Searching recursively</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following Groovy snippet will return a list of jobs across <strong>all folders</strong>.
+Optionally, you can pass a regular expression to filter out jobs by name.
+This regulare expression will be matched against the full name of the job, that is, including
+folder names. This allows you, for example, to find all unit tests jobs in a folder.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span></span><span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">jenkins.model.*</span>
+
+<span style="color: #B00040">def</span> <span style="color: #0000FF">isFolder</span><span style="color: #666666">(</span>abstractJob<span style="color: #666666">){</span>
+ <span style="color: #008000; font-weight: bold">return</span> abstractJob<span style="color: #666666">.</span><span style="color: #7D9029">getClass</span><span style="color: #666666">().</span><span style="color: #7D9029">getName</span><span style="color: #666666">()</span> <span style="color: #666666">==</span> <span style="color: #BA2121">&quot;com.cloudbees.hudson.plugins.folder.Folder&quot;</span><span style="color: #666666">)</span>
+<span style="color: #666666">}</span>
+
+<span style="color: #B00040">def</span> <span style="color: #0000FF">collectJobRecursively</span><span style="color: #666666">(</span>abstractJob<span style="color: #666666">,</span>resultCollector<span style="color: #666666">){</span>
+  <span style="color: #008000; font-weight: bold">if</span><span style="color: #666666">(</span>isFolder<span style="color: #666666">(</span>abstractJob<span style="color: #666666">))</span>
+        <span style="color: #666666">{</span>
+            abstractJob<span style="color: #666666">.</span><span style="color: #7D9029">items</span><span style="color: #666666">.</span><span style="color: #7D9029">findAll</span><span style="color: #666666">().</span><span style="color: #7D9029">each</span><span style="color: #666666">{</span> nestedJob <span style="color: #666666">-&gt;</span>
+            collectJobRecursively<span style="color: #666666">(</span>nestedJob<span style="color: #666666">,</span>resultCollector<span style="color: #666666">)</span>
+        <span style="color: #666666">}</span>
+  <span style="color: #666666">}</span>
+  <span style="color: #008000; font-weight: bold">else</span>
+  <span style="color: #666666">{</span>
+    <span style="color: #408080; font-style: italic">//only add actual jobs to the list</span>
+    resultCollector <span style="color: #666666">&lt;&lt;</span> abstractJob
+  <span style="color: #666666">}</span>
+<span style="color: #666666">}</span>
+
+<span style="color: #B00040">def</span> <span style="color: #0000FF">findAll</span><span style="color: #666666">(</span>pattern <span style="color: #666666">=</span> <span style="color: #BA2121">&#39;.*&#39;</span><span style="color: #666666">){</span>
+ <span style="color: #B00040">def</span> resultCollector <span style="color: #666666">=</span> <span style="color: #666666">[]</span>
+ Jenkins<span style="color: #666666">.</span><span style="color: #7D9029">instance</span><span style="color: #666666">.</span><span style="color: #7D9029">items</span><span style="color: #666666">.</span><span style="color: #7D9029">findAll</span><span style="color: #666666">().</span><span style="color: #7D9029">each</span><span style="color: #666666">{</span> job <span style="color: #666666">-&gt;</span>
+    recurse<span style="color: #666666">(</span>job<span style="color: #666666">,</span><span style="color: #008000; font-weight: bold">null</span><span style="color: #666666">,</span>resultCollector<span style="color: #666666">)</span>
+  <span style="color: #666666">}</span>
+
+  <span style="color: #008000; font-weight: bold">return</span> resultCollector
+  <span style="color: #666666">.</span><span style="color: #7D9029">findAll</span><span style="color: #666666">{</span>
+    <span style="color: #408080; font-style: italic">// apply the regular expression here.</span>
+    <span style="color: #408080; font-style: italic">// we are matching the Full Name (including folder names)</span>
+      <span style="color: #666666">(</span>it<span style="color: #666666">.</span><span style="color: #7D9029">fullName</span> <span style="color: #666666">=~</span> <span style="color: #BA2121">/$pattern/</span><span style="color: #666666">)</span>
+   <span style="color: #666666">}</span>
+<span style="color: #666666">}</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="using_the_recursive_findall_function">Using the recursive findAll function</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You  can now use the previous <code>findAll</code> function to search for all unit test jobs in a folder called "master_branch":</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="groovy"><span></span>
+findAll<span style="color: #666666">(</span><span style="color: #BA2121">&quot;.*/master_branch/.*UnitTest.*&quot;</span><span style="color: #666666">)</span>
+<span style="color: #666666">.</span><span style="color: #7D9029">each</span><span style="color: #666666">{</span>
+  job <span style="color: #666666">-&gt;</span>
+   <span style="color: #008000; font-weight: bold">if</span><span style="color: #666666">(</span>job<span style="color: #666666">.</span><span style="color: #7D9029">lastBuild</span><span style="color: #666666">){</span>
+      println job<span style="color: #666666">.</span><span style="color: #7D9029">fullName</span> <span style="color: #666666">+</span> <span style="color: #BA2121">&#39;:&#39;</span> <span style="color: #666666">+</span> job<span style="color: #666666">.</span><span style="color: #7D9029">lastBuild</span><span style="color: #666666">.</span><span style="color: #7D9029">result</span>
+    <span style="color: #666666">}</span>
+  <span style="color: #008000; font-weight: bold">else</span> <span style="color: #666666">{</span>
+    println job<span style="color: #666666">.</span><span style="color: #7D9029">fullName</span> <span style="color: #666666">+</span> <span style="color: #BA2121">&quot; has not run yet&quot;</span><span style="color: #666666">;</span>
+  <span style="color: #666666">}</span>
+ <span style="color: #666666">}</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+  </div>
+
+<div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'youarewhatyoucode'; // required: replace example with your forum shortname
+        // var disqus_developer = 1; // Comment out when the site is live
+        var disqus_identifier = "/2017/08/04/find-jobs-in-all-jenkins-folders/";
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+</article>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <p>
+      
+
+&copy; sebastian slutzky - Powered by <a href="https://jekyllrb.com">Jekyll</a> &amp; <a href="https://github.com/yous/whiteglass">whiteglass</a> - Subscribe via <a href="http://youarewhatyoucode/feed.xml">RSS</a>
+
+    </p>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
