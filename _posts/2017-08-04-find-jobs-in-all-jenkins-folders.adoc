@@ -27,18 +27,16 @@ folder names. This allows you, for example, to find all unit tests jobs in a fol
 
 [source,groovy]
 ----
-import jenkins.model.*
- 
 def isFolder(abstractJob){
- return abstractJob.getClass().getName() == "com.cloudbees.hudson.plugins.folder.Folder")
+ return abstractJob.getClass().getName() == "com.cloudbees.hudson.plugins.folder.Folder"
 }
- 
+
 def collectJobRecursively(abstractJob,resultCollector){
   if(isFolder(abstractJob))
         {
             abstractJob.items.findAll().each{ nestedJob ->
-            collectJobRecursively(nestedJob,resultCollector)    
-        }  
+            collectJobRecursively(nestedJob,resultCollector)
+        }
   }
   else
   {
@@ -46,18 +44,18 @@ def collectJobRecursively(abstractJob,resultCollector){
     resultCollector << abstractJob
   }
 }
- 
+
 def findAll(pattern = '.*'){
- def resultCollector = [] 
+ def resultCollector = []
  Jenkins.instance.items.findAll().each{ job ->
-    recurse(job,null,resultCollector)   
+    collectJobRecursively(job,resultCollector)
   }
- 
+
   return resultCollector
   .findAll{
     // apply the regular expression here.
     // we are matching the Full Name (including folder names)
-      (it.fullName =~ /$pattern/) 
+      (it.fullName =~ /$pattern/)
    }
 }
 ----
