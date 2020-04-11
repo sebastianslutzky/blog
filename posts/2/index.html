@@ -102,6 +102,208 @@ statistics" style="border:none;" /></a></div>
       <li>
         <header class="post-header">
           <h1 class="post-title">
+            <a class="post-link" href="/2011/08/22/apply-operation-in-collection-with-linq/">Apply Operation In Collection With Linq</a>
+          </h1>
+
+          <p class="post-meta">Aug 22, 2011 • 
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/linq/">linQ</a>,
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/net/">.net</a>,
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/c/">c#</a>
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <div class="paragraph">
+<p>These days, it is unusual to write an implementation of the Iterator pattern. Most of the modern languages included a library with a set of aggregate objects that follow this pattern as defined in the <a href="https://www.amazon.com/Design-Patterns-Elements-Reusable-Object-Oriented/dp/0201633612">Gang of Four book</a>.</p>
+</div>
+<div class="paragraph">
+<p>In .Net, these objects are in the System.Collections namespace and they include classes such as Lists, Queues, Dictionaries, and also their specialised strongly typed (Generic) version.</p>
+</div>
+<div class="paragraph">
+<p>The Gang Of Four defines two types of iterators: External and Internal. The External requires the client to traverse the items (by looping through the items until the end of the iterator). In contrast to this, the internal iterator delegates this process to a Traverse mix-in class that can be extended and customised.</p>
+</div>
+<div class="paragraph">
+<p>I was looking for something similar to the internal iterator in .Net. That is, a generic way of passing an operation to a collection that would apply it to each of its items. None of the LinQ extension methods for collections seemed to do this, so I wrote one:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="csharp"><span></span><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">static</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">Extensions</span>
+{
+    <span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">static</span> <span style="color: #008000; font-weight: bold">void</span> ApplyOperation&lt;T&gt;
+                (<span style="color: #008000; font-weight: bold">this</span> IEnumerable&lt;T&gt; iterator,
+                Action&lt;T&gt; action)
+    {
+        <span style="color: #008000; font-weight: bold">foreach</span> (<span style="color: #B00040">var</span> item <span style="color: #008000; font-weight: bold">in</span> iterator)
+            action(item);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Which can be used as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="csharp"><span></span>IEnumerable&lt;<span style="color: #B00040">string</span>&gt; cities =
+            <span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">string</span>[] { <span style="color: #BA2121">&quot;Dublin&quot;</span>, <span style="color: #BA2121">&quot;Buenos Aires&quot;</span>, <span style="color: #BA2121">&quot;Madrid&quot;</span> };
+cities.ApplyOperation(x=&gt;Console.WriteLine(<span style="color: #BA2121">&quot;City name: &quot;</span> + x));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or simply</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="csharp"><span></span><span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">string</span>[] {
+    <span style="color: #BA2121">&quot;Dublin&quot;</span>,
+    <span style="color: #BA2121">&quot;Buenos Aires&quot;</span>,
+    <span style="color: #BA2121">&quot;Madrid&quot;</span> }
+    .ApplyOperation(
+        x =&gt; Console.WriteLine(<span style="color: #BA2121">&quot;City name: &quot;</span> + x));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>which prints the following output:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/assets/images/console.png" alt="console">
+</div>
+</div>
+        </div>
+        
+          <p class="post-continue">
+            <a href="/2011/08/22/apply-operation-in-collection-with-linq/#disqus_thread">Leave a comment</a>
+          </p>
+
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
             <a class="post-link" href="/2011/08/13/unit-test-design-by-contract-part3/">Unit Test &amp; Design By Contract (Part III)</a>
           </h1>
 
@@ -142,11 +344,19 @@ statistics" style="border:none;" /></a></div>
   
     
   
+    
+  
+    
+  
 
   
   
     
       <a href="/categories/architecture/">architecture</a>,
+    
+  
+    
+  
     
   
     
@@ -216,6 +426,10 @@ statistics" style="border:none;" /></a></div>
   
     
   
+    
+  
+    
+  
 
   
   
@@ -233,6 +447,10 @@ statistics" style="border:none;" /></a></div>
   
     
       <a href="/categories/unit-testing/">unit-testing</a>
+    
+  
+    
+  
     
   
     
@@ -274,7 +492,7 @@ statistics" style="border:none;" /></a></div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="csharp"><span></span><span style="color: #408080; font-style: italic">// Count is 0 before adding any items</span>
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="csharp"><span></span><span style="color: #408080; font-style: italic">// Count is 0 before adding any items</span>
 <span style="color: #408080; font-style: italic">// This is a post condition of the constructor</span>
 <span style="color: #408080; font-style: italic">//and should be tested separately</span>
 <span style="color: #7D9029">[Test]</span>
@@ -288,7 +506,7 @@ statistics" style="border:none;" /></a></div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="csharp"><span></span><span style="color: #408080; font-style: italic">// We use the &#39;Peek&#39; method to access the item on top of the stack.</span>
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="csharp"><span></span><span style="color: #408080; font-style: italic">// We use the &#39;Peek&#39; method to access the item on top of the stack.</span>
 <span style="color: #408080; font-style: italic">// Pre and Post conditions of this method should be tested separately</span>
 <span style="color: #7D9029">[Test]</span>
 <span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PostCond_ItemIsOnTopOfTheStack</span>()
@@ -317,7 +535,7 @@ We don’t want to repeat ourselves, so we will delegate to a reusable method ca
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="csharp"><span></span><span style="color: #7D9029">[Test]</span>
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="csharp"><span></span><span style="color: #7D9029">[Test]</span>
 <span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PostCond_InvariantsWereEnforced</span>()
 {
     <span style="color: #408080; font-style: italic">//Arrange</span>
@@ -370,7 +588,7 @@ This verification will fail if the method was not invoked indirectly by <code>Ad
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="csharp"><span></span><span style="color: #7D9029">[Test,ExpectedException(typeof(InvalidOperationException),</span>
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="csharp"><span></span><span style="color: #7D9029">[Test,ExpectedException(typeof(InvalidOperationException),</span>
 <span style="color: #7D9029">    ExpectedMessage=&quot;Count cannnot be negative&quot;)]</span>
 <span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">CheckInvariants_PostCond_CountIsNonNegative</span>()
 {
@@ -398,7 +616,7 @@ This verification will fail if the method was not invoked indirectly by <code>Ad
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="csharp"><span></span><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">Stack</span>
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="csharp"><span></span><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">Stack</span>
 {
     <span style="color: #008000; font-weight: bold">private</span> <span style="color: #B00040">int</span> _maximumNumberOfItemsAllowed;
     <span style="color: #008000; font-weight: bold">public</span> <span style="color: #0000FF">Stack</span>(<span style="color: #B00040">int</span> maximumNumberOfItemsAllowed)
@@ -497,11 +715,19 @@ This verification will fail if the method was not invoked indirectly by <code>Ad
   
     
   
+    
+  
+    
+  
 
   
   
     
       <a href="/categories/architecture/">architecture</a>,
+    
+  
+    
+  
     
   
     
@@ -571,6 +797,10 @@ This verification will fail if the method was not invoked indirectly by <code>Ad
   
     
   
+    
+  
+    
+  
 
   
   
@@ -588,6 +818,10 @@ This verification will fail if the method was not invoked indirectly by <code>Ad
   
     
       <a href="/categories/unit-testing/">unit-testing</a>
+    
+  
+    
+  
     
   
     
@@ -629,7 +863,7 @@ This verification will fail if the method was not invoked indirectly by <code>Ad
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="csharp"><span></span><span style="color: #7D9029">[Test, ExpectedException( typeof(ArgumentNullException))]</span>
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="csharp"><span></span><span style="color: #7D9029">[Test, ExpectedException( typeof(ArgumentNullException))]</span>
 <span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PreCond_ItemIsRequired</span>()
 {
     <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">Stack</span>(maximumNumberOfItemsAllowed: <span style="color: #666666">1</span>)
@@ -666,7 +900,7 @@ of an unhappy case, that is, a happy case for pre conditions.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="csharp"><span></span><span style="color: #7D9029">[Test]</span>
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="csharp"><span></span><span style="color: #7D9029">[Test]</span>
 <span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PreCond_HappyCase</span>()
 {
     <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">Stack</span>(maximumNumberOfItemsAllowed: <span style="color: #666666">1</span>)
@@ -742,11 +976,19 @@ of an unhappy case, that is, a happy case for pre conditions.</p>
   
     
   
+    
+  
+    
+  
 
   
   
     
       <a href="/categories/architecture/">architecture</a>,
+    
+  
+    
+  
     
   
     
@@ -816,6 +1058,10 @@ of an unhappy case, that is, a happy case for pre conditions.</p>
   
     
   
+    
+  
+    
+  
 
   
   
@@ -833,6 +1079,10 @@ of an unhappy case, that is, a happy case for pre conditions.</p>
   
     
       <a href="/categories/unit-testing/">unit-testing</a>
+    
+  
+    
+  
     
   
     
@@ -958,7 +1208,7 @@ Here is the list of test we will write for this User Story, based on the previou
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="csharp"><span></span><span style="color: #7D9029">[Test]</span>
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="csharp"><span></span><span style="color: #7D9029">[Test]</span>
 <span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PreCond_ItemIsRequired</span>()
     { <span style="color: #008000; font-weight: bold">throw</span> <span style="color: #008000; font-weight: bold">new</span> NotImplementedException(); }
 
@@ -1045,6 +1295,10 @@ The exact implementation is outside of the scope of this article, but I will pos
   
     
       <a href="/categories/news/">news</a>
+    
+  
+    
+  
     
   
     
@@ -1181,113 +1435,6 @@ The exact implementation is outside of the scope of this article, but I will pos
         
           <p class="post-continue">
             <a href="/2011/03/14/notes-from-qcon-london-2012/#disqus_thread">Leave a comment</a>
-          </p>
-
-      </li>
-    
-      
-      
-
-      <li>
-        <header class="post-header">
-          <h1 class="post-title">
-            <a class="post-link" href="/2010/04/19/finding-duplicate-files-recursively/">Finding Duplicate Files Recursively</a>
-          </h1>
-
-          <p class="post-meta">Apr 19, 2010 • 
-  
-  
-    
-  
-    
-  
-    
-      <a href="/categories/powershell/">powershell</a>
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-
-</p>
-        </header>
-
-        <div class="post-content">
-          <div class="paragraph">
-<p>I was cleaning up a folder with files duplicated in subdirectories. Here is a simple Powershell code that identifies duplications recursively.</p>
-</div>
-<div class="paragraph">
-<p>There might be a shorter form, but I think this is as I short I can get without becoming very cryptic.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="powershell"><span></span><span style="color: #008000; font-weight: bold">function</span> FindDuplicates{
- <span style="color: #408080; font-style: italic"># Receives a list of ArrayLists</span>
- <span style="color: #408080; font-style: italic"># iteratively prints the full path of each ArrayList item</span>
- <span style="color: #408080; font-style: italic"># where the ArrayList contains multiple paths (i.e duplicates)</span>
-<span style="color: #008000; font-weight: bold">Process</span>
-{
- <span style="color: #008000; font-weight: bold">if</span> (<span style="color: #19177C">$_</span>.Count <span style="color: #666666">-gt</span> 1)
-       {<span style="color: #008000; font-weight: bold">foreach</span>(<span style="color: #19177C">$d</span> <span style="color: #008000; font-weight: bold">in</span> <span style="color: #19177C">$_</span>){<span style="color: #19177C">$d</span>.FullName}} }
-}
-
-<span style="color: #008000; font-weight: bold">function</span> GetFilesInBuckets(<span style="color: #19177C">$dir</span>,<span style="color: #19177C">$filter</span> = <span style="color: #BA2121">&quot;*.*&quot;</span>)
-{
- <span style="color: #408080; font-style: italic"># Creates a hashtable of arraylists (1 entry per unique file name)</span>
- <span style="color: #408080; font-style: italic"># Returns the list of arraylists only (not the entire hashtable)</span>
-  <span style="color: #19177C">$files</span> = @{}
- <span style="color: #008000; font-weight: bold">foreach</span> (<span style="color: #19177C">$fl</span> <span style="color: #008000; font-weight: bold">in</span> (gci <span style="color: #19177C">$dir</span> -filter <span style="color: #19177C">$filter</span> -r))
-  {
-    <span style="color: #008000; font-weight: bold">if</span>(!<span style="color: #19177C">$files</span>.ContainsKey(<span style="color: #19177C">$fl</span>.Name))
-    {
-    <span style="color: #19177C">$files</span>[<span style="color: #19177C">$fl</span>.Name] = <span style="color: #008000">New-Object</span> System.Collections.ArrayList
-    }
-    <span style="color: #880000">[void]</span><span style="color: #19177C">$files</span>[<span style="color: #19177C">$fl</span>.Name].Add(<span style="color: #19177C">$fl</span>)
-  }
- <span style="color: #19177C">$files</span>.Values
-}
-
-GetFilesInBuckets <span style="color: #BA2121">&quot;C:\MyRootFolder&quot;</span> <span style="color: #666666">-f</span> <span style="color: #BA2121">&quot;*.txt&quot;</span>
-    |FindDuplicates</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Additional filtering methods will look similar to as <code>FindDuplicates</code>, and can be piped at the end of the last line of code:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="powershell"><span></span>GetFilesInBuckets <span style="color: #BA2121">&quot;C:\MyRootFolder&quot;</span> <span style="color: #666666">-f</span> <span style="color: #BA2121">&quot;*.txt&quot;</span>|
-    FindDuplicates|
-    FilterOutOlder</code></pre>
-</div>
-</div>
-        </div>
-        
-          <p class="post-continue">
-            <a href="/2010/04/19/finding-duplicate-files-recursively/#disqus_thread">Leave a comment</a>
           </p>
 
       </li>

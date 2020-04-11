@@ -135,6 +135,10 @@ statistics" style="border:none;" /></a></div>
   
     
   
+    
+  
+    
+  
 
   
   
@@ -144,6 +148,10 @@ statistics" style="border:none;" /></a></div>
   
     
       <a href="/categories/powershell/">powershell</a>
+    
+  
+    
+  
     
   
     
@@ -265,20 +273,20 @@ You can see that the orphan branch is still here:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="powershell"><table class="pyhltable"><tr><td><div class="linenodiv" style="background-color: #f0f0f0; padding-right: 10px">1
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="powershell"><table class="linenotable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
 4
 5
 6
-7</div></td><td class="code"><span></span> <span style="color: #19177C">$local</span>=git branch -l
+7</pre></div></td><td class="code"><pre><span></span> <span style="color: #19177C">$local</span>=git branch -l
  <span style="color: #19177C">$remote</span>=git branch -r
  <span style="color: #19177C">$local</span>|
     %{<span style="color: #19177C">$_</span>.Trim()}|
     ?{<span style="color: #666666">-not</span> (<span style="color: #19177C">$remote</span> <span style="color: #666666">-like</span> <span style="color: #BA2121">&#39;*&#39;</span> + <span style="color: #19177C">$_</span>) }|
     ?{<span style="color: #666666">-not</span>(<span style="color: #19177C">$_</span> <span style="color: #666666">-match</span> <span style="color: #BA2121">&quot;master&quot;</span> )}|
     %{git branch -D <span style="color: #19177C">$_</span>}
-</td></tr></table></code></pre>
+</pre></td></tr></table></code></pre>
 </div>
 </div>
 <div class="paragraph">

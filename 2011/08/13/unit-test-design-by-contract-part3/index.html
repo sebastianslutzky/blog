@@ -135,11 +135,19 @@ statistics" style="border:none;" /></a></div>
   
     
   
+    
+  
+    
+  
 
   
   
     
       <a href="/categories/architecture/">architecture</a>,
+    
+  
+    
+  
     
   
     
@@ -209,6 +217,10 @@ statistics" style="border:none;" /></a></div>
   
     
   
+    
+  
+    
+  
 
   
   
@@ -226,6 +238,10 @@ statistics" style="border:none;" /></a></div>
   
     
       <a href="/categories/unit-testing/">unit-testing</a>
+    
+  
+    
+  
     
   
     
@@ -271,7 +287,7 @@ statistics" style="border:none;" /></a></div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="csharp"><span></span><span style="color: #408080; font-style: italic">// Count is 0 before adding any items</span>
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="csharp"><span></span><span style="color: #408080; font-style: italic">// Count is 0 before adding any items</span>
 <span style="color: #408080; font-style: italic">// This is a post condition of the constructor</span>
 <span style="color: #408080; font-style: italic">//and should be tested separately</span>
 <span style="color: #7D9029">[Test]</span>
@@ -285,7 +301,7 @@ statistics" style="border:none;" /></a></div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="csharp"><span></span><span style="color: #408080; font-style: italic">// We use the &#39;Peek&#39; method to access the item on top of the stack.</span>
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="csharp"><span></span><span style="color: #408080; font-style: italic">// We use the &#39;Peek&#39; method to access the item on top of the stack.</span>
 <span style="color: #408080; font-style: italic">// Pre and Post conditions of this method should be tested separately</span>
 <span style="color: #7D9029">[Test]</span>
 <span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PostCond_ItemIsOnTopOfTheStack</span>()
@@ -314,7 +330,7 @@ We don’t want to repeat ourselves, so we will delegate to a reusable method ca
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="csharp"><span></span><span style="color: #7D9029">[Test]</span>
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="csharp"><span></span><span style="color: #7D9029">[Test]</span>
 <span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PostCond_InvariantsWereEnforced</span>()
 {
     <span style="color: #408080; font-style: italic">//Arrange</span>
@@ -367,7 +383,7 @@ This verification will fail if the method was not invoked indirectly by <code>Ad
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="csharp"><span></span><span style="color: #7D9029">[Test,ExpectedException(typeof(InvalidOperationException),</span>
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="csharp"><span></span><span style="color: #7D9029">[Test,ExpectedException(typeof(InvalidOperationException),</span>
 <span style="color: #7D9029">    ExpectedMessage=&quot;Count cannnot be negative&quot;)]</span>
 <span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">CheckInvariants_PostCond_CountIsNonNegative</span>()
 {
@@ -395,7 +411,7 @@ This verification will fail if the method was not invoked indirectly by <code>Ad
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="csharp"><span></span><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">Stack</span>
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="csharp"><span></span><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">Stack</span>
 {
     <span style="color: #008000; font-weight: bold">private</span> <span style="color: #B00040">int</span> _maximumNumberOfItemsAllowed;
     <span style="color: #008000; font-weight: bold">public</span> <span style="color: #0000FF">Stack</span>(<span style="color: #B00040">int</span> maximumNumberOfItemsAllowed)

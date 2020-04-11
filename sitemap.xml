@@ -45,6 +45,10 @@
 <lastmod>2017-08-04T00:00:00+00:00</lastmod>
 </url>
 <url>
+<loc>http://youarewhatyoucode/2020/04/11/decouple-your-powershell-modules-using-events/</loc>
+<lastmod>2020-04-11T00:00:00+00:00</lastmod>
+</url>
+<url>
 <loc>http://youarewhatyoucode/about/</loc>
 </url>
 <url>
@@ -100,6 +104,12 @@
 </url>
 <url>
 <loc>http://youarewhatyoucode/categories/jenkins-dsl/</loc>
+</url>
+<url>
+<loc>http://youarewhatyoucode/categories/publish-subscribe/</loc>
+</url>
+<url>
+<loc>http://youarewhatyoucode/categories/design-patterns/</loc>
 </url>
 <url>
 <loc>http://youarewhatyoucode/posts/2/</loc>

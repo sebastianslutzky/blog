@@ -135,11 +135,19 @@ statistics" style="border:none;" /></a></div>
   
     
   
+    
+  
+    
+  
 
   
   
     
       <a href="/categories/architecture/">architecture</a>,
+    
+  
+    
+  
     
   
     
@@ -209,6 +217,10 @@ statistics" style="border:none;" /></a></div>
   
     
   
+    
+  
+    
+  
 
   
   
@@ -224,6 +236,10 @@ statistics" style="border:none;" /></a></div>
   
     
       <a href="/categories/c/">c#</a>
+    
+  
+    
+  
     
   
     
@@ -363,7 +379,7 @@ statistics" style="border:none;" /></a></div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="c#"><span></span><span style="color: #408080; font-style: italic">//To be implemented by actionfilterattributes that override a global action filter</span>
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="c#"><span></span><span style="color: #408080; font-style: italic">//To be implemented by actionfilterattributes that override a global action filter</span>
 <span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">interface</span> IOverridingFilterAttribute
 {
     <span style="color: #408080; font-style: italic">//The type of actionfilter to be replaced for this request</span>
@@ -379,7 +395,7 @@ statistics" style="border:none;" /></a></div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="c#"><span></span><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">OverridingFilterProvider</span> : IFilterProvider
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="c#"><span></span><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">OverridingFilterProvider</span> : IFilterProvider
 {
     <span style="color: #408080; font-style: italic">//called by WebApi on each request, in order</span>
     <span style="color: #408080; font-style: italic">// to get the list of filters to apply</span>
@@ -432,7 +448,7 @@ statistics" style="border:none;" /></a></div>
 <h3 id="step_3_register_your_filter_provider">Step 3: Register your Filter Provider</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="c#"><span></span><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">WebApiApplication</span> : HttpApplication
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="c#"><span></span><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">WebApiApplication</span> : HttpApplication
 {
     <span style="color: #008000; font-weight: bold">protected</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Application_Start</span>()
     {

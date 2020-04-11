@@ -102,6 +102,117 @@ statistics" style="border:none;" /></a></div>
       <li>
         <header class="post-header">
           <h1 class="post-title">
+            <a class="post-link" href="/2010/04/19/finding-duplicate-files-recursively/">Finding Duplicate Files Recursively</a>
+          </h1>
+
+          <p class="post-meta">Apr 19, 2010 • 
+  
+  
+    
+  
+    
+  
+    
+      <a href="/categories/powershell/">powershell</a>
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <div class="paragraph">
+<p>I was cleaning up a folder with files duplicated in subdirectories. Here is a simple Powershell code that identifies duplications recursively.</p>
+</div>
+<div class="paragraph">
+<p>There might be a shorter form, but I think this is as I short I can get without becoming very cryptic.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="powershell"><span></span><span style="color: #008000; font-weight: bold">function</span> FindDuplicates{
+ <span style="color: #408080; font-style: italic"># Receives a list of ArrayLists</span>
+ <span style="color: #408080; font-style: italic"># iteratively prints the full path of each ArrayList item</span>
+ <span style="color: #408080; font-style: italic"># where the ArrayList contains multiple paths (i.e duplicates)</span>
+<span style="color: #008000; font-weight: bold">Process</span>
+{
+ <span style="color: #008000; font-weight: bold">if</span> (<span style="color: #19177C">$_</span>.Count <span style="color: #666666">-gt</span> 1)
+       {<span style="color: #008000; font-weight: bold">foreach</span>(<span style="color: #19177C">$d</span> <span style="color: #008000; font-weight: bold">in</span> <span style="color: #19177C">$_</span>){<span style="color: #19177C">$d</span>.FullName}} }
+}
+
+<span style="color: #008000; font-weight: bold">function</span> GetFilesInBuckets(<span style="color: #19177C">$dir</span>,<span style="color: #19177C">$filter</span> = <span style="color: #BA2121">&quot;*.*&quot;</span>)
+{
+ <span style="color: #408080; font-style: italic"># Creates a hashtable of arraylists (1 entry per unique file name)</span>
+ <span style="color: #408080; font-style: italic"># Returns the list of arraylists only (not the entire hashtable)</span>
+  <span style="color: #19177C">$files</span> = @{}
+ <span style="color: #008000; font-weight: bold">foreach</span> (<span style="color: #19177C">$fl</span> <span style="color: #008000; font-weight: bold">in</span> (gci <span style="color: #19177C">$dir</span> -filter <span style="color: #19177C">$filter</span> -r))
+  {
+    <span style="color: #008000; font-weight: bold">if</span>(!<span style="color: #19177C">$files</span>.ContainsKey(<span style="color: #19177C">$fl</span>.Name))
+    {
+    <span style="color: #19177C">$files</span>[<span style="color: #19177C">$fl</span>.Name] = <span style="color: #008000">New-Object</span> System.Collections.ArrayList
+    }
+    <span style="color: #880000">[void]</span><span style="color: #19177C">$files</span>[<span style="color: #19177C">$fl</span>.Name].Add(<span style="color: #19177C">$fl</span>)
+  }
+ <span style="color: #19177C">$files</span>.Values
+}
+
+GetFilesInBuckets <span style="color: #BA2121">&quot;C:\MyRootFolder&quot;</span> <span style="color: #666666">-f</span> <span style="color: #BA2121">&quot;*.txt&quot;</span>
+    |FindDuplicates</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Additional filtering methods will look similar to as <code>FindDuplicates</code>, and can be piped at the end of the last line of code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="powershell"><span></span>GetFilesInBuckets <span style="color: #BA2121">&quot;C:\MyRootFolder&quot;</span> <span style="color: #666666">-f</span> <span style="color: #BA2121">&quot;*.txt&quot;</span>|
+    FindDuplicates|
+    FilterOutOlder</code></pre>
+</div>
+</div>
+        </div>
+        
+          <p class="post-continue">
+            <a href="/2010/04/19/finding-duplicate-files-recursively/#disqus_thread">Leave a comment</a>
+          </p>
+
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
             <a class="post-link" href="/2010/04/16/nant-and-xml-programming/">Nant And Xml Programming</a>
           </h1>
 
@@ -110,6 +221,10 @@ statistics" style="border:none;" /></a></div>
   
     
       <a href="/categories/architecture/">architecture</a>,
+    
+  
+    
+  
     
   
     
@@ -179,6 +294,10 @@ statistics" style="border:none;" /></a></div>
   
     
   
+    
+  
+    
+  
 
 </p>
         </header>
@@ -198,7 +317,7 @@ statistics" style="border:none;" /></a></div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="xml"><span></span>...
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="xml"><span></span>...
 <span style="color: #008000; font-weight: bold">&lt;property</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;SpreadsheetPath&quot;</span> <span style="color: #7D9029">value=</span><span style="color: #BA2121">&quot;${Config} + ${CurrentProject}&quot;</span> <span style="color: #008000; font-weight: bold">/&gt;</span>
 <span style="color: #008000; font-weight: bold">&lt;call</span> <span style="color: #7D9029">target=</span><span style="color: #BA2121">&quot;ProcessSpreadsheet&quot;</span> <span style="color: #008000; font-weight: bold">/&gt;</span>
 ...</code></pre>
@@ -212,7 +331,7 @@ statistics" style="border:none;" /></a></div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="xml"><span></span>(Known inputs: SpreadsheetPath and BusinessArea)
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="xml"><span></span>(Known inputs: SpreadsheetPath and BusinessArea)
 <span style="color: #008000; font-weight: bold">&lt;property</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;SpreadsheetPath&quot;</span>
     <span style="color: #7D9029">value=</span><span style="color: #BA2121">&quot;${Config} + ${CurrentProject}&quot;</span> <span style="color: #008000; font-weight: bold">/&gt;</span>
 <span style="color: #008000; font-weight: bold">&lt;property</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;BusinessArea&quot;</span> <span style="color: #7D9029">value=</span><span style="color: #BA2121">&#39;Security&#39;</span> <span style="color: #008000; font-weight: bold">/&gt;</span>

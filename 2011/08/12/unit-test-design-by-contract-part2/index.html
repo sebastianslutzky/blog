@@ -135,11 +135,19 @@ statistics" style="border:none;" /></a></div>
   
     
   
+    
+  
+    
+  
 
   
   
     
       <a href="/categories/architecture/">architecture</a>,
+    
+  
+    
+  
     
   
     
@@ -209,6 +217,10 @@ statistics" style="border:none;" /></a></div>
   
     
   
+    
+  
+    
+  
 
   
   
@@ -226,6 +238,10 @@ statistics" style="border:none;" /></a></div>
   
     
       <a href="/categories/unit-testing/">unit-testing</a>
+    
+  
+    
+  
     
   
     
@@ -271,7 +287,7 @@ statistics" style="border:none;" /></a></div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="csharp"><span></span><span style="color: #7D9029">[Test, ExpectedException( typeof(ArgumentNullException))]</span>
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="csharp"><span></span><span style="color: #7D9029">[Test, ExpectedException( typeof(ArgumentNullException))]</span>
 <span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PreCond_ItemIsRequired</span>()
 {
     <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">Stack</span>(maximumNumberOfItemsAllowed: <span style="color: #666666">1</span>)
@@ -308,7 +324,7 @@ of an unhappy case, that is, a happy case for pre conditions.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="csharp"><span></span><span style="color: #7D9029">[Test]</span>
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="csharp"><span></span><span style="color: #7D9029">[Test]</span>
 <span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Add_PreCond_HappyCase</span>()
 {
     <span style="color: #008000; font-weight: bold">new</span> <span style="color: #0000FF">Stack</span>(maximumNumberOfItemsAllowed: <span style="color: #666666">1</span>)

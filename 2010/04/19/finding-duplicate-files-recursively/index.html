@@ -135,6 +135,10 @@ statistics" style="border:none;" /></a></div>
   
     
   
+    
+  
+    
+  
 
 </p>
 
@@ -152,7 +156,7 @@ statistics" style="border:none;" /></a></div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="powershell"><span></span><span style="color: #008000; font-weight: bold">function</span> FindDuplicates{
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="powershell"><span></span><span style="color: #008000; font-weight: bold">function</span> FindDuplicates{
  <span style="color: #408080; font-style: italic"># Receives a list of ArrayLists</span>
  <span style="color: #408080; font-style: italic"># iteratively prints the full path of each ArrayList item</span>
  <span style="color: #408080; font-style: italic"># where the ArrayList contains multiple paths (i.e duplicates)</span>
@@ -187,7 +191,7 @@ GetFilesInBuckets <span style="color: #BA2121">&quot;C:\MyRootFolder&quot;</span
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="powershell"><span></span>GetFilesInBuckets <span style="color: #BA2121">&quot;C:\MyRootFolder&quot;</span> <span style="color: #666666">-f</span> <span style="color: #BA2121">&quot;*.txt&quot;</span>|
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="powershell"><span></span>GetFilesInBuckets <span style="color: #BA2121">&quot;C:\MyRootFolder&quot;</span> <span style="color: #666666">-f</span> <span style="color: #BA2121">&quot;*.txt&quot;</span>|
     FindDuplicates|
     FilterOutOlder</code></pre>
 </div>

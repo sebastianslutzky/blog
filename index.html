@@ -102,6 +102,500 @@ statistics" style="border:none;" /></a></div>
       <li>
         <header class="post-header">
           <h1 class="post-title">
+            <a class="post-link" href="/2020/04/11/decouple-your-powershell-modules-using-events/">Decouple Your Powershell Modules Using Events</a>
+          </h1>
+
+          <p class="post-meta">Apr 11, 2020 • 
+  
+  
+    
+  
+    
+  
+    
+      <a href="/categories/powershell/">powershell</a>,
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+  
+  
+    
+      <a href="/categories/architecture/">architecture</a>,
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/publish-subscribe/">publish_subscribe</a>,
+    
+  
+    
+  
+
+  
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <a href="/categories/design-patterns/">design_patterns</a>
+    
+  
+
+</p>
+        </header>
+
+        <div class="post-content">
+          <div class="paragraph">
+<p><em>(Source Code is available in this <a href="https://github.com/sebastianslutzky/Blog.PowershellEvents">GithHub repository</a>)</em></p>
+</div>
+<div class="sect1">
+<h2 id="powershell_modules">Powershell Modules</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When building a code base of any language, we want to keep the code organised in encapsulated modules.
+This enable the code to be testable, maintainable and reusable</p>
+</div>
+<div class="paragraph">
+<p>Powershell offers several ways of organising the code, but the most used is to organise them in <a href="https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_modules?view=powershell-7">Modules</a>.
+A module in Powershell can include a  <a href="https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_modules?view=powershell-7">Manifest  file</a> that declares (among other details) the Modules that this Module depends on.
+This dependencies will be pre-loaded when the target Module is loaded.</p>
+</div>
+<div class="paragraph">
+<p>For .Net development, this is similar to dependencies declared in NUget packages.
+The Manifest <code>.psd1</code> file is comparable to the <code>.nuspec</code> file in NUget.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="why_decoupling">Why decoupling?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Even with a tidy organisation of Modules, code reuse and modularity start to show their ugly face:  <a href="https://en.wikipedia.org/wiki/Dependency_hell">dependency hell</a></p>
+</div>
+<div class="paragraph">
+<p>In particular, this article is concerned with two of the problems identified as a side effect of modularity:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Many dependencies</p>
+</li>
+<li>
+<p>Long chain of dependencies</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="too_many_unwanted_dependencies_loaded">Too many (unwanted) dependencies loaded</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>First attempts at code modularisation do, at some point, fall short in specificity.</p>
+</div>
+<div class="paragraph">
+<p>A module that deals with, for example, deploying an application to an environment, could end up loading modules that are not needed for that specific use case.</p>
+</div>
+<div class="paragraph float-group">
+<div class="title">figure 1 - Diagram of highly coupled modules</div>
+<p><span class="image"><img src="/assets/images/psmodules1.png" alt="psmodules1" width="70%"></span></p>
+</div>
+<div class="paragraph">
+<p>For example, figure 1 shows a 4-tier hierarchy of dependencies between modules.</p>
+</div>
+<div class="paragraph">
+<p>The module <code>SystemInstaller</code> installs software in the current machine (cloud or on premises).
+One commandlet in this module needs to tag the source code when software is ready to be tested.
+When this happens, the <code>SCM</code> module updates an internal Dashboard.</p>
+</div>
+<div class="paragraph">
+<p>Loading <code>SystemInstaller</code> will also load <code>SCM</code>, <code>InternalDashoard</code> and <code>EmailSender</code> modules.
+But if we need to just call <code>Install-LocalApp</code> we will only need <code>EmailSender</code>.</p>
+</div>
+<div class="paragraph">
+<p>These modules may be used in different occasions and scenarios.
+The combination of these use cases will very likely result in highly coupled modules like in this example, or sometimes much worse.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="long_chain_of_dependencies">Long chain of dependencies</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Another side effect of loading unwanted modules is that we will also load the dependencies of these unwanted modules.</p>
+</div>
+<div class="paragraph">
+<p>As time passes, more dependencies are loaded to these transitive dependencies and&#8230;&#8203;.one day we find out that loading one module ends up loading 20 modules, of which we only need one or two.</p>
+</div>
+<div class="paragraph">
+<p>This takes up time consumes resources&#8230;&#8203;and it can have unwanted side effects in your environment, such as installing software or writing to the file system.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="decoupling_powershell_modules_with_events">Decoupling Powershell modules with Events</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A better module organisation is to have a "flatter" hierarchical structure.
+The top-level modules represent specific use cases, where the lower level are the building blocks.</p>
+</div>
+<div class="paragraph">
+<p>Developers can use the building blocks provided they use <code>get-help</code> and understand the extent of a module.</p>
+</div>
+<div class="paragraph">
+<p>Here is a representation of a flat hierarchy of modules for the previous graph.</p>
+</div>
+<div class="paragraph float-group">
+<p><span class="image"><img src="/assets/images/psmodules2.png" alt="psmodules2"></span></p>
+</div>
+<div class="paragraph">
+<p>In this model, Top Level modules can be thought as <a href="https://en.wikipedia.org/wiki/Mediator_pattern">mediators</a> of the building blocks.
+They represent the top level use case that knows what are the different building blocks in place.</p>
+</div>
+<div class="paragraph">
+<p>Dealing with Email Servers, Source Control Management Systems and Dashboards are all independent of each other.
+Use cases that need one of these libraries, will import the modules and "wire" them together in a publish-and-subscribe approach.</p>
+</div>
+<div class="paragraph">
+<p>Powershell support for events is neither widely used nor documented, but the language provides the building blocks necessary to implement such pattern.</p>
+</div>
+<div class="sect2">
+<h3 id="implementation_using_events_to_decouple_modules">Implementation: Using events to decouple modules</h3>
+<div class="sect3">
+<h4 id="building_blocks">Building blocks</h4>
+<div class="paragraph">
+<p>The <code>EmailSender</code> and <code>InternalDashboard</code> modules have no dependencies.
+Their input parameters can be simple primitives like strings or integers.
+This make these <em>building block</em> modules very easy to test and develop.</p>
+</div>
+<div class="listingblock">
+<div class="title">EmailSender.psm1</div>
+<div class="content">
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="powershell"><span></span><span style="color: #008000; font-weight: bold">function</span> <span style="color: #008000">Send-TagCreatedEmail</span>(<span style="color: #19177C">$tag</span>,<span style="color: #19177C">$to</span>){
+    <span style="color: #008000">write-host</span> <span style="color: #BA2121">&quot;[EmailSender]**** Sending Email to $to. Message: &#39;CREATED TAG $tag&#39; ****&quot;</span>
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">InternalDashoard.psm1</div>
+<div class="content">
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="powershell"><span></span><span style="color: #008000; font-weight: bold">function</span> Publish-DeployedApp(<span style="color: #19177C">$appId</span>,<span style="color: #19177C">$deploymentId</span>){
+   <span style="color: #008000">write-host</span> <span style="color: #BA2121">&quot;[InternalDashboard]***** Publishing Deployment $deploymentId to dashboard ******&quot;</span>
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="event_publishers">Event Publishers</h4>
+<div class="paragraph">
+<p><code>SystemInstaller</code> and <code>SCM</code> modules are also building blocks with no dependencies.
+Hence, they are also easy to develop, test and reuse.</p>
+</div>
+<div class="paragraph">
+<p>These two modules also publish events when their goal is completed.
+The events are called <code>AppInstalled</code> and <code>TagCreated</code> respectively.</p>
+</div>
+<div class="listingblock">
+<div class="title">SystemInstaller.psm1</div>
+<div class="content">
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="powershell"><span></span><span style="color: #008000; font-weight: bold">function</span> Install-LocalApp(<span style="color: #19177C">$appId</span>){
+    <span style="color: #19177C">$deploymentId</span> = <span style="color: #008000">Get-Random</span> -Maximum 100
+
+    <span style="color: #008000">write-host</span> <span style="color: #BA2121">&quot;[SystemInstaller]***** Intalling app with id $appId. Deployment Id: $deploymentId&quot;</span>
+
+    <span style="color: #008000">New-Event</span> -SourceIdentifier AppInstalled `
+        -MessageData @{appId = <span style="color: #19177C">$appId</span>; deploymentId= <span style="color: #19177C">$deploymentId</span>}|<span style="color: #008000">out-null</span>
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">SCM.psm1</div>
+<div class="content">
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="powershell"><span></span><span style="color: #008000; font-weight: bold">function</span> <span style="color: #008000">New-TagForDeployment</span>(<span style="color: #19177C">$deploymentId</span>){
+    <span style="color: #008000">write-host</span> <span style="color: #BA2121">&quot;[SCM]**** Creating Tag for deploymentId $deploymentId******&quot;</span>
+    <span style="color: #008000">New-Event</span> -SourceIdentifier TagCreated `
+        -MessageData @{Tag = <span style="color: #BA2121">&quot;DEPLOYED/$deploymentId&quot;</span>}|<span style="color: #008000">out-null</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Both modules are raising an event to the Powershell&#8217;s internal <code>event bus</code>.
+This is done using <a href="https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/new-event?view=powershell-6">New-Event</a> Powershell cmdlet, which is only available from version 6.0.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Events wouldn&#8217;t be too useful without additional context data.
+But this means that subscribers to the event need to know how to parse this data, specially when the values are complex types.
+This is also a type of coupling, which is why is a good idea to keep events with little data and simple structure.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="event_subscriber">Event Subscriber</h4>
+<div class="paragraph">
+<p>Finally, the top level script will load all building block modules and "connect" their events from some of them to the commands in others.</p>
+</div>
+<div class="paragraph">
+<p>We need to setup three event listeners:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>When <code>AppInstalled</code> occurs, we publish the news to the <code>InternalDashboard</code></p>
+</li>
+<li>
+<p>Also, we need to tag the source code using the <code>SCM</code> module</p>
+</li>
+<li>
+<p>Finally, when the <code>SCM</code> module publishes <code>TagCreated</code>, members of the Test teams need to be notified by email, so that they can start testing.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Adding subscribers to Powershell events is done with the <a href="https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/register-engineevent?view=powershell-6">Register-EngineEvent commandlet</a>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><code>Register-EngineEvent</code> differs from <code>Register-ObjectEvent</code> in that the latter allows listening for events raised by a .net object.</p>
+</div>
+<div class="paragraph">
+<p>The former allows listening for events raised within Powershell.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>After wiring these events, we proceed with the action: install an application locally.</p>
+</div>
+<div class="listingblock">
+<div class="title">InternallInstaller.psm1</div>
+<div class="content">
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="powershell"><span></span><span style="color: #008000">Import-Module</span> SCM
+<span style="color: #008000">Import-Module</span> InternalDashboard
+<span style="color: #008000">Import-Module</span> EmailSender
+<span style="color: #008000">Import-Module</span> SystemInstaller
+
+
+<span style="color: #008000; font-weight: bold">function</span> Install-LocalAppAndNotify(<span style="color: #19177C">$appId</span>){
+   <span style="color: #408080; font-style: italic"># When App is Installed, Publish to the Dashboard</span>
+   <span style="color: #008000">Register-EngineEvent</span> -SourceIdentifier AppInstalled `
+   -Action {
+       InternalDashboard\Publish-DeployedApp `
+        -appId <span style="color: #19177C">$event</span>.messagedata.appId `
+        -deploymentId <span style="color: #19177C">$event</span>.messagedata.deploymentId
+   }|<span style="color: #008000">Out-Null</span>
+
+   <span style="color: #408080; font-style: italic"># ... and create a tag in source control</span>
+   <span style="color: #008000">Register-EngineEvent</span> -SourceIdentifier AppInstalled `
+   -Action {
+       SCM\<span style="color: #008000">New-TagForDeployment</span> `
+        -deploymentId <span style="color: #19177C">$event</span>.messagedata.deploymentId
+   }|<span style="color: #008000">Out-Null</span>
+
+   <span style="color: #408080; font-style: italic"># Email testers when the tag is created</span>
+   <span style="color: #008000">Register-EngineEvent</span> -SourceIdentifier TagCreated `
+   -Action {
+       EmailSender\<span style="color: #008000">Send-TagCreatedEmail</span> `
+        -tag <span style="color: #19177C">$event</span>.messagedata.Tag `
+        -to <span style="color: #BA2121">&#39;Testers@myorg.com&#39;</span>
+   }|<span style="color: #008000">Out-Null</span>
+
+   <span style="color: #408080; font-style: italic"># Now install the application</span>
+   <span style="color: #008000">write-host</span> <span style="color: #BA2121">&quot;[InternalInstaller]**** Starting Installation &quot;</span>
+   SystemInstaller\Install-LocalApp -appId <span style="color: #19177C">$appId</span>
+
+  <span style="color: #408080; font-style: italic">#Do not forget to remove event listeners!!</span>
+   <span style="color: #008000">Get-EventSubscriber</span>| <span style="color: #008000">Remove-Event</span>
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When we run this top level script, the end result is as desired.
+we execute it this way:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="powershell"><span></span><span style="color: #19177C">$env:PSMODULEPATH</span> = <span style="color: #19177C">$pwd</span>
+<span style="color: #008000">Import-Module</span> InternalInstaller
+Install-LocalAppAndNotify 42</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is the console output.
+Notice that the event publish and subscribe pattern is running <strong>synchronously</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #f8f8f8;"><code><span></span>[InternalInstaller]**** Starting Installation
+[SystemInstaller]***** Intalling app with id 42. Deployment Id: 60
+[InternalDashboard]***** Publishing Deployment 60 to dashboard ******
+[SCM]**** Creating Tag for deploymentId 60******
+[EmailSender]**** Sending Email to Testers@myorg.com. Message: &#39;CREATED TAG DEPLOYED/60&#39; ****</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+        </div>
+        
+          <p class="post-continue">
+            <a href="/2020/04/11/decouple-your-powershell-modules-using-events/#disqus_thread">Leave a comment</a>
+          </p>
+
+      </li>
+    
+      
+      
+
+      <li>
+        <header class="post-header">
+          <h1 class="post-title">
             <a class="post-link" href="/2017/08/04/find-jobs-in-all-jenkins-folders/">Find Jobs In All Jenkins Folders</a>
           </h1>
 
@@ -136,6 +630,10 @@ statistics" style="border:none;" /></a></div>
   
     
       <a href="/categories/jenkins/">jenkins</a>,
+    
+  
+    
+  
     
   
     
@@ -179,6 +677,10 @@ statistics" style="border:none;" /></a></div>
   
     
   
+    
+  
+    
+  
 
   
   
@@ -216,6 +718,10 @@ statistics" style="border:none;" /></a></div>
       <a href="/categories/jenkins-dsl/">jenkins_dsl</a>
     
   
+    
+  
+    
+  
 
 </p>
         </header>
@@ -244,7 +750,7 @@ folder names. This allows you, for example, to find all unit tests jobs in a fol
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="groovy"><span></span><span style="color: #B00040">def</span> <span style="color: #0000FF">isFolder</span><span style="color: #666666">(</span>abstractJob<span style="color: #666666">){</span>
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="groovy"><span></span><span style="color: #B00040">def</span> <span style="color: #0000FF">isFolder</span><span style="color: #666666">(</span>abstractJob<span style="color: #666666">){</span>
  <span style="color: #008000; font-weight: bold">return</span> abstractJob<span style="color: #666666">.</span><span style="color: #7D9029">getClass</span><span style="color: #666666">().</span><span style="color: #7D9029">getName</span><span style="color: #666666">()</span> <span style="color: #666666">==</span> <span style="color: #BA2121">&quot;com.cloudbees.hudson.plugins.folder.Folder&quot;</span>
 <span style="color: #666666">}</span>
 
@@ -287,7 +793,7 @@ folder names. This allows you, for example, to find all unit tests jobs in a fol
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="groovy"><span></span>
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="groovy"><span></span>
 findAll<span style="color: #666666">(</span><span style="color: #BA2121">&quot;.*/master_branch/.*UnitTest.*&quot;</span><span style="color: #666666">)</span>
 <span style="color: #666666">.</span><span style="color: #7D9029">each</span><span style="color: #666666">{</span>
   job <span style="color: #666666">-&gt;</span>
@@ -356,6 +862,10 @@ findAll<span style="color: #666666">(</span><span style="color: #BA2121">&quot;.
   
     
   
+    
+  
+    
+  
 
   
   
@@ -365,6 +875,10 @@ findAll<span style="color: #666666">(</span><span style="color: #BA2121">&quot;.
   
     
       <a href="/categories/powershell/">powershell</a>
+    
+  
+    
+  
     
   
     
@@ -482,20 +996,20 @@ You can see that the orphan branch is still here:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="powershell"><table class="pyhltable"><tr><td><div class="linenodiv" style="background-color: #f0f0f0; padding-right: 10px">1
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="powershell"><table class="linenotable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
 4
 5
 6
-7</div></td><td class="code"><span></span> <span style="color: #19177C">$local</span>=git branch -l
+7</pre></div></td><td class="code"><pre><span></span> <span style="color: #19177C">$local</span>=git branch -l
  <span style="color: #19177C">$remote</span>=git branch -r
  <span style="color: #19177C">$local</span>|
     %{<span style="color: #19177C">$_</span>.Trim()}|
     ?{<span style="color: #666666">-not</span> (<span style="color: #19177C">$remote</span> <span style="color: #666666">-like</span> <span style="color: #BA2121">&#39;*&#39;</span> + <span style="color: #19177C">$_</span>) }|
     ?{<span style="color: #666666">-not</span>(<span style="color: #19177C">$_</span> <span style="color: #666666">-match</span> <span style="color: #BA2121">&quot;master&quot;</span> )}|
     %{git branch -D <span style="color: #19177C">$_</span>}
-</td></tr></table></code></pre>
+</pre></td></tr></table></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -565,11 +1079,19 @@ This will gives us the set of local branches not in the remote local branches no
   
     
   
+    
+  
+    
+  
 
   
   
     
       <a href="/categories/architecture/">architecture</a>,
+    
+  
+    
+  
     
   
     
@@ -639,6 +1161,10 @@ This will gives us the set of local branches not in the remote local branches no
   
     
   
+    
+  
+    
+  
 
   
   
@@ -654,6 +1180,10 @@ This will gives us the set of local branches not in the remote local branches no
   
     
       <a href="/categories/c/">c#</a>
+    
+  
+    
+  
     
   
     
@@ -789,7 +1319,7 @@ This will gives us the set of local branches not in the remote local branches no
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="c#"><span></span><span style="color: #408080; font-style: italic">//To be implemented by actionfilterattributes that override a global action filter</span>
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="c#"><span></span><span style="color: #408080; font-style: italic">//To be implemented by actionfilterattributes that override a global action filter</span>
 <span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">interface</span> IOverridingFilterAttribute
 {
     <span style="color: #408080; font-style: italic">//The type of actionfilter to be replaced for this request</span>
@@ -805,7 +1335,7 @@ This will gives us the set of local branches not in the remote local branches no
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="c#"><span></span><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">OverridingFilterProvider</span> : IFilterProvider
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="c#"><span></span><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">OverridingFilterProvider</span> : IFilterProvider
 {
     <span style="color: #408080; font-style: italic">//called by WebApi on each request, in order</span>
     <span style="color: #408080; font-style: italic">// to get the list of filters to apply</span>
@@ -858,7 +1388,7 @@ This will gives us the set of local branches not in the remote local branches no
 <h3 id="step_3_register_your_filter_provider">Step 3: Register your Filter Provider</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="c#"><span></span><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">WebApiApplication</span> : HttpApplication
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="c#"><span></span><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">WebApiApplication</span> : HttpApplication
 {
     <span style="color: #008000; font-weight: bold">protected</span> <span style="color: #008000; font-weight: bold">void</span> <span style="color: #0000FF">Application_Start</span>()
     {
@@ -926,6 +1456,10 @@ This will gives us the set of local branches not in the remote local branches no
   
     
   
+    
+  
+    
+  
 
   
   
@@ -949,6 +1483,10 @@ This will gives us the set of local branches not in the remote local branches no
   
     
       <a href="/categories/nakedobjects/">nakedobjects</a>,
+    
+  
+    
+  
     
   
     
@@ -1000,6 +1538,10 @@ This will gives us the set of local branches not in the remote local branches no
   
     
   
+    
+  
+    
+  
 
 </p>
         </header>
@@ -1018,196 +1560,6 @@ This will gives us the set of local branches not in the remote local branches no
         
           <p class="post-continue">
             <a href="/2011/10/29/naked-objects-is-opensource/#disqus_thread">Leave a comment</a>
-          </p>
-
-      </li>
-    
-      
-      
-
-      <li>
-        <header class="post-header">
-          <h1 class="post-title">
-            <a class="post-link" href="/2011/08/22/apply-operation-in-collection-with-linq/">Apply Operation In Collection With Linq</a>
-          </h1>
-
-          <p class="post-meta">Aug 22, 2011 • 
-  
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-      <a href="/categories/linq/">linQ</a>,
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-
-  
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-      <a href="/categories/net/">.net</a>,
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-
-  
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-      <a href="/categories/c/">c#</a>
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-    
-  
-
-</p>
-        </header>
-
-        <div class="post-content">
-          <div class="paragraph">
-<p>These days, it is unusual to write an implementation of the Iterator pattern. Most of the modern languages included a library with a set of aggregate objects that follow this pattern as defined in the <a href="https://www.amazon.com/Design-Patterns-Elements-Reusable-Object-Oriented/dp/0201633612">Gang of Four book</a>.</p>
-</div>
-<div class="paragraph">
-<p>In .Net, these objects are in the System.Collections namespace and they include classes such as Lists, Queues, Dictionaries, and also their specialised strongly typed (Generic) version.</p>
-</div>
-<div class="paragraph">
-<p>The Gang Of Four defines two types of iterators: External and Internal. The External requires the client to traverse the items (by looping through the items until the end of the iterator). In contrast to this, the internal iterator delegates this process to a Traverse mix-in class that can be extended and customised.</p>
-</div>
-<div class="paragraph">
-<p>I was looking for something similar to the internal iterator in .Net. That is, a generic way of passing an operation to a collection that would apply it to each of its items. None of the LinQ extension methods for collections seemed to do this, so I wrote one:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="csharp"><span></span><span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">static</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">Extensions</span>
-{
-    <span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">static</span> <span style="color: #008000; font-weight: bold">void</span> ApplyOperation&lt;T&gt;
-                (<span style="color: #008000; font-weight: bold">this</span> IEnumerable&lt;T&gt; iterator,
-                Action&lt;T&gt; action)
-    {
-        <span style="color: #008000; font-weight: bold">foreach</span> (<span style="color: #B00040">var</span> item <span style="color: #008000; font-weight: bold">in</span> iterator)
-            action(item);
-    }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Which can be used as follows:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="csharp"><span></span>IEnumerable&lt;<span style="color: #B00040">string</span>&gt; cities =
-            <span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">string</span>[] { <span style="color: #BA2121">&quot;Dublin&quot;</span>, <span style="color: #BA2121">&quot;Buenos Aires&quot;</span>, <span style="color: #BA2121">&quot;Madrid&quot;</span> };
-cities.ApplyOperation(x=&gt;Console.WriteLine(<span style="color: #BA2121">&quot;City name: &quot;</span> + x));</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>or simply</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="csharp"><span></span><span style="color: #008000; font-weight: bold">new</span> <span style="color: #B00040">string</span>[] {
-    <span style="color: #BA2121">&quot;Dublin&quot;</span>,
-    <span style="color: #BA2121">&quot;Buenos Aires&quot;</span>,
-    <span style="color: #BA2121">&quot;Madrid&quot;</span> }
-    .ApplyOperation(
-        x =&gt; Console.WriteLine(<span style="color: #BA2121">&quot;City name: &quot;</span> + x));</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>which prints the following output:</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="/assets/images/console.png" alt="console">
-</div>
-</div>
-        </div>
-        
-          <p class="post-continue">
-            <a href="/2011/08/22/apply-operation-in-collection-with-linq/#disqus_thread">Leave a comment</a>
           </p>
 
       </li>

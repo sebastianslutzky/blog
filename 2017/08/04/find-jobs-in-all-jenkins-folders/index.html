@@ -135,6 +135,10 @@ statistics" style="border:none;" /></a></div>
   
     
   
+    
+  
+    
+  
 
   
   
@@ -168,6 +172,10 @@ statistics" style="border:none;" /></a></div>
   
     
       <a href="/categories/groovy/">groovy</a>,
+    
+  
+    
+  
     
   
     
@@ -209,6 +217,10 @@ statistics" style="border:none;" /></a></div>
       <a href="/categories/jenkins-dsl/">jenkins_dsl</a>
     
   
+    
+  
+    
+  
 
 </p>
 
@@ -241,7 +253,7 @@ folder names. This allows you, for example, to find all unit tests jobs in a fol
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="groovy"><span></span><span style="color: #B00040">def</span> <span style="color: #0000FF">isFolder</span><span style="color: #666666">(</span>abstractJob<span style="color: #666666">){</span>
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="groovy"><span></span><span style="color: #B00040">def</span> <span style="color: #0000FF">isFolder</span><span style="color: #666666">(</span>abstractJob<span style="color: #666666">){</span>
  <span style="color: #008000; font-weight: bold">return</span> abstractJob<span style="color: #666666">.</span><span style="color: #7D9029">getClass</span><span style="color: #666666">().</span><span style="color: #7D9029">getName</span><span style="color: #666666">()</span> <span style="color: #666666">==</span> <span style="color: #BA2121">&quot;com.cloudbees.hudson.plugins.folder.Folder&quot;</span>
 <span style="color: #666666">}</span>
 
@@ -284,7 +296,7 @@ folder names. This allows you, for example, to find all unit tests jobs in a fol
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="groovy"><span></span>
+<pre class="pygments highlight" style="background: #f8f8f8;"><code data-lang="groovy"><span></span>
 findAll<span style="color: #666666">(</span><span style="color: #BA2121">&quot;.*/master_branch/.*UnitTest.*&quot;</span><span style="color: #666666">)</span>
 <span style="color: #666666">.</span><span style="color: #7D9029">each</span><span style="color: #666666">{</span>
   job <span style="color: #666666">-&gt;</span>

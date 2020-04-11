@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
-  <generator uri="http://jekyllrb.com" version="3.5.1">Jekyll</generator>
+  <generator uri="http://jekyllrb.com" version="3.8.6">Jekyll</generator>
   
   
   <link href="http://youarewhatyoucode/feed.xml" rel="self" type="application/atom+xml" />
   <link href="http://youarewhatyoucode/" rel="alternate" type="text/html" hreflang="en" />
-  <updated>2017-08-08T08:52:32+00:00</updated>
+  <updated>2020-04-11T23:04:56+00:00</updated>
   <id>http://youarewhatyoucode//</id>
 
   
@@ -24,6 +24,359 @@
     </author>
   
 
+  
+  
+    <entry>
+      
+      <title type="html">Decouple Your Powershell Modules Using Events</title>
+      
+      <link href="http://youarewhatyoucode/2020/04/11/decouple-your-powershell-modules-using-events/" rel="alternate" type="text/html" title="Decouple Your Powershell Modules Using Events" />
+      <published>2020-04-11T00:00:00+00:00</published>
+      <updated>2020-04-11T00:00:00+00:00</updated>
+      <id>http://youarewhatyoucode/2020/04/11/decouple-your-powershell-modules-using-events</id>
+      <content type="html" xml:base="http://youarewhatyoucode/2020/04/11/decouple-your-powershell-modules-using-events/">&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;&lt;em&gt;(Source Code is available in this &lt;a href=&quot;https://github.com/sebastianslutzky/Blog.PowershellEvents&quot;&gt;GithHub repository&lt;/a&gt;)&lt;/em&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;powershell_modules&quot;&gt;Powershell Modules&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;When building a code base of any language, we want to keep the code organised in encapsulated modules.
+This enable the code to be testable, maintainable and reusable&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Powershell offers several ways of organising the code, but the most used is to organise them in &lt;a href=&quot;https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_modules?view=powershell-7&quot;&gt;Modules&lt;/a&gt;.
+A module in Powershell can include a  &lt;a href=&quot;https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_modules?view=powershell-7&quot;&gt;Manifest  file&lt;/a&gt; that declares (among other details) the Modules that this Module depends on.
+This dependencies will be pre-loaded when the target Module is loaded.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;For .Net development, this is similar to dependencies declared in NUget packages.
+The Manifest &lt;code&gt;.psd1&lt;/code&gt; file is comparable to the &lt;code&gt;.nuspec&lt;/code&gt; file in NUget.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;why_decoupling&quot;&gt;Why decoupling?&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Even with a tidy organisation of Modules, code reuse and modularity start to show their ugly face:  &lt;a href=&quot;https://en.wikipedia.org/wiki/Dependency_hell&quot;&gt;dependency hell&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;In particular, this article is concerned with two of the problems identified as a side effect of modularity:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;ulist&quot;&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Many dependencies&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Long chain of dependencies&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;too_many_unwanted_dependencies_loaded&quot;&gt;Too many (unwanted) dependencies loaded&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;First attempts at code modularisation do, at some point, fall short in specificity.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;A module that deals with, for example, deploying an application to an environment, could end up loading modules that are not needed for that specific use case.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph float-group&quot;&gt;
+&lt;div class=&quot;title&quot;&gt;figure 1 - Diagram of highly coupled modules&lt;/div&gt;
+&lt;p&gt;&lt;span class=&quot;image&quot;&gt;&lt;img src=&quot;/assets/images/psmodules1.png&quot; alt=&quot;psmodules1&quot; width=&quot;70%&quot;&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;For example, figure 1 shows a 4-tier hierarchy of dependencies between modules.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;The module &lt;code&gt;SystemInstaller&lt;/code&gt; installs software in the current machine (cloud or on premises).
+One commandlet in this module needs to tag the source code when software is ready to be tested.
+When this happens, the &lt;code&gt;SCM&lt;/code&gt; module updates an internal Dashboard.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Loading &lt;code&gt;SystemInstaller&lt;/code&gt; will also load &lt;code&gt;SCM&lt;/code&gt;, &lt;code&gt;InternalDashoard&lt;/code&gt; and &lt;code&gt;EmailSender&lt;/code&gt; modules.
+But if we need to just call &lt;code&gt;Install-LocalApp&lt;/code&gt; we will only need &lt;code&gt;EmailSender&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;These modules may be used in different occasions and scenarios.
+The combination of these use cases will very likely result in highly coupled modules like in this example, or sometimes much worse.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;long_chain_of_dependencies&quot;&gt;Long chain of dependencies&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Another side effect of loading unwanted modules is that we will also load the dependencies of these unwanted modules.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;As time passes, more dependencies are loaded to these transitive dependencies and&amp;#8230;&amp;#8203;.one day we find out that loading one module ends up loading 20 modules, of which we only need one or two.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;This takes up time consumes resources&amp;#8230;&amp;#8203;and it can have unwanted side effects in your environment, such as installing software or writing to the file system.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect1&quot;&gt;
+&lt;h2 id=&quot;decoupling_powershell_modules_with_events&quot;&gt;Decoupling Powershell modules with Events&lt;/h2&gt;
+&lt;div class=&quot;sectionbody&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;A better module organisation is to have a &quot;flatter&quot; hierarchical structure.
+The top-level modules represent specific use cases, where the lower level are the building blocks.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Developers can use the building blocks provided they use &lt;code&gt;get-help&lt;/code&gt; and understand the extent of a module.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Here is a representation of a flat hierarchy of modules for the previous graph.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph float-group&quot;&gt;
+&lt;p&gt;&lt;span class=&quot;image&quot;&gt;&lt;img src=&quot;/assets/images/psmodules2.png&quot; alt=&quot;psmodules2&quot;&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;In this model, Top Level modules can be thought as &lt;a href=&quot;https://en.wikipedia.org/wiki/Mediator_pattern&quot;&gt;mediators&lt;/a&gt; of the building blocks.
+They represent the top level use case that knows what are the different building blocks in place.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Dealing with Email Servers, Source Control Management Systems and Dashboards are all independent of each other.
+Use cases that need one of these libraries, will import the modules and &quot;wire&quot; them together in a publish-and-subscribe approach.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Powershell support for events is neither widely used nor documented, but the language provides the building blocks necessary to implement such pattern.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect2&quot;&gt;
+&lt;h3 id=&quot;implementation_using_events_to_decouple_modules&quot;&gt;Implementation: Using events to decouple modules&lt;/h3&gt;
+&lt;div class=&quot;sect3&quot;&gt;
+&lt;h4 id=&quot;building_blocks&quot;&gt;Building blocks&lt;/h4&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;The &lt;code&gt;EmailSender&lt;/code&gt; and &lt;code&gt;InternalDashboard&lt;/code&gt; modules have no dependencies.
+Their input parameters can be simple primitives like strings or integers.
+This make these &lt;em&gt;building block&lt;/em&gt; modules very easy to test and develop.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;title&quot;&gt;EmailSender.psm1&lt;/div&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;pygments highlight&quot; style=&quot;background: #f8f8f8;&quot;&gt;&lt;code data-lang=&quot;powershell&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;function&lt;/span&gt; &lt;span style=&quot;color: #008000&quot;&gt;Send-TagCreatedEmail&lt;/span&gt;(&lt;span style=&quot;color: #19177C&quot;&gt;$tag&lt;/span&gt;,&lt;span style=&quot;color: #19177C&quot;&gt;$to&lt;/span&gt;){
+    &lt;span style=&quot;color: #008000&quot;&gt;write-host&lt;/span&gt; &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;[EmailSender]**** Sending Email to $to. Message: &amp;#39;CREATED TAG $tag&amp;#39; ****&amp;quot;&lt;/span&gt;
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;title&quot;&gt;InternalDashoard.psm1&lt;/div&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;pygments highlight&quot; style=&quot;background: #f8f8f8;&quot;&gt;&lt;code data-lang=&quot;powershell&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;function&lt;/span&gt; Publish-DeployedApp(&lt;span style=&quot;color: #19177C&quot;&gt;$appId&lt;/span&gt;,&lt;span style=&quot;color: #19177C&quot;&gt;$deploymentId&lt;/span&gt;){
+   &lt;span style=&quot;color: #008000&quot;&gt;write-host&lt;/span&gt; &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;[InternalDashboard]***** Publishing Deployment $deploymentId to dashboard ******&amp;quot;&lt;/span&gt;
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect3&quot;&gt;
+&lt;h4 id=&quot;event_publishers&quot;&gt;Event Publishers&lt;/h4&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;&lt;code&gt;SystemInstaller&lt;/code&gt; and &lt;code&gt;SCM&lt;/code&gt; modules are also building blocks with no dependencies.
+Hence, they are also easy to develop, test and reuse.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;These two modules also publish events when their goal is completed.
+The events are called &lt;code&gt;AppInstalled&lt;/code&gt; and &lt;code&gt;TagCreated&lt;/code&gt; respectively.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;title&quot;&gt;SystemInstaller.psm1&lt;/div&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;pygments highlight&quot; style=&quot;background: #f8f8f8;&quot;&gt;&lt;code data-lang=&quot;powershell&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;function&lt;/span&gt; Install-LocalApp(&lt;span style=&quot;color: #19177C&quot;&gt;$appId&lt;/span&gt;){
+    &lt;span style=&quot;color: #19177C&quot;&gt;$deploymentId&lt;/span&gt; = &lt;span style=&quot;color: #008000&quot;&gt;Get-Random&lt;/span&gt; -Maximum 100
+
+    &lt;span style=&quot;color: #008000&quot;&gt;write-host&lt;/span&gt; &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;[SystemInstaller]***** Intalling app with id $appId. Deployment Id: $deploymentId&amp;quot;&lt;/span&gt;
+
+    &lt;span style=&quot;color: #008000&quot;&gt;New-Event&lt;/span&gt; -SourceIdentifier AppInstalled `
+        -MessageData @{appId = &lt;span style=&quot;color: #19177C&quot;&gt;$appId&lt;/span&gt;; deploymentId= &lt;span style=&quot;color: #19177C&quot;&gt;$deploymentId&lt;/span&gt;}|&lt;span style=&quot;color: #008000&quot;&gt;out-null&lt;/span&gt;
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;title&quot;&gt;SCM.psm1&lt;/div&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;pygments highlight&quot; style=&quot;background: #f8f8f8;&quot;&gt;&lt;code data-lang=&quot;powershell&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;function&lt;/span&gt; &lt;span style=&quot;color: #008000&quot;&gt;New-TagForDeployment&lt;/span&gt;(&lt;span style=&quot;color: #19177C&quot;&gt;$deploymentId&lt;/span&gt;){
+    &lt;span style=&quot;color: #008000&quot;&gt;write-host&lt;/span&gt; &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;[SCM]**** Creating Tag for deploymentId $deploymentId******&amp;quot;&lt;/span&gt;
+    &lt;span style=&quot;color: #008000&quot;&gt;New-Event&lt;/span&gt; -SourceIdentifier TagCreated `
+        -MessageData @{Tag = &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;DEPLOYED/$deploymentId&amp;quot;&lt;/span&gt;}|&lt;span style=&quot;color: #008000&quot;&gt;out-null&lt;/span&gt;
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Both modules are raising an event to the Powershell&amp;#8217;s internal &lt;code&gt;event bus&lt;/code&gt;.
+This is done using &lt;a href=&quot;https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/new-event?view=powershell-6&quot;&gt;New-Event&lt;/a&gt; Powershell cmdlet, which is only available from version 6.0.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;admonitionblock note&quot;&gt;
+&lt;table&gt;
+&lt;tr&gt;
+&lt;td class=&quot;icon&quot;&gt;
+&lt;i class=&quot;fa icon-note&quot; title=&quot;Note&quot;&gt;&lt;/i&gt;
+&lt;/td&gt;
+&lt;td class=&quot;content&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Events wouldn&amp;#8217;t be too useful without additional context data.
+But this means that subscribers to the event need to know how to parse this data, specially when the values are complex types.
+This is also a type of coupling, which is why is a good idea to keep events with little data and simple structure.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;sect3&quot;&gt;
+&lt;h4 id=&quot;event_subscriber&quot;&gt;Event Subscriber&lt;/h4&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Finally, the top level script will load all building block modules and &quot;connect&quot; their events from some of them to the commands in others.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;We need to setup three event listeners:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;olist arabic&quot;&gt;
+&lt;ol class=&quot;arabic&quot;&gt;
+&lt;li&gt;
+&lt;p&gt;When &lt;code&gt;AppInstalled&lt;/code&gt; occurs, we publish the news to the &lt;code&gt;InternalDashboard&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Also, we need to tag the source code using the &lt;code&gt;SCM&lt;/code&gt; module&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Finally, when the &lt;code&gt;SCM&lt;/code&gt; module publishes &lt;code&gt;TagCreated&lt;/code&gt;, members of the Test teams need to be notified by email, so that they can start testing.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;Adding subscribers to Powershell events is done with the &lt;a href=&quot;https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/register-engineevent?view=powershell-6&quot;&gt;Register-EngineEvent commandlet&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;admonitionblock note&quot;&gt;
+&lt;table&gt;
+&lt;tr&gt;
+&lt;td class=&quot;icon&quot;&gt;
+&lt;i class=&quot;fa icon-note&quot; title=&quot;Note&quot;&gt;&lt;/i&gt;
+&lt;/td&gt;
+&lt;td class=&quot;content&quot;&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;&lt;code&gt;Register-EngineEvent&lt;/code&gt; differs from &lt;code&gt;Register-ObjectEvent&lt;/code&gt; in that the latter allows listening for events raised by a .net object.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;The former allows listening for events raised within Powershell.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;After wiring these events, we proceed with the action: install an application locally.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;title&quot;&gt;InternallInstaller.psm1&lt;/div&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;pygments highlight&quot; style=&quot;background: #f8f8f8;&quot;&gt;&lt;code data-lang=&quot;powershell&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #008000&quot;&gt;Import-Module&lt;/span&gt; SCM
+&lt;span style=&quot;color: #008000&quot;&gt;Import-Module&lt;/span&gt; InternalDashboard
+&lt;span style=&quot;color: #008000&quot;&gt;Import-Module&lt;/span&gt; EmailSender
+&lt;span style=&quot;color: #008000&quot;&gt;Import-Module&lt;/span&gt; SystemInstaller
+
+
+&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;function&lt;/span&gt; Install-LocalAppAndNotify(&lt;span style=&quot;color: #19177C&quot;&gt;$appId&lt;/span&gt;){
+   &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;# When App is Installed, Publish to the Dashboard&lt;/span&gt;
+   &lt;span style=&quot;color: #008000&quot;&gt;Register-EngineEvent&lt;/span&gt; -SourceIdentifier AppInstalled `
+   -Action {
+       InternalDashboard\Publish-DeployedApp `
+        -appId &lt;span style=&quot;color: #19177C&quot;&gt;$event&lt;/span&gt;.messagedata.appId `
+        -deploymentId &lt;span style=&quot;color: #19177C&quot;&gt;$event&lt;/span&gt;.messagedata.deploymentId
+   }|&lt;span style=&quot;color: #008000&quot;&gt;Out-Null&lt;/span&gt;
+
+   &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;# ... and create a tag in source control&lt;/span&gt;
+   &lt;span style=&quot;color: #008000&quot;&gt;Register-EngineEvent&lt;/span&gt; -SourceIdentifier AppInstalled `
+   -Action {
+       SCM\&lt;span style=&quot;color: #008000&quot;&gt;New-TagForDeployment&lt;/span&gt; `
+        -deploymentId &lt;span style=&quot;color: #19177C&quot;&gt;$event&lt;/span&gt;.messagedata.deploymentId
+   }|&lt;span style=&quot;color: #008000&quot;&gt;Out-Null&lt;/span&gt;
+
+   &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;# Email testers when the tag is created&lt;/span&gt;
+   &lt;span style=&quot;color: #008000&quot;&gt;Register-EngineEvent&lt;/span&gt; -SourceIdentifier TagCreated `
+   -Action {
+       EmailSender\&lt;span style=&quot;color: #008000&quot;&gt;Send-TagCreatedEmail&lt;/span&gt; `
+        -tag &lt;span style=&quot;color: #19177C&quot;&gt;$event&lt;/span&gt;.messagedata.Tag `
+        -to &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;#39;Testers@myorg.com&amp;#39;&lt;/span&gt;
+   }|&lt;span style=&quot;color: #008000&quot;&gt;Out-Null&lt;/span&gt;
+
+   &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;# Now install the application&lt;/span&gt;
+   &lt;span style=&quot;color: #008000&quot;&gt;write-host&lt;/span&gt; &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;[InternalInstaller]**** Starting Installation &amp;quot;&lt;/span&gt;
+   SystemInstaller\Install-LocalApp -appId &lt;span style=&quot;color: #19177C&quot;&gt;$appId&lt;/span&gt;
+
+  &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;#Do not forget to remove event listeners!!&lt;/span&gt;
+   &lt;span style=&quot;color: #008000&quot;&gt;Get-EventSubscriber&lt;/span&gt;| &lt;span style=&quot;color: #008000&quot;&gt;Remove-Event&lt;/span&gt;
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;When we run this top level script, the end result is as desired.
+we execute it this way:&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;pygments highlight&quot; style=&quot;background: #f8f8f8;&quot;&gt;&lt;code data-lang=&quot;powershell&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #19177C&quot;&gt;$env:PSMODULEPATH&lt;/span&gt; = &lt;span style=&quot;color: #19177C&quot;&gt;$pwd&lt;/span&gt;
+&lt;span style=&quot;color: #008000&quot;&gt;Import-Module&lt;/span&gt; InternalInstaller
+Install-LocalAppAndNotify 42&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&quot;paragraph&quot;&gt;
+&lt;p&gt;This is the console output.
+Notice that the event publish and subscribe pattern is running &lt;strong&gt;synchronously&lt;/strong&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div class=&quot;listingblock&quot;&gt;
+&lt;div class=&quot;content&quot;&gt;
+&lt;pre class=&quot;pygments highlight&quot; style=&quot;background: #f8f8f8;&quot;&gt;&lt;code&gt;&lt;span&gt;&lt;/span&gt;[InternalInstaller]**** Starting Installation
+[SystemInstaller]***** Intalling app with id 42. Deployment Id: 60
+[InternalDashboard]***** Publishing Deployment 60 to dashboard ******
+[SCM]**** Creating Tag for deploymentId 60******
+[EmailSender]**** Sending Email to Testers@myorg.com. Message: &amp;#39;CREATED TAG DEPLOYED/60&amp;#39; ****&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;</content>
+
+      
+      
+      
+      
+      
+
+      
+        <author>
+            <name>sebastian slutzky</name>
+          
+          
+        </author>
+      
+
+      
+        <category term="powershell" />
+      
+        <category term="architecture" />
+      
+        <category term="publish_subscribe" />
+      
+        <category term="design_patterns" />
+      
+
+      
+
+      
+        <summary type="html">(Source Code is available in this GithHub repository) Powershell Modules When building a code base of any language, we want to keep the code organised in encapsulated modules. This enable the code to be testable, maintainable and reusable Powershell offers several ways of organising the code, but the most used is to organise them in Modules. A module in Powershell can include a Manifest file that declares (among other details) the Modules that this Module depends on. This dependencies will be pre-loaded when the target Module is loaded. For .Net development, this is similar to dependencies declared in NUget packages. The Manifest .psd1 file is comparable to the .nuspec file in NUget. Why decoupling? Even with a tidy organisation of Modules, code reuse and modularity start to show their ugly face: dependency hell In particular, this article is concerned with two of the problems identified as a side effect of modularity: Many dependencies Long chain of dependencies Too many (unwanted) dependencies loaded First attempts at code modularisation do, at some point, fall short in specificity. A module that deals with, for example, deploying an application to an environment, could end up loading modules that are not needed for that specific use case. figure 1 - Diagram of highly coupled modules For example, figure 1 shows a 4-tier hierarchy of dependencies between modules. The module SystemInstaller installs software in the current machine (cloud or on premises). One commandlet in this module needs to tag the source code when software is ready to be tested. When this happens, the SCM module updates an internal Dashboard. Loading SystemInstaller will also load SCM, InternalDashoard and EmailSender modules. But if we need to just call Install-LocalApp we will only need EmailSender. These modules may be used in different occasions and scenarios. The combination of these use cases will very likely result in highly coupled modules like in this example, or sometimes much worse. Long chain of dependencies Another side effect of loading unwanted modules is that we will also load the dependencies of these unwanted modules. As time passes, more dependencies are loaded to these transitive dependencies and&amp;#8230;&amp;#8203;.one day we find out that loading one module ends up loading 20 modules, of which we only need one or two. This takes up time consumes resources&amp;#8230;&amp;#8203;and it can have unwanted side effects in your environment, such as installing software or writing to the file system. Decoupling Powershell modules with Events A better module organisation is to have a &quot;flatter&quot; hierarchical structure. The top-level modules represent specific use cases, where the lower level are the building blocks. Developers can use the building blocks provided they use get-help and understand the extent of a module. Here is a representation of a flat hierarchy of modules for the previous graph. In this model, Top Level modules can be thought as mediators of the building blocks. They represent the top level use case that knows what are the different building blocks in place. Dealing with Email Servers, Source Control Management Systems and Dashboards are all independent of each other. Use cases that need one of these libraries, will import the modules and &quot;wire&quot; them together in a publish-and-subscribe approach. Powershell support for events is neither widely used nor documented, but the language provides the building blocks necessary to implement such pattern. Implementation: Using events to decouple modules Building blocks The EmailSender and InternalDashboard modules have no dependencies. Their input parameters can be simple primitives like strings or integers. This make these building block modules very easy to test and develop. EmailSender.psm1 function Send-TagCreatedEmail($tag,$to){ write-host &amp;quot;[EmailSender]**** Sending Email to $to. Message: &amp;#39;CREATED TAG $tag&amp;#39; ****&amp;quot; } InternalDashoard.psm1 function Publish-DeployedApp($appId,$deploymentId){ write-host &amp;quot;[InternalDashboard]***** Publishing Deployment $deploymentId to dashboard ******&amp;quot; } Event Publishers SystemInstaller and SCM modules are also building blocks with no dependencies. Hence, they are also easy to develop, test and reuse. These two modules also publish events when their goal is completed. The events are called AppInstalled and TagCreated respectively. SystemInstaller.psm1 function Install-LocalApp($appId){ $deploymentId = Get-Random -Maximum 100 write-host &amp;quot;[SystemInstaller]***** Intalling app with id $appId. Deployment Id: $deploymentId&amp;quot; New-Event -SourceIdentifier AppInstalled ` -MessageData @{appId = $appId; deploymentId= $deploymentId}|out-null } SCM.psm1 function New-TagForDeployment($deploymentId){ write-host &amp;quot;[SCM]**** Creating Tag for deploymentId $deploymentId******&amp;quot; New-Event -SourceIdentifier TagCreated ` -MessageData @{Tag = &amp;quot;DEPLOYED/$deploymentId&amp;quot;}|out-null } Both modules are raising an event to the Powershell&amp;#8217;s internal event bus. This is done using New-Event Powershell cmdlet, which is only available from version 6.0. Events wouldn&amp;#8217;t be too useful without additional context data. But this means that subscribers to the event need to know how to parse this data, specially when the values are complex types. This is also a type of coupling, which is why is a good idea to keep events with little data and simple structure. Event Subscriber Finally, the top level script will load all building block modules and &quot;connect&quot; their events from some of them to the commands in others. We need to setup three event listeners: When AppInstalled occurs, we publish the news to the InternalDashboard Also, we need to tag the source code using the SCM module Finally, when the SCM module publishes TagCreated, members of the Test teams need to be notified by email, so that they can start testing. Adding subscribers to Powershell events is done with the Register-EngineEvent commandlet. Register-EngineEvent differs from Register-ObjectEvent in that the latter allows listening for events raised by a .net object. The former allows listening for events raised within Powershell. After wiring these events, we proceed with the action: install an application locally. InternallInstaller.psm1 Import-Module SCM Import-Module InternalDashboard Import-Module EmailSender Import-Module SystemInstaller function Install-LocalAppAndNotify($appId){ # When App is Installed, Publish to the Dashboard Register-EngineEvent -SourceIdentifier AppInstalled ` -Action { InternalDashboard\Publish-DeployedApp ` -appId $event.messagedata.appId ` -deploymentId $event.messagedata.deploymentId }|Out-Null # ... and create a tag in source control Register-EngineEvent -SourceIdentifier AppInstalled ` -Action { SCM\New-TagForDeployment ` -deploymentId $event.messagedata.deploymentId }|Out-Null # Email testers when the tag is created Register-EngineEvent -SourceIdentifier TagCreated ` -Action { EmailSender\Send-TagCreatedEmail ` -tag $event.messagedata.Tag ` -to &amp;#39;Testers@myorg.com&amp;#39; }|Out-Null # Now install the application write-host &amp;quot;[InternalInstaller]**** Starting Installation &amp;quot; SystemInstaller\Install-LocalApp -appId $appId #Do not forget to remove event listeners!! Get-EventSubscriber| Remove-Event } When we run this top level script, the end result is as desired. we execute it this way: $env:PSMODULEPATH = $pwd Import-Module InternalInstaller Install-LocalAppAndNotify 42 This is the console output. Notice that the event publish and subscribe pattern is running synchronously [InternalInstaller]**** Starting Installation [SystemInstaller]***** Intalling app with id 42. Deployment Id: 60 [InternalDashboard]***** Publishing Deployment 60 to dashboard ****** [SCM]**** Creating Tag for deploymentId 60****** [EmailSender]**** Sending Email to Testers@myorg.com. Message: &amp;#39;CREATED TAG DEPLOYED/60&amp;#39; ****</summary>
+      
+
+      
+      
+    </entry>
+  
   
   
     <entry>
@@ -57,7 +410,7 @@ folder names. This allows you, for example, to find all unit tests jobs in a fol
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;groovy&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #B00040&quot;&gt;def&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;isFolder&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;(&lt;/span&gt;abstractJob&lt;span style=&quot;color: #666666&quot;&gt;){&lt;/span&gt;
+&lt;pre class=&quot;pygments highlight&quot; style=&quot;background: #f8f8f8;&quot;&gt;&lt;code data-lang=&quot;groovy&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #B00040&quot;&gt;def&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;isFolder&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;(&lt;/span&gt;abstractJob&lt;span style=&quot;color: #666666&quot;&gt;){&lt;/span&gt;
  &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;return&lt;/span&gt; abstractJob&lt;span style=&quot;color: #666666&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;getClass&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;().&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;getName&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;()&lt;/span&gt; &lt;span style=&quot;color: #666666&quot;&gt;==&lt;/span&gt; &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;com.cloudbees.hudson.plugins.folder.Folder&amp;quot;&lt;/span&gt;
 &lt;span style=&quot;color: #666666&quot;&gt;}&lt;/span&gt;
 
@@ -100,7 +453,7 @@ folder names. This allows you, for example, to find all unit tests jobs in a fol
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;groovy&quot;&gt;&lt;span&gt;&lt;/span&gt;
+&lt;pre class=&quot;pygments highlight&quot; style=&quot;background: #f8f8f8;&quot;&gt;&lt;code data-lang=&quot;groovy&quot;&gt;&lt;span&gt;&lt;/span&gt;
 findAll&lt;span style=&quot;color: #666666&quot;&gt;(&lt;/span&gt;&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;.*/master_branch/.*UnitTest.*&amp;quot;&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;)&lt;/span&gt;
 &lt;span style=&quot;color: #666666&quot;&gt;.&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;each&lt;/span&gt;&lt;span style=&quot;color: #666666&quot;&gt;{&lt;/span&gt;
   job &lt;span style=&quot;color: #666666&quot;&gt;-&amp;gt;&lt;/span&gt;
@@ -242,20 +595,20 @@ You can see that the orphan branch is still here:&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;powershell&quot;&gt;&lt;table class=&quot;pyhltable&quot;&gt;&lt;tr&gt;&lt;td&gt;&lt;div class=&quot;linenodiv&quot; style=&quot;background-color: #f0f0f0; padding-right: 10px&quot;&gt;1
+&lt;pre class=&quot;pygments highlight&quot; style=&quot;background: #f8f8f8;&quot;&gt;&lt;code data-lang=&quot;powershell&quot;&gt;&lt;table class=&quot;linenotable&quot;&gt;&lt;tr&gt;&lt;td class=&quot;linenos&quot;&gt;&lt;div class=&quot;linenodiv&quot;&gt;&lt;pre&gt;1
 2
 3
 4
 5
 6
-7&lt;/div&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;span&gt;&lt;/span&gt; &lt;span style=&quot;color: #19177C&quot;&gt;$local&lt;/span&gt;=git branch -l
+7&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt; &lt;span style=&quot;color: #19177C&quot;&gt;$local&lt;/span&gt;=git branch -l
  &lt;span style=&quot;color: #19177C&quot;&gt;$remote&lt;/span&gt;=git branch -r
  &lt;span style=&quot;color: #19177C&quot;&gt;$local&lt;/span&gt;|
     %{&lt;span style=&quot;color: #19177C&quot;&gt;$_&lt;/span&gt;.Trim()}|
     ?{&lt;span style=&quot;color: #666666&quot;&gt;-not&lt;/span&gt; (&lt;span style=&quot;color: #19177C&quot;&gt;$remote&lt;/span&gt; &lt;span style=&quot;color: #666666&quot;&gt;-like&lt;/span&gt; &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;#39;*&amp;#39;&lt;/span&gt; + &lt;span style=&quot;color: #19177C&quot;&gt;$_&lt;/span&gt;) }|
     ?{&lt;span style=&quot;color: #666666&quot;&gt;-not&lt;/span&gt;(&lt;span style=&quot;color: #19177C&quot;&gt;$_&lt;/span&gt; &lt;span style=&quot;color: #666666&quot;&gt;-match&lt;/span&gt; &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;master&amp;quot;&lt;/span&gt; )}|
     %{git branch -D &lt;span style=&quot;color: #19177C&quot;&gt;$_&lt;/span&gt;}
-&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
@@ -420,7 +773,7 @@ This will gives us the set of local branches not in the remote local branches no
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;c#&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;//To be implemented by actionfilterattributes that override a global action filter&lt;/span&gt;
+&lt;pre class=&quot;pygments highlight&quot; style=&quot;background: #f8f8f8;&quot;&gt;&lt;code data-lang=&quot;c#&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;//To be implemented by actionfilterattributes that override a global action filter&lt;/span&gt;
 &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;interface&lt;/span&gt; IOverridingFilterAttribute
 {
     &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;//The type of actionfilter to be replaced for this request&lt;/span&gt;
@@ -436,7 +789,7 @@ This will gives us the set of local branches not in the remote local branches no
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;c#&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;class&lt;/span&gt; &lt;span style=&quot;color: #0000FF; font-weight: bold&quot;&gt;OverridingFilterProvider&lt;/span&gt; : IFilterProvider
+&lt;pre class=&quot;pygments highlight&quot; style=&quot;background: #f8f8f8;&quot;&gt;&lt;code data-lang=&quot;c#&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;class&lt;/span&gt; &lt;span style=&quot;color: #0000FF; font-weight: bold&quot;&gt;OverridingFilterProvider&lt;/span&gt; : IFilterProvider
 {
     &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;//called by WebApi on each request, in order&lt;/span&gt;
     &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;// to get the list of filters to apply&lt;/span&gt;
@@ -489,7 +842,7 @@ This will gives us the set of local branches not in the remote local branches no
 &lt;h3 id=&quot;step_3_register_your_filter_provider&quot;&gt;Step 3: Register your Filter Provider&lt;/h3&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;c#&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;class&lt;/span&gt; &lt;span style=&quot;color: #0000FF; font-weight: bold&quot;&gt;WebApiApplication&lt;/span&gt; : HttpApplication
+&lt;pre class=&quot;pygments highlight&quot; style=&quot;background: #f8f8f8;&quot;&gt;&lt;code data-lang=&quot;c#&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;class&lt;/span&gt; &lt;span style=&quot;color: #0000FF; font-weight: bold&quot;&gt;WebApiApplication&lt;/span&gt; : HttpApplication
 {
     &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;protected&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Application_Start&lt;/span&gt;()
     {
@@ -614,7 +967,7 @@ This will gives us the set of local branches not in the remote local branches no
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;class&lt;/span&gt; &lt;span style=&quot;color: #0000FF; font-weight: bold&quot;&gt;Extensions&lt;/span&gt;
+&lt;pre class=&quot;pygments highlight&quot; style=&quot;background: #f8f8f8;&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;class&lt;/span&gt; &lt;span style=&quot;color: #0000FF; font-weight: bold&quot;&gt;Extensions&lt;/span&gt;
 {
     &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;static&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; ApplyOperation&amp;lt;T&amp;gt;
                 (&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;this&lt;/span&gt; IEnumerable&amp;lt;T&amp;gt; iterator,
@@ -631,7 +984,7 @@ This will gives us the set of local branches not in the remote local branches no
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;IEnumerable&amp;lt;&lt;span style=&quot;color: #B00040&quot;&gt;string&lt;/span&gt;&amp;gt; cities =
+&lt;pre class=&quot;pygments highlight&quot; style=&quot;background: #f8f8f8;&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;IEnumerable&amp;lt;&lt;span style=&quot;color: #B00040&quot;&gt;string&lt;/span&gt;&amp;gt; cities =
             &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color: #B00040&quot;&gt;string&lt;/span&gt;[] { &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;Dublin&amp;quot;&lt;/span&gt;, &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;Buenos Aires&amp;quot;&lt;/span&gt;, &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;Madrid&amp;quot;&lt;/span&gt; };
 cities.ApplyOperation(x=&amp;gt;Console.WriteLine(&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;City name: &amp;quot;&lt;/span&gt; + x));&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
@@ -641,7 +994,7 @@ cities.ApplyOperation(x=&amp;gt;Console.WriteLine(&lt;span style=&quot;color: #B
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color: #B00040&quot;&gt;string&lt;/span&gt;[] {
+&lt;pre class=&quot;pygments highlight&quot; style=&quot;background: #f8f8f8;&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color: #B00040&quot;&gt;string&lt;/span&gt;[] {
     &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;Dublin&amp;quot;&lt;/span&gt;,
     &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;Buenos Aires&amp;quot;&lt;/span&gt;,
     &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;Madrid&amp;quot;&lt;/span&gt; }
@@ -716,7 +1069,7 @@ cities.ApplyOperation(x=&amp;gt;Console.WriteLine(&lt;span style=&quot;color: #B
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;// Count is 0 before adding any items&lt;/span&gt;
+&lt;pre class=&quot;pygments highlight&quot; style=&quot;background: #f8f8f8;&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;// Count is 0 before adding any items&lt;/span&gt;
 &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;// This is a post condition of the constructor&lt;/span&gt;
 &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;//and should be tested separately&lt;/span&gt;
 &lt;span style=&quot;color: #7D9029&quot;&gt;[Test]&lt;/span&gt;
@@ -730,7 +1083,7 @@ cities.ApplyOperation(x=&amp;gt;Console.WriteLine(&lt;span style=&quot;color: #B
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;// We use the &amp;#39;Peek&amp;#39; method to access the item on top of the stack.&lt;/span&gt;
+&lt;pre class=&quot;pygments highlight&quot; style=&quot;background: #f8f8f8;&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;// We use the &amp;#39;Peek&amp;#39; method to access the item on top of the stack.&lt;/span&gt;
 &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;// Pre and Post conditions of this method should be tested separately&lt;/span&gt;
 &lt;span style=&quot;color: #7D9029&quot;&gt;[Test]&lt;/span&gt;
 &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Add_PostCond_ItemIsOnTopOfTheStack&lt;/span&gt;()
@@ -759,7 +1112,7 @@ We don’t want to repeat ourselves, so we will delegate to a reusable method ca
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;[Test]&lt;/span&gt;
+&lt;pre class=&quot;pygments highlight&quot; style=&quot;background: #f8f8f8;&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;[Test]&lt;/span&gt;
 &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Add_PostCond_InvariantsWereEnforced&lt;/span&gt;()
 {
     &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;//Arrange&lt;/span&gt;
@@ -812,7 +1165,7 @@ This verification will fail if the method was not invoked indirectly by &lt;code
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;[Test,ExpectedException(typeof(InvalidOperationException),&lt;/span&gt;
+&lt;pre class=&quot;pygments highlight&quot; style=&quot;background: #f8f8f8;&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;[Test,ExpectedException(typeof(InvalidOperationException),&lt;/span&gt;
 &lt;span style=&quot;color: #7D9029&quot;&gt;    ExpectedMessage=&amp;quot;Count cannnot be negative&amp;quot;)]&lt;/span&gt;
 &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;CheckInvariants_PostCond_CountIsNonNegative&lt;/span&gt;()
 {
@@ -840,7 +1193,7 @@ This verification will fail if the method was not invoked indirectly by &lt;code
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;class&lt;/span&gt; &lt;span style=&quot;color: #0000FF; font-weight: bold&quot;&gt;Stack&lt;/span&gt;
+&lt;pre class=&quot;pygments highlight&quot; style=&quot;background: #f8f8f8;&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;class&lt;/span&gt; &lt;span style=&quot;color: #0000FF; font-weight: bold&quot;&gt;Stack&lt;/span&gt;
 {
     &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;private&lt;/span&gt; &lt;span style=&quot;color: #B00040&quot;&gt;int&lt;/span&gt; _maximumNumberOfItemsAllowed;
     &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Stack&lt;/span&gt;(&lt;span style=&quot;color: #B00040&quot;&gt;int&lt;/span&gt; maximumNumberOfItemsAllowed)
@@ -946,7 +1299,7 @@ This verification will fail if the method was not invoked indirectly by &lt;code
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;[Test, ExpectedException( typeof(ArgumentNullException))]&lt;/span&gt;
+&lt;pre class=&quot;pygments highlight&quot; style=&quot;background: #f8f8f8;&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;[Test, ExpectedException( typeof(ArgumentNullException))]&lt;/span&gt;
 &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Add_PreCond_ItemIsRequired&lt;/span&gt;()
 {
     &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Stack&lt;/span&gt;(maximumNumberOfItemsAllowed: &lt;span style=&quot;color: #666666&quot;&gt;1&lt;/span&gt;)
@@ -983,7 +1336,7 @@ of an unhappy case, that is, a happy case for pre conditions.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;[Test]&lt;/span&gt;
+&lt;pre class=&quot;pygments highlight&quot; style=&quot;background: #f8f8f8;&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;[Test]&lt;/span&gt;
 &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Add_PreCond_HappyCase&lt;/span&gt;()
 {
     &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Stack&lt;/span&gt;(maximumNumberOfItemsAllowed: &lt;span style=&quot;color: #666666&quot;&gt;1&lt;/span&gt;)
@@ -1150,7 +1503,7 @@ Here is the list of test we will write for this User Story, based on the previou
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;[Test]&lt;/span&gt;
+&lt;pre class=&quot;pygments highlight&quot; style=&quot;background: #f8f8f8;&quot;&gt;&lt;code data-lang=&quot;csharp&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #7D9029&quot;&gt;[Test]&lt;/span&gt;
 &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;public&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;void&lt;/span&gt; &lt;span style=&quot;color: #0000FF&quot;&gt;Add_PreCond_ItemIsRequired&lt;/span&gt;()
     { &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;throw&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;new&lt;/span&gt; NotImplementedException(); }
 
@@ -1402,7 +1755,7 @@ The exact implementation is outside of the scope of this article, but I will pos
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;powershell&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;function&lt;/span&gt; FindDuplicates{
+&lt;pre class=&quot;pygments highlight&quot; style=&quot;background: #f8f8f8;&quot;&gt;&lt;code data-lang=&quot;powershell&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;function&lt;/span&gt; FindDuplicates{
  &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;# Receives a list of ArrayLists&lt;/span&gt;
  &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;# iteratively prints the full path of each ArrayList item&lt;/span&gt;
  &lt;span style=&quot;color: #408080; font-style: italic&quot;&gt;# where the ArrayList contains multiple paths (i.e duplicates)&lt;/span&gt;
@@ -1437,7 +1790,7 @@ GetFilesInBuckets &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;C:\MyRo
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;powershell&quot;&gt;&lt;span&gt;&lt;/span&gt;GetFilesInBuckets &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;C:\MyRootFolder&amp;quot;&lt;/span&gt; &lt;span style=&quot;color: #666666&quot;&gt;-f&lt;/span&gt; &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;*.txt&amp;quot;&lt;/span&gt;|
+&lt;pre class=&quot;pygments highlight&quot; style=&quot;background: #f8f8f8;&quot;&gt;&lt;code data-lang=&quot;powershell&quot;&gt;&lt;span&gt;&lt;/span&gt;GetFilesInBuckets &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;C:\MyRootFolder&amp;quot;&lt;/span&gt; &lt;span style=&quot;color: #666666&quot;&gt;-f&lt;/span&gt; &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;*.txt&amp;quot;&lt;/span&gt;|
     FindDuplicates|
     FilterOutOlder&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
@@ -1495,7 +1848,7 @@ GetFilesInBuckets &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;C:\MyRo
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;xml&quot;&gt;&lt;span&gt;&lt;/span&gt;...
+&lt;pre class=&quot;pygments highlight&quot; style=&quot;background: #f8f8f8;&quot;&gt;&lt;code data-lang=&quot;xml&quot;&gt;&lt;span&gt;&lt;/span&gt;...
 &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;&amp;lt;property&lt;/span&gt; &lt;span style=&quot;color: #7D9029&quot;&gt;name=&lt;/span&gt;&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;SpreadsheetPath&amp;quot;&lt;/span&gt; &lt;span style=&quot;color: #7D9029&quot;&gt;value=&lt;/span&gt;&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;${Config} + ${CurrentProject}&amp;quot;&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;/&amp;gt;&lt;/span&gt;
 &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;&amp;lt;call&lt;/span&gt; &lt;span style=&quot;color: #7D9029&quot;&gt;target=&lt;/span&gt;&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;ProcessSpreadsheet&amp;quot;&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;/&amp;gt;&lt;/span&gt;
 ...&lt;/code&gt;&lt;/pre&gt;
@@ -1509,7 +1862,7 @@ GetFilesInBuckets &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;C:\MyRo
 &lt;/div&gt;
 &lt;div class=&quot;listingblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
-&lt;pre class=&quot;pygments highlight&quot;&gt;&lt;code data-lang=&quot;xml&quot;&gt;&lt;span&gt;&lt;/span&gt;(Known inputs: SpreadsheetPath and BusinessArea)
+&lt;pre class=&quot;pygments highlight&quot; style=&quot;background: #f8f8f8;&quot;&gt;&lt;code data-lang=&quot;xml&quot;&gt;&lt;span&gt;&lt;/span&gt;(Known inputs: SpreadsheetPath and BusinessArea)
 &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;&amp;lt;property&lt;/span&gt; &lt;span style=&quot;color: #7D9029&quot;&gt;name=&lt;/span&gt;&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;SpreadsheetPath&amp;quot;&lt;/span&gt;
     &lt;span style=&quot;color: #7D9029&quot;&gt;value=&lt;/span&gt;&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;${Config} + ${CurrentProject}&amp;quot;&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;/&amp;gt;&lt;/span&gt;
 &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;&amp;lt;property&lt;/span&gt; &lt;span style=&quot;color: #7D9029&quot;&gt;name=&lt;/span&gt;&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;BusinessArea&amp;quot;&lt;/span&gt; &lt;span style=&quot;color: #7D9029&quot;&gt;value=&lt;/span&gt;&lt;span style=&quot;color: #BA2121&quot;&gt;&amp;#39;Security&amp;#39;&lt;/span&gt; &lt;span style=&quot;color: #008000; font-weight: bold&quot;&gt;/&amp;gt;&lt;/span&gt;
