@@ -3,6 +3,11 @@ rvm:
 - 2.2.7
 sudo: false
 script: bundle exec rake deploy
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
+  keep_history: true
 env:
   global:
     secure: ht7ULoNopUU5EMMP7ju35zTWjtB+B9QKxEKgxbuRY2mj6mestRcDvAUQpQHc+PdtYUOak9Dma3TK0VwcwQkTyfLo3ylyH7V5AbMU50v1/Hp/x2wmjgS1XfjK7zvxAt84IqsmSt9e5yKyiDWz0Gu1ZSQ0RGMEuTCtiSh5KfD8+9mM4VAo43sDGazN3+dXgPJXcO9YYfLeeo2+moa4YVprnQTcxF+Q4MR5lgusCADImeV7x7ytBTSSz47wncja31pMog7h7KMGL3YCu3Q8O3PW4inVbyyFBsoWeKY+BpygTGUnkFfz7C7q8gKhmCqunUfr4EGbukHsNI/Xuz5bYH9keTtvcTLlrLvWfSN0qZl2CIzb8ivZ+Sc7dPdt6maZhfmk+2XwzL70jLZpsgqG0ybAR2Wg5PcygGsB/Up2gAJBDkQhCh5lqrAN+626R0libeK9KzmNKqJHLMgSA71oWavQxeke8X3vUJ6Bp6589yMdwyMYgbIFXtkNRrTq/wxQt/YK2D+JV1eQ5Q8d1vizM8L1hUFC3I8nUvJyPUQ4wJghuz221B7TEGEtwB+rEiOe0kihN6szMxbuRueI1YbseNQn145771P5/TysoNuu3FuA6oIs+YMKoTOPF6atHMg2l0J3PTC//U+jhx6P811DqmUq01d2Tgrnr9p1XrQieWY2uy4=
