@@ -1,0 +1,245 @@
+---
+categories:
+- powershell
+- architecture
+- publish_subscribe
+- design_patterns
+---
+
+[powershell_events]
+:showtitle:
+:page-root: ../../../
+:experimental:
+:imagesdir: /assets/images 
+
+_(Source Code is available in this https://github.com/sebastianslutzky/Blog.PowershellEvents[GithHub repository])_
+
+== Powershell Modules 
+
+When building a code base of any language, we want to keep the code organised in encapsulated modules. 
+This enable the code to be testable, maintainable and reusable
+
+Powershell offers several ways of organising the code, but the most used is to organise them in https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_modules?view=powershell-7[Modules].
+A module in Powershell can include a  https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_modules?view=powershell-7[Manifest  file] that declares (among other details) the Modules that this Module depends on.
+This dependencies will be pre-loaded when the target Module is loaded. 
+
+For .Net development, this is similar to dependencies declared in NUget packages.
+The Manifest `.psd1` file is comparable to the `.nuspec` file in NUget.
+
+== Why decoupling?
+
+Even with a tidy organisation of Modules, code reuse and modularity start to show their ugly face:  https://en.wikipedia.org/wiki/Dependency_hell[dependency hell]
+
+In particular, this article is concerned with two of the problems identified as a side effect of modularity:
+
+* Many dependencies
+* Long chain of dependencies
+
+== Too many (unwanted) dependencies loaded
+
+First attempts at code modularisation do, at some point, fall short in specificity.
+
+A module that deals with, for example, deploying an application to an environment, could end up loading modules that are not needed for that specific use case.
+
+.figure 1 - Diagram of highly coupled modules
+[.float-group]
+image:psmodules1.png[width=70%,align=text-center]
+
+For example, figure 1 shows a 4-tier hierarchy of dependencies between modules.
+
+The module `SystemInstaller` installs software in the current machine (cloud or on premises).
+One commandlet in this module needs to tag the source code when software is ready to be tested.
+When this happens, the `SCM` module updates an internal Dashboard.
+
+Loading `SystemInstaller` will also load `SCM`, `InternalDashoard` and `EmailSender` modules.
+But if we need to just call `Install-LocalApp` we will only need `EmailSender`. 
+
+These modules may be used in different occasions and scenarios. 
+The combination of these use cases will very likely result in highly coupled modules like in this example, or sometimes much worse.
+
+
+== Long chain of dependencies
+
+Another side effect of loading unwanted modules is that we will also load the dependencies of these unwanted modules.
+
+As time passes, more dependencies are loaded to these transitive dependencies and....one day we find out that loading one module ends up loading 20 modules, of which we only need one or two.
+
+This takes up time consumes resources...and it can have unwanted side effects in your environment, such as installing software or writing to the file system.
+
+== Decoupling Powershell modules with Events 
+
+A better module organisation is to have a "flatter" hierarchical structure.
+The top-level modules represent specific use cases, where the lower level are the building blocks.
+
+Developers can use the building blocks provided they use `get-help` and understand the extent of a module.
+
+Here is a representation of a flat hierarchy of modules for the previous graph.
+
+[.float-group]
+image:psmodules2.png[align=text-center]
+
+In this model, Top Level modules can be thought as https://en.wikipedia.org/wiki/Mediator_pattern[mediators] of the building blocks.
+They represent the top level use case that knows what are the different building blocks in place.
+
+Dealing with Email Servers, Source Control Management Systems and Dashboards are all independent of each other. 
+Use cases that need one of these libraries, will import the modules and "wire" them together in a publish-and-subscribe approach.
+
+Powershell support for events is neither widely used nor documented, but the language provides the building blocks necessary to implement such pattern.
+
+
+=== Implementation: Using events to decouple modules
+
+==== Building blocks
+
+The `EmailSender` and `InternalDashboard` modules have no dependencies. 
+Their input parameters can be simple primitives like strings or integers.
+This make these _building block_ modules very easy to test and develop. 
+
+.EmailSender.psm1
+[source,powershell]
+----
+function Send-TagCreatedEmail($tag,$to){
+    write-host "[EmailSender]**** Sending Email to $to. Message: 'CREATED TAG $tag' ****"
+}
+----
+
+.InternalDashoard.psm1
+[source,powershell]
+----
+function Publish-DeployedApp($appId,$deploymentId){
+   write-host "[InternalDashboard]***** Publishing Deployment $deploymentId to dashboard ******"
+}
+----
+
+==== Event Publishers
+
+`SystemInstaller` and `SCM` modules are also building blocks with no dependencies.
+Hence, they are also easy to develop, test and reuse.
+
+These two modules also publish events when their goal is completed. 
+The events are called `AppInstalled` and `TagCreated` respectively.
+
+.SystemInstaller.psm1
+[source,powershell]
+----
+function Install-LocalApp($appId){
+    $deploymentId = Get-Random -Maximum 100
+    
+    write-host "[SystemInstaller]***** Intalling app with id $appId. Deployment Id: $deploymentId"
+
+    New-Event -SourceIdentifier AppInstalled `
+        -MessageData @{appId = $appId; deploymentId= $deploymentId}|out-null
+}
+----
+
+.SCM.psm1
+[source,powershell]
+----
+function New-TagForDeployment($deploymentId){
+    write-host "[SCM]**** Creating Tag for deploymentId $deploymentId******"
+    New-Event -SourceIdentifier TagCreated `
+        -MessageData @{Tag = "DEPLOYED/$deploymentId"}|out-null
+}
+----
+
+Both modules are raising an event to the Powershell's internal `event bus`. 
+This is done using https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/new-event?view=powershell-6[New-Event] Powershell cmdlet, which is only available from version 6.0.
+
+[NOTE]
+====
+Events wouldn't be too useful without additional context data. 
+But this means that subscribers to the event need to know how to parse this data, specially when the values are complex types.
+This is also a type of coupling, which is why is a good idea to keep events with little data and simple structure.
+====
+
+==== Event Subscriber
+Finally, the top level script will load all building block modules and "connect" their events from some of them to the commands in others.
+
+We need to setup three event listeners:
+
+1. When `AppInstalled` occurs, we publish the news to the `InternalDashboard`
+1. Also, we need to tag the source code using the `SCM` module
+1. Finally, when the `SCM` module publishes `TagCreated`, members of the Test teams need to be notified by email, so that they can start testing.
+
+Adding subscribers to Powershell events is done with the https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/register-engineevent?view=powershell-6[Register-EngineEvent commandlet].
+
+[NOTE]
+====
+`Register-EngineEvent` differs from `Register-ObjectEvent` in that the latter allows listening for events raised by a .net object. 
+
+The former allows listening for events raised within Powershell.
+====
+
+After wiring these events, we proceed with the action: install an application locally.
+
+.InternallInstaller.psm1
+[source,powershell]
+----
+Import-Module SCM
+Import-Module InternalDashboard
+Import-Module EmailSender
+Import-Module SystemInstaller
+
+
+function Install-LocalAppAndNotify($appId){
+   # When App is Installed, Publish to the Dashboard
+   Register-EngineEvent -SourceIdentifier AppInstalled `
+   -Action {
+       InternalDashboard\Publish-DeployedApp `
+        -appId $event.messagedata.appId `
+        -deploymentId $event.messagedata.deploymentId
+   }|Out-Null
+
+   # ... and create a tag in source control
+   Register-EngineEvent -SourceIdentifier AppInstalled `
+   -Action {
+       SCM\New-TagForDeployment `
+        -deploymentId $event.messagedata.deploymentId
+   }|Out-Null
+
+   # Email testers when the tag is created 
+   Register-EngineEvent -SourceIdentifier TagCreated `
+   -Action {
+       EmailSender\Send-TagCreatedEmail `
+        -tag $event.messagedata.Tag `
+        -to 'Testers@myorg.com'
+   }|Out-Null
+
+   # Now install the application
+   write-host "[InternalInstaller]**** Starting Installation "
+   SystemInstaller\Install-LocalApp -appId $appId
+
+  #Do not forget to remove event listeners!!
+   Get-EventSubscriber| Remove-Event
+}
+----
+
+When we run this top level script, the end result is as desired.
+we execute it this way:
+
+[source,powershell]
+----
+$env:PSMODULEPATH = $pwd
+Import-Module InternalInstaller
+Install-LocalAppAndNotify 42
+----
+
+This is the console output.
+Notice that the event publish and subscribe pattern is running *synchronously*
+[source]
+----
+[InternalInstaller]**** Starting Installation
+[SystemInstaller]***** Intalling app with id 42. Deployment Id: 60
+[InternalDashboard]***** Publishing Deployment 60 to dashboard ******
+[SCM]**** Creating Tag for deploymentId 60******
+[EmailSender]**** Sending Email to Testers@myorg.com. Message: 'CREATED TAG DEPLOYED/60' ****
+----
+
+
+
+
+
+
+
+
+
