@@ -17,7 +17,7 @@ title: you are what you code
 author: sebastian slutzky
 description: a pretentiusly simple blog, with a series of coherent tech rambles...
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "http://youarewhatyoucode" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://www.youarewhatyoucode" # the base hostname & protocol for your site, e.g. http://example.com
 lang: en
 timezone: UTC
 exclude:
