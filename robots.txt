@@ -1,1 +1,1 @@
-Sitemap: http://youarewhatyoucode/sitemap.xml
+Sitemap: https://www.youarewhatyoucode/sitemap.xml

@@ -3,10 +3,10 @@
   <generator uri="http://jekyllrb.com" version="3.8.6">Jekyll</generator>
   
   
-  <link href="http://youarewhatyoucode/feed.xml" rel="self" type="application/atom+xml" />
-  <link href="http://youarewhatyoucode/" rel="alternate" type="text/html" hreflang="en" />
-  <updated>2020-04-11T23:04:56+00:00</updated>
-  <id>http://youarewhatyoucode//</id>
+  <link href="https://www.youarewhatyoucode/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="https://www.youarewhatyoucode/" rel="alternate" type="text/html" hreflang="en" />
+  <updated>2020-04-12T13:50:22+00:00</updated>
+  <id>https://www.youarewhatyoucode//</id>
 
   
     <title type="html">you are what you code</title>
@@ -30,11 +30,11 @@
       
       <title type="html">Decouple Your Powershell Modules Using Events</title>
       
-      <link href="http://youarewhatyoucode/2020/04/11/decouple-your-powershell-modules-using-events/" rel="alternate" type="text/html" title="Decouple Your Powershell Modules Using Events" />
+      <link href="https://www.youarewhatyoucode/2020/04/11/decouple-your-powershell-modules-using-events/" rel="alternate" type="text/html" title="Decouple Your Powershell Modules Using Events" />
       <published>2020-04-11T00:00:00+00:00</published>
       <updated>2020-04-11T00:00:00+00:00</updated>
-      <id>http://youarewhatyoucode/2020/04/11/decouple-your-powershell-modules-using-events</id>
-      <content type="html" xml:base="http://youarewhatyoucode/2020/04/11/decouple-your-powershell-modules-using-events/">&lt;div class=&quot;paragraph&quot;&gt;
+      <id>https://www.youarewhatyoucode/2020/04/11/decouple-your-powershell-modules-using-events</id>
+      <content type="html" xml:base="https://www.youarewhatyoucode/2020/04/11/decouple-your-powershell-modules-using-events/">&lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;&lt;em&gt;(Source Code is available in this &lt;a href=&quot;https://github.com/sebastianslutzky/Blog.PowershellEvents&quot;&gt;GithHub repository&lt;/a&gt;)&lt;/em&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;sect1&quot;&gt;
@@ -383,11 +383,11 @@ Notice that the event publish and subscribe pattern is running &lt;strong&gt;syn
       
       <title type="html">Find Jobs In All Jenkins Folders</title>
       
-      <link href="http://youarewhatyoucode/2017/08/04/find-jobs-in-all-jenkins-folders/" rel="alternate" type="text/html" title="Find Jobs In All Jenkins Folders" />
+      <link href="https://www.youarewhatyoucode/2017/08/04/find-jobs-in-all-jenkins-folders/" rel="alternate" type="text/html" title="Find Jobs In All Jenkins Folders" />
       <published>2017-08-04T00:00:00+00:00</published>
       <updated>2017-08-04T00:00:00+00:00</updated>
-      <id>http://youarewhatyoucode/2017/08/04/find-jobs-in-all-jenkins-folders</id>
-      <content type="html" xml:base="http://youarewhatyoucode/2017/08/04/find-jobs-in-all-jenkins-folders/">&lt;div class=&quot;paragraph&quot;&gt;
+      <id>https://www.youarewhatyoucode/2017/08/04/find-jobs-in-all-jenkins-folders</id>
+      <content type="html" xml:base="https://www.youarewhatyoucode/2017/08/04/find-jobs-in-all-jenkins-folders/">&lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;Sometimes it is useful to list or apply an operation to a Jenkins job based on a regular expression.
 The Jenkins DSL plugin, which executes Groovy code within Jenkins, is probably the easier way to achieve this.&lt;/p&gt;
 &lt;/div&gt;
@@ -507,11 +507,11 @@ findAll&lt;span style=&quot;color: #666666&quot;&gt;(&lt;/span&gt;&lt;span style
       
       <title type="html">Delete Stale Git Branches With Powershell</title>
       
-      <link href="http://youarewhatyoucode/2017/03/31/delete-stale-git-branches-with-powershell/" rel="alternate" type="text/html" title="Delete Stale Git Branches With Powershell" />
+      <link href="https://www.youarewhatyoucode/2017/03/31/delete-stale-git-branches-with-powershell/" rel="alternate" type="text/html" title="Delete Stale Git Branches With Powershell" />
       <published>2017-03-31T00:00:00+00:00</published>
       <updated>2017-03-31T00:00:00+00:00</updated>
-      <id>http://youarewhatyoucode/2017/03/31/delete-stale-git-branches-with-powershell</id>
-      <content type="html" xml:base="http://youarewhatyoucode/2017/03/31/delete-stale-git-branches-with-powershell/">&lt;div class=&quot;paragraph&quot;&gt;
+      <id>https://www.youarewhatyoucode/2017/03/31/delete-stale-git-branches-with-powershell</id>
+      <content type="html" xml:base="https://www.youarewhatyoucode/2017/03/31/delete-stale-git-branches-with-powershell/">&lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;With the increasing adoption of source code management workflows such as &lt;a href=&quot;http://nvie.com/posts/a-successful-git-branching-model/&quot;&gt;Git Flow&lt;/a&gt;,
 it is common to keep &quot;stale&quot; branches in local repositories.&lt;/p&gt;
 &lt;/div&gt;
@@ -661,11 +661,11 @@ This will gives us the set of local branches not in the remote local branches no
       
       <title type="html">Take control of your Web API aspects</title>
       
-      <link href="http://youarewhatyoucode/2015/11/24/take-control-of-your-api-aspects/" rel="alternate" type="text/html" title="Take control of your Web API aspects" />
+      <link href="https://www.youarewhatyoucode/2015/11/24/take-control-of-your-api-aspects/" rel="alternate" type="text/html" title="Take control of your Web API aspects" />
       <published>2015-11-24T00:00:00+00:00</published>
       <updated>2015-11-24T00:00:00+00:00</updated>
-      <id>http://youarewhatyoucode/2015/11/24/take-control-of-your-api-aspects</id>
-      <content type="html" xml:base="http://youarewhatyoucode/2015/11/24/take-control-of-your-api-aspects/">&lt;div class=&quot;paragraph&quot;&gt;
+      <id>https://www.youarewhatyoucode/2015/11/24/take-control-of-your-api-aspects</id>
+      <content type="html" xml:base="https://www.youarewhatyoucode/2015/11/24/take-control-of-your-api-aspects/">&lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;Action filters  are a way of modifying or decorating the execution of one or more action methods. They provide points of execution before and after the action method itself executes.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;admonitionblock warning&quot;&gt;
@@ -897,11 +897,11 @@ This will gives us the set of local branches not in the remote local branches no
       
       <title type="html">Naked Objects Is Opensource</title>
       
-      <link href="http://youarewhatyoucode/2011/10/29/naked-objects-is-opensource/" rel="alternate" type="text/html" title="Naked Objects Is Opensource" />
+      <link href="https://www.youarewhatyoucode/2011/10/29/naked-objects-is-opensource/" rel="alternate" type="text/html" title="Naked Objects Is Opensource" />
       <published>2011-10-29T00:00:00+00:00</published>
       <updated>2011-10-29T00:00:00+00:00</updated>
-      <id>http://youarewhatyoucode/2011/10/29/naked-objects-is-opensource</id>
-      <content type="html" xml:base="http://youarewhatyoucode/2011/10/29/naked-objects-is-opensource/">&lt;div class=&quot;paragraph&quot;&gt;
+      <id>https://www.youarewhatyoucode/2011/10/29/naked-objects-is-opensource</id>
+      <content type="html" xml:base="https://www.youarewhatyoucode/2011/10/29/naked-objects-is-opensource/">&lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;The Naked Objects framework for .Net is now open sourced under Microsoft Public License.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
@@ -949,11 +949,11 @@ This will gives us the set of local branches not in the remote local branches no
       
       <title type="html">Apply Operation In Collection With Linq</title>
       
-      <link href="http://youarewhatyoucode/2011/08/22/apply-operation-in-collection-with-linq/" rel="alternate" type="text/html" title="Apply Operation In Collection With Linq" />
+      <link href="https://www.youarewhatyoucode/2011/08/22/apply-operation-in-collection-with-linq/" rel="alternate" type="text/html" title="Apply Operation In Collection With Linq" />
       <published>2011-08-22T00:00:00+00:00</published>
       <updated>2011-08-22T00:00:00+00:00</updated>
-      <id>http://youarewhatyoucode/2011/08/22/apply-operation-in-collection-with-linq</id>
-      <content type="html" xml:base="http://youarewhatyoucode/2011/08/22/apply-operation-in-collection-with-linq/">&lt;div class=&quot;paragraph&quot;&gt;
+      <id>https://www.youarewhatyoucode/2011/08/22/apply-operation-in-collection-with-linq</id>
+      <content type="html" xml:base="https://www.youarewhatyoucode/2011/08/22/apply-operation-in-collection-with-linq/">&lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;These days, it is unusual to write an implementation of the Iterator pattern. Most of the modern languages included a library with a set of aggregate objects that follow this pattern as defined in the &lt;a href=&quot;https://www.amazon.com/Design-Patterns-Elements-Reusable-Object-Oriented/dp/0201633612&quot;&gt;Gang of Four book&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
@@ -1049,11 +1049,11 @@ cities.ApplyOperation(x=&amp;gt;Console.WriteLine(&lt;span style=&quot;color: #B
       
       <title type="html">Unit Test &amp;amp; Design By Contract (Part III)</title>
       
-      <link href="http://youarewhatyoucode/2011/08/13/unit-test-design-by-contract-part3/" rel="alternate" type="text/html" title="Unit Test &amp; Design By Contract (Part III)" />
+      <link href="https://www.youarewhatyoucode/2011/08/13/unit-test-design-by-contract-part3/" rel="alternate" type="text/html" title="Unit Test &amp; Design By Contract (Part III)" />
       <published>2011-08-13T00:00:00+00:00</published>
       <updated>2011-08-13T00:00:00+00:00</updated>
-      <id>http://youarewhatyoucode/2011/08/13/unit-test-design-by-contract-part3</id>
-      <content type="html" xml:base="http://youarewhatyoucode/2011/08/13/unit-test-design-by-contract-part3/">&lt;div class=&quot;imageblock&quot;&gt;
+      <id>https://www.youarewhatyoucode/2011/08/13/unit-test-design-by-contract-part3</id>
+      <content type="html" xml:base="https://www.youarewhatyoucode/2011/08/13/unit-test-design-by-contract-part3/">&lt;div class=&quot;imageblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
 &lt;img src=&quot;/assets/images/dbc.png&quot; alt=&quot;dbc&quot; width=&quot;100%&quot;&gt;
 &lt;/div&gt;
@@ -1279,11 +1279,11 @@ This verification will fail if the method was not invoked indirectly by &lt;code
       
       <title type="html">Unit Test &amp;amp; Design By Contract (Part II)</title>
       
-      <link href="http://youarewhatyoucode/2011/08/12/unit-test-design-by-contract-part2/" rel="alternate" type="text/html" title="Unit Test &amp; Design By Contract (Part II)" />
+      <link href="https://www.youarewhatyoucode/2011/08/12/unit-test-design-by-contract-part2/" rel="alternate" type="text/html" title="Unit Test &amp; Design By Contract (Part II)" />
       <published>2011-08-12T00:00:00+00:00</published>
       <updated>2011-08-12T00:00:00+00:00</updated>
-      <id>http://youarewhatyoucode/2011/08/12/unit-test-design-by-contract-part2</id>
-      <content type="html" xml:base="http://youarewhatyoucode/2011/08/12/unit-test-design-by-contract-part2/">&lt;div class=&quot;imageblock&quot;&gt;
+      <id>https://www.youarewhatyoucode/2011/08/12/unit-test-design-by-contract-part2</id>
+      <content type="html" xml:base="https://www.youarewhatyoucode/2011/08/12/unit-test-design-by-contract-part2/">&lt;div class=&quot;imageblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
 &lt;img src=&quot;/assets/images/dbc.png&quot; alt=&quot;dbc&quot; width=&quot;100%&quot;&gt;
 &lt;/div&gt;
@@ -1399,11 +1399,11 @@ of an unhappy case, that is, a happy case for pre conditions.&lt;/p&gt;
       
       <title type="html">Unit Test &amp;amp; Design By Contract (Part I)</title>
       
-      <link href="http://youarewhatyoucode/2011/08/08/unit-test-design-by-contract-part1/" rel="alternate" type="text/html" title="Unit Test &amp; Design By Contract (Part I)" />
+      <link href="https://www.youarewhatyoucode/2011/08/08/unit-test-design-by-contract-part1/" rel="alternate" type="text/html" title="Unit Test &amp; Design By Contract (Part I)" />
       <published>2011-08-08T00:00:00+00:00</published>
       <updated>2011-08-08T00:00:00+00:00</updated>
-      <id>http://youarewhatyoucode/2011/08/08/unit-test-design-by-contract-part1</id>
-      <content type="html" xml:base="http://youarewhatyoucode/2011/08/08/unit-test-design-by-contract-part1/">&lt;div class=&quot;imageblock&quot;&gt;
+      <id>https://www.youarewhatyoucode/2011/08/08/unit-test-design-by-contract-part1</id>
+      <content type="html" xml:base="https://www.youarewhatyoucode/2011/08/08/unit-test-design-by-contract-part1/">&lt;div class=&quot;imageblock&quot;&gt;
 &lt;div class=&quot;content&quot;&gt;
 &lt;img src=&quot;/assets/images/dbc.png&quot; alt=&quot;dbc&quot; width=&quot;100%&quot;&gt;
 &lt;/div&gt;
@@ -1603,11 +1603,11 @@ The exact implementation is outside of the scope of this article, but I will pos
       
       <title type="html">Notes From Qcon London 2012</title>
       
-      <link href="http://youarewhatyoucode/2011/03/14/notes-from-qcon-london-2012/" rel="alternate" type="text/html" title="Notes From Qcon London 2012" />
+      <link href="https://www.youarewhatyoucode/2011/03/14/notes-from-qcon-london-2012/" rel="alternate" type="text/html" title="Notes From Qcon London 2012" />
       <published>2011-03-14T00:00:00+00:00</published>
       <updated>2011-03-14T00:00:00+00:00</updated>
-      <id>http://youarewhatyoucode/2011/03/14/notes-from-qcon-london-2012</id>
-      <content type="html" xml:base="http://youarewhatyoucode/2011/03/14/notes-from-qcon-london-2012/">&lt;div class=&quot;paragraph&quot;&gt;
+      <id>https://www.youarewhatyoucode/2011/03/14/notes-from-qcon-london-2012</id>
+      <content type="html" xml:base="https://www.youarewhatyoucode/2011/03/14/notes-from-qcon-london-2012/">&lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;&lt;em&gt;Did you know Facebook is n ordinary single-threaded PHP website? How complex do you think Twitter’s business logic model is? Do you know how Nokia is preparing to scale Ovi once (if) their Microsoft deal is agreed?&lt;/em&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
@@ -1743,11 +1743,11 @@ The exact implementation is outside of the scope of this article, but I will pos
       
       <title type="html">Finding Duplicate Files Recursively</title>
       
-      <link href="http://youarewhatyoucode/2010/04/19/finding-duplicate-files-recursively/" rel="alternate" type="text/html" title="Finding Duplicate Files Recursively" />
+      <link href="https://www.youarewhatyoucode/2010/04/19/finding-duplicate-files-recursively/" rel="alternate" type="text/html" title="Finding Duplicate Files Recursively" />
       <published>2010-04-19T00:00:00+00:00</published>
       <updated>2010-04-19T00:00:00+00:00</updated>
-      <id>http://youarewhatyoucode/2010/04/19/finding-duplicate-files-recursively</id>
-      <content type="html" xml:base="http://youarewhatyoucode/2010/04/19/finding-duplicate-files-recursively/">&lt;div class=&quot;paragraph&quot;&gt;
+      <id>https://www.youarewhatyoucode/2010/04/19/finding-duplicate-files-recursively</id>
+      <content type="html" xml:base="https://www.youarewhatyoucode/2010/04/19/finding-duplicate-files-recursively/">&lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;I was cleaning up a folder with files duplicated in subdirectories. Here is a simple Powershell code that identifies duplications recursively.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
@@ -1830,11 +1830,11 @@ GetFilesInBuckets &lt;span style=&quot;color: #BA2121&quot;&gt;&amp;quot;C:\MyRo
       
       <title type="html">Nant And Xml Programming</title>
       
-      <link href="http://youarewhatyoucode/2010/04/16/nant-and-xml-programming/" rel="alternate" type="text/html" title="Nant And Xml Programming" />
+      <link href="https://www.youarewhatyoucode/2010/04/16/nant-and-xml-programming/" rel="alternate" type="text/html" title="Nant And Xml Programming" />
       <published>2010-04-16T00:00:00+00:00</published>
       <updated>2010-04-16T00:00:00+00:00</updated>
-      <id>http://youarewhatyoucode/2010/04/16/nant-and-xml-programming</id>
-      <content type="html" xml:base="http://youarewhatyoucode/2010/04/16/nant-and-xml-programming/">&lt;div class=&quot;paragraph&quot;&gt;
+      <id>https://www.youarewhatyoucode/2010/04/16/nant-and-xml-programming</id>
+      <content type="html" xml:base="https://www.youarewhatyoucode/2010/04/16/nant-and-xml-programming/">&lt;div class=&quot;paragraph&quot;&gt;
 &lt;p&gt;I have used NAnt (the .Net port of the Java build tool Ant) in most of the .Net/VB6 projects I have worked on. The decision for using this tool was not always mine, but I guess I did not find (nor look for) a better alternative.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;paragraph&quot;&gt;
