@@ -87,6 +87,7 @@ Use cases that need one of these libraries, will import the modules and "wire" t
 Powershell support for events is neither widely used nor documented, but the language provides the building blocks necessary to implement such pattern.
 
 
+[powershell_events-implementation]
 === Implementation: Using events to decouple modules
 
 ==== Building blocks
